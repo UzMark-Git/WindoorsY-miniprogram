@@ -1,0 +1,10 @@
+{
+  "name": "门窗服务平台",
+  "appid": "__UNI__WINDOORSY",
+  "description": "门窗服务小程序",
+  "versionName": "0.1.0",
+  "versionCode": "100",
+  "transformPx": false,
+  "mp-weixin": { "appid": "", "setting": { "urlCheck": false }, "usingComponents": true },
+  "vueVersion": "3"
+}
