@@ -29,7 +29,7 @@ async function load() {
   }
 }
 function openStaff(id: string) { uni.navigateTo({ url: `/pages-sub/staff/detail?id=${encodeURIComponent(id)}` }) }
-function appoint() { if (site.value) uni.navigateTo({ url: `/pages-sub/appointment/index?source_type=site&source_id=${encodeURIComponent(site.value._id)}&store_id=${encodeURIComponent(site.value.store_id)}` }) }
+function appoint() { if (site.value) uni.navigateTo({ url: `/pages-sub/appointments/create?source_type=site&source_id=${encodeURIComponent(site.value._id)}&store_id=${encodeURIComponent(site.value.store_id)}` }) }
 function consult() { uni.showModal({ title: '联系客服', content: '请通过预约留下联系方式，我们会尽快联系您。', showCancel: false }) }
 function preview(src: string) { if (site.value) uni.previewImage({ current: src, urls: site.value.updates.flatMap(item => item.media).filter(Boolean) }) }
 onLoad((query: Record<string,string|undefined>) => { siteId.value = query.id || ''; load() })

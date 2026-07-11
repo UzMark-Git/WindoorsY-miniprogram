@@ -9,7 +9,7 @@ import { classifyDetailError } from '../../utils/detail-state'
 const placeholder='/static/demo/placeholder.png'
 const staffId=ref(''), profile=ref<StaffProfile>(), status=ref<'loading'|'ready'|'empty'|'error'|'offline'>('loading'), message=ref('')
 async function load(){if(!staffId.value){status.value='empty';message.value='该人员内容已失效';return}status.value='loading';try{profile.value=await getStaffProfile(staffId.value);status.value='ready'}catch(error){const failure=classifyDetailError(error);status.value=failure.status;message.value=failure.retryable?(failure.status==='offline'?'网络已断开，请检查后重试':'人员详情加载失败'):'该人员内容已下架或不存在'}}
-function appoint(){if(profile.value)uni.navigateTo({url:`/pages-sub/appointment/index?source_type=staff&source_id=${encodeURIComponent(profile.value._id)}&store_id=${encodeURIComponent(profile.value.store_id)}`})}
+function appoint(){if(profile.value)uni.navigateTo({url:`/pages-sub/appointments/create?source_type=staff&source_id=${encodeURIComponent(profile.value._id)}&store_id=${encodeURIComponent(profile.value.store_id)}`})}
 function consult(){uni.showModal({title:'联系客服',content:'请通过预约留下联系方式，我们会尽快联系您。',showCancel:false})}
 onLoad((query:Record<string,string|undefined>)=>{staffId.value=query.id||'';load()})
 </script>
