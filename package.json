@@ -14,6 +14,7 @@
   "devDependencies": {
     "@dcloudio/types": "^3.4.15",
     "@dcloudio/vite-plugin-uni": "3.0.0-4060620250520001",
+    "sass": "^1.83.4",
     "vite": "^5.4.14"
   }
 }
