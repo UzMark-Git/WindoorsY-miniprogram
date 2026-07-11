@@ -1,9 +1,11 @@
+import type { HomeContent, SiteDetail, SiteListResult, SiteStage, StaffProfile } from '../types/domain'
+
 export type SiteQuery = {
   page?: number
   pageSize?: number
   storeId?: string
   district?: string
-  stage?: string
+  stage?: SiteStage
 }
 
 export type NormalizedSiteQuery = Omit<SiteQuery, 'page' | 'pageSize'> & {
@@ -12,10 +14,10 @@ export type NormalizedSiteQuery = Omit<SiteQuery, 'page' | 'pageSize'> & {
 }
 
 type ContentCloudObject = {
-  getHome(storeId: string): Promise<unknown>
-  listSites(query: NormalizedSiteQuery): Promise<unknown>
-  getSiteDetail(siteId: string): Promise<unknown>
-  getStaffProfile(staffId: string): Promise<unknown>
+  getHome(storeId: string): Promise<HomeContent>
+  listSites(query: NormalizedSiteQuery): Promise<SiteListResult>
+  getSiteDetail(siteId: string): Promise<SiteDetail>
+  getStaffProfile(staffId: string): Promise<StaffProfile>
 }
 
 declare const uniCloud: {
@@ -23,10 +25,12 @@ declare const uniCloud: {
 }
 
 export function normalizeSiteQuery(input: SiteQuery): NormalizedSiteQuery {
+  const page = typeof input.page === 'number' && Number.isFinite(input.page) ? input.page : 1
+  const pageSize = typeof input.pageSize === 'number' && Number.isFinite(input.pageSize) ? input.pageSize : 10
   return {
     ...input,
-    page: Math.max(1, Math.trunc(input.page ?? 1)),
-    pageSize: Math.min(20, Math.max(1, Math.trunc(input.pageSize ?? 10))),
+    page: Math.max(1, Math.trunc(page)),
+    pageSize: Math.min(20, Math.max(1, Math.trunc(pageSize))),
   }
 }
 

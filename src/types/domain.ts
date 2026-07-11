@@ -1,8 +1,8 @@
-export type ContentStatus = 'draft' | 'published' | 'unpublished'
+export type ContentStatus = 'draft' | 'published' | 'offline'
 
 export type AppointmentSourceType = 'store' | 'site' | 'staff' | 'product'
 
-interface ContentRecord {
+export interface ContentRecord {
   _id: string
   store_id: string
   status: ContentStatus
@@ -13,37 +13,55 @@ interface ContentRecord {
 export interface StoreSummary extends ContentRecord {
   name: string
   logo: string
-  city: string
+  hero_images: string[]
   address: string
   phone: string
 }
 
 export interface SiteSummary extends ContentRecord {
   title: string
-  cover: string
-  store_name: string
-  city: string
+  location: string
+  cover_image: string
+  summary: string
   district: string
-  area: number
-  stage: string
+  stage: SiteStage
+  sort_order: number
 }
 
 export interface SiteDetail extends SiteSummary {
-  address: string
-  house_type: string
-  product_ids: string[]
-  staff_id: string
-  media: string[]
-  stages: string[]
-  current_stage: number
+  staff_ids: string[]
+  updates: SiteUpdate[]
 }
 
 export interface StaffProfile extends ContentRecord {
   name: string
   avatar: string
-  position: string
-  introduction: string
-  service_areas: string[]
+  role: string
+  bio: string
+  specialties: string[]
+  sort_order: number
+}
+
+export type SiteStage = 'measuring' | 'designing' | 'installing' | 'completed'
+
+export interface SiteUpdate extends ContentRecord {
+  site_id: string
+  title: string
+  content: string
+  media: string[]
+  sort_order: number
+}
+
+export interface HomeContent {
+  store: StoreSummary
+  sites: SiteSummary[]
+  staff: StaffProfile[]
+}
+
+export interface SiteListResult {
+  items: SiteSummary[]
+  page: number
+  pageSize: number
 }
 
 export interface AppointmentInput {
