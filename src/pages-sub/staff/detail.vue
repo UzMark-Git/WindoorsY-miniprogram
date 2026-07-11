@@ -1,0 +1,19 @@
+<script setup lang="ts">
+import { ref } from 'vue'
+import { onLoad } from '@dcloudio/uni-app'
+import { getStaffProfile } from '../../api/content'
+import ContentState from '../../components/content-state.vue'
+import type { StaffProfile } from '../../types/domain'
+import { classifyDetailError } from '../../utils/detail-state'
+
+const placeholder='/static/demo/placeholder.png'
+const staffId=ref(''), profile=ref<StaffProfile>(), status=ref<'loading'|'ready'|'empty'|'error'|'offline'>('loading'), message=ref('')
+async function load(){if(!staffId.value){status.value='empty';message.value='该人员内容已失效';return}status.value='loading';try{profile.value=await getStaffProfile(staffId.value);status.value='ready'}catch(error){const failure=classifyDetailError(error);status.value=failure.status;message.value=failure.retryable?(failure.status==='offline'?'网络已断开，请检查后重试':'人员详情加载失败'):'该人员内容已下架或不存在'}}
+function appoint(){if(profile.value)uni.navigateTo({url:`/pages-sub/appointment/index?source_type=staff&source_id=${encodeURIComponent(profile.value._id)}&store_id=${encodeURIComponent(profile.value.store_id)}`})}
+function consult(){uni.showModal({title:'联系客服',content:'请通过预约留下联系方式，我们会尽快联系您。',showCancel:false})}
+onLoad((query:Record<string,string|undefined>)=>{staffId.value=query.id||'';load()})
+</script>
+<template><view class="page"><ContentState v-if="status!=='ready'" :status="status==='empty'?'empty':status" :message="message" @retry="load"/><template v-else-if="profile"><view class="hero"><image :src="profile.avatar||placeholder" mode="aspectFill"/><text class="name">{{profile.name}}</text><text class="role">{{profile.role}}</text></view><view class="panel"><text class="title">个人简介</text><text class="copy">{{profile.bio}}</text></view><view class="panel"><text class="title">服务区域</text><view class="tags"><text v-for="item in profile.specialties" :key="item">{{item}}</text></view></view><view class="panel"><text class="title">相关工地</text><view class="placeholder">工地案例持续更新中</view></view><view class="panel"><text class="title">案例展示</text><view class="case-grid"><image :src="placeholder"/><image :src="placeholder"/></view></view></template><view v-if="status==='ready'" class="footer"><button class="secondary" @click="consult">联系客服</button><button class="primary" @click="appoint">立即预约</button></view></view></template>
+<style scoped>
+.page{min-height:100vh;padding-bottom:150rpx;background:#f1f4f2}.hero{padding:70rpx 30rpx 48rpx;text-align:center;background:#183e34;color:#fff}.hero image{display:block;width:180rpx;height:180rpx;margin:auto;border:7rpx solid rgba(255,255,255,.18);border-radius:50%}.name{display:block;margin-top:22rpx;font-size:40rpx;font-weight:650}.role{display:block;margin-top:9rpx;color:rgba(255,255,255,.7);font-size:24rpx}.panel{margin:22rpx 26rpx;padding:30rpx;border-radius:20rpx;background:#fff}.title{display:block;color:#193c33;font-size:30rpx;font-weight:650}.copy{display:block;margin-top:18rpx;color:#697975;font-size:25rpx;line-height:1.8}.tags{display:flex;flex-wrap:wrap;gap:14rpx;margin-top:20rpx}.tags text{padding:10rpx 20rpx;border-radius:26rpx;color:#89612f;background:#faf2e7;font-size:22rpx}.placeholder{margin-top:20rpx;padding:40rpx;text-align:center;color:#929e9a;background:#f4f6f5}.case-grid{display:grid;grid-template-columns:1fr 1fr;gap:14rpx;margin-top:20rpx}.case-grid image{width:100%;height:210rpx;border-radius:12rpx}.footer{position:fixed;left:0;right:0;bottom:0;display:flex;gap:18rpx;padding:18rpx 26rpx calc(18rpx + env(safe-area-inset-bottom));background:#fff}.footer button{flex:1;border:0;border-radius:40rpx;font-size:27rpx}.footer button::after{border:0}.secondary{color:#24564a;background:#edf3f1}.primary{color:#fff;background:#24564a}
+</style>

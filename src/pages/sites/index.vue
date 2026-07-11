@@ -41,7 +41,7 @@ async function load(reset = false) {
 function changeDistrict(event: { detail: { value: string } }) { districtIndex.value = Number(event.detail.value); load(true) }
 function changeStage(event: { detail: { value: string } }) { stageIndex.value = Number(event.detail.value); load(true) }
 function nextPage() { if (hasMore.value) load() }
-function selectSite() { uni.showToast({ title: '工地详情即将上线', icon: 'none' }) }
+function selectSite(site: SiteSummary) { uni.navigateTo({ url: `/pages-sub/sites/detail?id=${encodeURIComponent(site._id)}` }) }
 onMounted(async () => {
   try {
     const filters = await getSiteFilters(STORE_ID)

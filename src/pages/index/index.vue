@@ -30,7 +30,8 @@ async function load() {
 function openSites() { uni.navigateTo({ url: '/pages/sites/index' }) }
 function callStore() { if (home.value) uni.makePhoneCall({ phoneNumber: home.value.store.phone }) }
 function copyAddress() { if (home.value) uni.setClipboardData({ data: home.value.store.address }) }
-function selectSite() { openSites() }
+function selectSite(site: HomeContent['sites'][number]) { uni.navigateTo({ url: `/pages-sub/sites/detail?id=${encodeURIComponent(site._id)}` }) }
+function selectStaff(person: HomeContent['staff'][number]) { uni.navigateTo({ url: `/pages-sub/staff/detail?id=${encodeURIComponent(person._id)}` }) }
 onMounted(load)
 </script>
 
@@ -46,7 +47,7 @@ onMounted(load)
       <view class="actions"><button @click="callStore"><text class="action-icon">☎</text><text>电话咨询</text></button><view class="divider" /><button @click="copyAddress"><text class="action-icon">◇</text><text>门店地址</text></button></view>
       <view class="section">
         <view class="heading"><view><text class="kicker">SERVICE TEAM</text><text class="section-title">为你服务的人</text></view></view>
-        <scroll-view scroll-x class="staff-scroll"><view class="staff-row"><view v-for="person in home.staff" :key="person._id" class="person"><image :src="failedAvatars[person._id] ? placeholder : (person.avatar || placeholder)" mode="aspectFill" @error="failedAvatars[person._id] = true" /><view><text class="person-name">{{ person.name }}</text><text class="person-role">{{ person.role }}</text></view></view></view></scroll-view>
+        <scroll-view scroll-x class="staff-scroll"><view class="staff-row"><view v-for="person in home.staff" :key="person._id" class="person" @click="selectStaff(person)"><image :src="failedAvatars[person._id] ? placeholder : (person.avatar || placeholder)" mode="aspectFill" @error="failedAvatars[person._id] = true" /><view><text class="person-name">{{ person.name }}</text><text class="person-role">{{ person.role }}</text></view></view></view></scroll-view>
       </view>
       <view class="section sites"><view class="heading"><view><text class="kicker">SELECTED PROJECTS</text><text class="section-title">近期精选工地</text></view><text class="more" @click="openSites">查看全部 ›</text></view><view class="cards"><SiteCard v-for="site in home.sites.slice(0, 3)" :key="site._id" :site="site" @select="selectSite" /></view></view>
     </template>
