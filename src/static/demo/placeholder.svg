@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-labelledby="title description">
+  <title id="title">风庭门窗演示占位图</title>
+  <desc id="description">项目自有的门窗轮廓占位资源</desc>
+  <rect width="1200" height="800" fill="#edf4f2"/>
+  <rect x="250" y="140" width="700" height="520" rx="12" fill="#fff" stroke="#285b52" stroke-width="24"/>
+  <path d="M600 152v496M262 400h676" stroke="#285b52" stroke-width="18"/>
+  <circle cx="570" cy="420" r="12" fill="#d89b45"/>
+  <circle cx="630" cy="420" r="12" fill="#d89b45"/>
+  <text x="600" y="735" text-anchor="middle" fill="#285b52" font-family="sans-serif" font-size="42">风庭门窗 · DEMO</text>
+</svg>
