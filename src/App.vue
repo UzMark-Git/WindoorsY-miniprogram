@@ -1,5 +1,5 @@
-<script setup lang="ts">
-import 'wot-design-uni/components/common/index.scss'
+<script lang="ts">
+export default {}
 </script>
 
 <style lang="scss">
