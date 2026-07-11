@@ -1,4 +1,7 @@
 {
-  "pages": [{ "path": "pages/index/index", "style": { "navigationBarTitleText": "门窗服务平台" } }],
+  "pages": [
+    { "path": "pages/index/index", "style": { "navigationBarTitleText": "风庭门窗", "navigationStyle": "custom" } },
+    { "path": "pages/sites/index", "style": { "navigationBarTitleText": "在建工地" } }
+  ],
   "globalStyle": { "navigationBarTextStyle": "black", "navigationBarBackgroundColor": "#ffffff", "backgroundColor": "#f7f8fa" }
 }
