@@ -1,7 +1,12 @@
 {
   "pages": [
     { "path": "pages/index/index", "style": { "navigationBarTitleText": "风庭门窗", "navigationStyle": "custom" } },
-    { "path": "pages/sites/index", "style": { "navigationBarTitleText": "在建工地" } }
+    { "path": "pages/sites/index", "style": { "navigationBarTitleText": "在建工地" } },
+    { "path": "uni_modules/uni-id-pages/pages/login/login", "style": { "navigationBarTitleText": "登录" } },
+    { "path": "uni_modules/uni-id-pages/pages/login/login-withoutpwd", "style": { "navigationBarTitleText": "微信登录" } },
+    { "path": "uni_modules/uni-id-pages/pages/login/login-withpwd", "style": { "navigationBarTitleText": "账号登录" } },
+    { "path": "uni_modules/uni-id-pages/pages/login/login-smscode", "style": { "navigationBarTitleText": "验证码登录" } },
+    { "path": "uni_modules/uni-id-pages/pages/register/register", "style": { "navigationBarTitleText": "注册" } }
   ],
   "subPackages": [
     { "root": "pages-sub", "pages": [
@@ -11,5 +16,10 @@
       { "path": "appointments/result", "style": { "navigationBarTitleText": "预约成功" } }
     ] }
   ],
-  "globalStyle": { "navigationBarTextStyle": "black", "navigationBarBackgroundColor": "#ffffff", "backgroundColor": "#f7f8fa" }
+  "globalStyle": { "navigationBarTextStyle": "black", "navigationBarBackgroundColor": "#ffffff", "backgroundColor": "#f7f8fa" },
+  "uniIdRouter": {
+    "loginPage": "uni_modules/uni-id-pages/pages/login/login",
+    "needLogin": ["pages-sub/appointments/create"],
+    "resToLogin": true
+  }
 }
