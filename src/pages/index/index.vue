@@ -9,11 +9,16 @@ const STORE_ID = 'store_windoors_demo'
 const home = ref<HomeContent>()
 const status = ref<'loading' | 'ready' | 'empty' | 'error' | 'offline'>('loading')
 const message = ref('')
+const placeholder = '/static/demo/placeholder.png'
+const heroSrc = ref(placeholder)
+const failedAvatars = ref<Record<string, boolean>>({})
 
 async function load() {
   status.value = 'loading'
+  message.value = ''
   try {
     home.value = await getHome(STORE_ID)
+    heroSrc.value = home.value?.store.hero_images[0] || placeholder
     status.value = home.value ? 'ready' : 'empty'
   } catch (error) {
     const text = error instanceof Error ? error.message : String(error)
@@ -34,16 +39,16 @@ onMounted(load)
     <ContentState v-if="status !== 'ready'" :status="status === 'ready' ? 'loading' : status" :message="message" @retry="load" />
     <template v-else-if="home">
       <view class="hero">
-        <image class="hero-image" :src="home.store.hero_images[0] || '/static/demo/placeholder.svg'" mode="aspectFill" />
+        <image class="hero-image" :src="heroSrc" mode="aspectFill" @error="heroSrc = placeholder" />
         <view class="veil" />
         <view class="hero-copy"><text class="eyebrow">专属门窗服务</text><text class="hero-title">{{ home.store.name }}</text><text class="address">{{ home.store.address }}</text></view>
       </view>
       <view class="actions"><button @click="callStore"><text class="action-icon">☎</text><text>电话咨询</text></button><view class="divider" /><button @click="copyAddress"><text class="action-icon">◇</text><text>门店地址</text></button></view>
       <view class="section">
         <view class="heading"><view><text class="kicker">SERVICE TEAM</text><text class="section-title">为你服务的人</text></view></view>
-        <scroll-view scroll-x class="staff-scroll"><view class="staff-row"><view v-for="person in home.staff" :key="person._id" class="person"><image :src="person.avatar || '/static/demo/placeholder.svg'" mode="aspectFill" /><view><text class="person-name">{{ person.name }}</text><text class="person-role">{{ person.role }}</text></view></view></view></scroll-view>
+        <scroll-view scroll-x class="staff-scroll"><view class="staff-row"><view v-for="person in home.staff" :key="person._id" class="person"><image :src="failedAvatars[person._id] ? placeholder : (person.avatar || placeholder)" mode="aspectFill" @error="failedAvatars[person._id] = true" /><view><text class="person-name">{{ person.name }}</text><text class="person-role">{{ person.role }}</text></view></view></view></scroll-view>
       </view>
-      <view class="section sites"><view class="heading"><view><text class="kicker">SELECTED PROJECTS</text><text class="section-title">近期精选工地</text></view><text class="more" @click="openSites">查看全部 ›</text></view><view class="cards"><SiteCard v-for="site in home.sites.slice(0, 3)" :key="site._id" :site="site" :store-name="home.store.name" @select="selectSite" /></view></view>
+      <view class="section sites"><view class="heading"><view><text class="kicker">SELECTED PROJECTS</text><text class="section-title">近期精选工地</text></view><text class="more" @click="openSites">查看全部 ›</text></view><view class="cards"><SiteCard v-for="site in home.sites.slice(0, 3)" :key="site._id" :site="site" @select="selectSite" /></view></view>
     </template>
   </view>
 </template>

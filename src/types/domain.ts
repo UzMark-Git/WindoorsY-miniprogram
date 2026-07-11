@@ -24,6 +24,8 @@ export interface SiteSummary extends ContentRecord {
   cover_image: string
   summary: string
   district: string
+  area: number
+  store_name: string
   stage: SiteStage
   sort_order: number
 }
@@ -62,6 +64,11 @@ export interface SiteListResult {
   items: SiteSummary[]
   page: number
   pageSize: number
+}
+
+export interface SiteFilters {
+  districts: string[]
+  stages: SiteStage[]
 }
 
 export interface AppointmentInput {

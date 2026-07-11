@@ -1,42 +1,62 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { listSites } from '../../api/content'
+import { getSiteFilters, listSites } from '../../api/content'
 import ContentState from '../../components/content-state.vue'
 import SiteCard from '../../components/site-card.vue'
 import type { SiteStage, SiteSummary } from '../../types/domain'
+import { createRequestGate } from '../../utils/request-gate'
 
 const PAGE_SIZE = 10
-const districts = ['全部区域', '滨江区', '西湖区', '拱墅区']
-const stages: Array<{ label: string; value?: SiteStage }> = [{ label: '全部阶段' }, { label: '复尺', value: 'measuring' }, { label: '设计', value: 'designing' }, { label: '安装', value: 'installing' }, { label: '已交付', value: 'completed' }]
+const STORE_ID = 'store_windoors_demo'
+const districts = ref<string[]>([])
+const stageLabels: Record<SiteStage, string> = { measuring: '复尺', designing: '设计', installing: '安装', completed: '已交付' }
+const stages = ref<Array<{ label: string; value?: SiteStage }>>([{ label: '全部阶段' }])
 const districtIndex = ref(0), stageIndex = ref(0), page = ref(1)
 const items = ref<SiteSummary[]>([]), hasMore = ref(true)
 const status = ref<'loading' | 'ready' | 'empty' | 'error' | 'offline'>('loading'), message = ref('')
+const gate = createRequestGate()
 
 async function load(reset = false) {
+  const request = reset ? gate.beginReset() : gate.beginMore()
+  if (request == null) return
   if (reset) { page.value = 1; items.value = []; hasMore.value = true }
+  else page.value += 1
   status.value = 'loading'
+  message.value = ''
   try {
-    const result = await listSites({ page: page.value, pageSize: PAGE_SIZE, district: districtIndex.value ? districts[districtIndex.value] : undefined, stage: stages[stageIndex.value].value })
+    const result = await listSites({ storeId: STORE_ID, page: page.value, pageSize: PAGE_SIZE, district: districtIndex.value ? districts.value[districtIndex.value - 1] : undefined, stage: stages.value[stageIndex.value].value })
+    if (!gate.isCurrent(request)) return
     items.value = reset ? result.items : [...items.value, ...result.items]
     hasMore.value = result.items.length === PAGE_SIZE
     status.value = items.value.length ? 'ready' : 'empty'
   } catch (error) {
+    if (!gate.isCurrent(request)) return
     const text = error instanceof Error ? error.message : String(error)
     status.value = /network|offline|网络/i.test(text) ? 'offline' : 'error'
     message.value = status.value === 'offline' ? '网络已断开，请检查后重试' : '工地列表加载失败'
+  } finally {
+    gate.finish(request)
   }
 }
 function changeDistrict(event: { detail: { value: string } }) { districtIndex.value = Number(event.detail.value); load(true) }
 function changeStage(event: { detail: { value: string } }) { stageIndex.value = Number(event.detail.value); load(true) }
-function nextPage() { if (hasMore.value) { page.value += 1; load() } }
+function nextPage() { if (hasMore.value) load() }
 function selectSite() { uni.showToast({ title: '工地详情即将上线', icon: 'none' }) }
-onMounted(() => load(true))
+onMounted(async () => {
+  try {
+    const filters = await getSiteFilters(STORE_ID)
+    districts.value = filters.districts
+    stages.value = [{ label: '全部阶段' }, ...filters.stages.map(value => ({ label: stageLabels[value], value }))]
+  } finally {
+    load(true)
+  }
+})
 </script>
 
 <template>
   <view class="page">
     <view class="intro"><text class="kicker">PROJECT GALLERY</text><text class="title">在建工地</text><text class="lead">看得见的过程，才是安心的交付</text></view>
-    <view class="filters"><picker :range="districts" :value="districtIndex" @change="changeDistrict"><view class="filter">{{ districts[districtIndex] }} <text>⌄</text></view></picker><picker :range="stages" range-key="label" :value="stageIndex" @change="changeStage"><view class="filter">{{ stages[stageIndex].label }} <text>⌄</text></view></picker></view>
+    <view class="filters"><picker :range="['全部区域', ...districts]" :value="districtIndex" @change="changeDistrict"><view class="filter">{{ districtIndex ? districts[districtIndex - 1] : '全部区域' }} <text>⌄</text></view></picker><picker :range="stages" range-key="label" :value="stageIndex" @change="changeStage"><view class="filter">{{ stages[stageIndex].label }} <text>⌄</text></view></picker></view>
     <ContentState v-if="status !== 'ready'" :status="status === 'ready' ? 'loading' : status" :message="status === 'empty' ? '暂无符合条件的工地' : message" @retry="load(true)" />
     <view v-else class="list"><SiteCard v-for="site in items" :key="site._id" :site="site" @select="selectSite" /><button v-if="hasMore" class="load-more" @click="nextPage">加载更多</button><text v-else class="end">— 已展示全部工地 —</text></view>
   </view>

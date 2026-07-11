@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import type { SiteSummary, SiteStage } from '../types/domain'
 import { formatSiteMeta } from './site-card'
 
-const props = defineProps<{ site: SiteSummary & { area?: number }; storeName?: string }>()
+const props = defineProps<{ site: SiteSummary }>()
 defineEmits<{ select: [siteId: string] }>()
-const placeholder = '/static/demo/placeholder.svg'
+const placeholder = '/static/demo/placeholder.png'
 const imageSrc = ref(props.site.cover_image || placeholder)
+watch(() => props.site.cover_image, value => { imageSrc.value = value || placeholder })
 const stageLabel: Record<SiteStage, string> = { measuring: '现场复尺', designing: '方案设计', installing: '安装施工', completed: '已交付' }
 </script>
 
@@ -17,7 +18,7 @@ const stageLabel: Record<SiteStage, string> = { measuring: '现场复尺', desig
       <view class="topline"><text class="stage">{{ stageLabel[site.stage] }}</text><text class="arrow">›</text></view>
       <text class="title">{{ site.title }}</text>
       <text class="summary">{{ site.summary }}</text>
-      <view class="meta"><text>{{ storeName || '风庭门窗体验馆' }}</text><text>{{ formatSiteMeta(site) || site.location }}</text></view>
+      <view class="meta"><text>{{ site.store_name }}</text><text>{{ formatSiteMeta(site) || site.location }}</text></view>
     </view>
   </view>
 </template>
