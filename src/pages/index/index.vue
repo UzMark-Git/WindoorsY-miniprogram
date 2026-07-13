@@ -4,6 +4,7 @@ import { getHome } from '../../api/content'
 import ContentState from '../../components/content-state.vue'
 import SiteCard from '../../components/site-card.vue'
 import type { HomeContent } from '../../types/domain'
+import { siteDetailUrl } from '../../utils/site-navigation'
 
 const STORE_ID = 'store_windoors_demo'
 const home = ref<HomeContent>()
@@ -30,7 +31,7 @@ async function load() {
 function openSites() { uni.navigateTo({ url: '/pages/sites/index' }) }
 function callStore() { if (home.value) uni.makePhoneCall({ phoneNumber: home.value.store.phone }) }
 function copyAddress() { if (home.value) uni.setClipboardData({ data: home.value.store.address }) }
-function selectSite(site: HomeContent['sites'][number]) { uni.navigateTo({ url: `/pages-sub/sites/detail?id=${encodeURIComponent(site._id)}` }) }
+function selectSite(siteId: string) { uni.navigateTo({ url: siteDetailUrl(siteId) }) }
 function selectStaff(person: HomeContent['staff'][number]) { uni.navigateTo({ url: `/pages-sub/staff/detail?id=${encodeURIComponent(person._id)}` }) }
 onMounted(load)
 </script>

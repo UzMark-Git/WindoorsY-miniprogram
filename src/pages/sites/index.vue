@@ -5,6 +5,7 @@ import ContentState from '../../components/content-state.vue'
 import SiteCard from '../../components/site-card.vue'
 import type { SiteStage, SiteSummary } from '../../types/domain'
 import { createRequestGate } from '../../utils/request-gate'
+import { siteDetailUrl } from '../../utils/site-navigation'
 
 const PAGE_SIZE = 10
 const STORE_ID = 'store_windoors_demo'
@@ -41,7 +42,7 @@ async function load(reset = false) {
 function changeDistrict(event: { detail: { value: string } }) { districtIndex.value = Number(event.detail.value); load(true) }
 function changeStage(event: { detail: { value: string } }) { stageIndex.value = Number(event.detail.value); load(true) }
 function nextPage() { if (hasMore.value) load() }
-function selectSite(site: SiteSummary) { uni.navigateTo({ url: `/pages-sub/sites/detail?id=${encodeURIComponent(site._id)}` }) }
+function selectSite(siteId: string) { uni.navigateTo({ url: siteDetailUrl(siteId) }) }
 onMounted(async () => {
   try {
     const filters = await getSiteFilters(STORE_ID)
