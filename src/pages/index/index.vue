@@ -4,6 +4,7 @@ import { getHome } from '../../api/content'
 import ContentState from '../../components/content-state.vue'
 import SiteCard from '../../components/site-card.vue'
 import type { HomeContent } from '../../types/domain'
+import { markHeroImageFailed, normalizeHeroImages, resolveHeroImage } from '../../utils/hero-carousel'
 import { siteDetailUrl } from '../../utils/site-navigation'
 
 const STORE_ID = 'store_windoors_demo'
@@ -11,7 +12,8 @@ const home = ref<HomeContent>()
 const status = ref<'loading' | 'ready' | 'empty' | 'error' | 'offline'>('loading')
 const message = ref('')
 const placeholder = '/static/demo/placeholder.png'
-const heroSrc = ref(placeholder)
+const heroImages = ref<string[]>([placeholder])
+const failedHeroImages = ref<Record<number, boolean>>({})
 const failedAvatars = ref<Record<string, boolean>>({})
 
 async function load() {
@@ -19,13 +21,18 @@ async function load() {
   message.value = ''
   try {
     home.value = await getHome(STORE_ID)
-    heroSrc.value = home.value?.store.hero_images[0] || placeholder
+    heroImages.value = normalizeHeroImages(home.value?.store.hero_images, placeholder)
+    failedHeroImages.value = {}
     status.value = home.value ? 'ready' : 'empty'
   } catch (error) {
     const text = error instanceof Error ? error.message : String(error)
     status.value = /network|offline|网络/i.test(text) ? 'offline' : 'error'
     message.value = status.value === 'offline' ? '网络已断开，请检查后重试' : '首页加载失败，请稍后重试'
   }
+}
+
+function failHero(index: number) {
+  failedHeroImages.value = markHeroImageFailed(failedHeroImages.value, index)
 }
 
 function openSites() { uni.navigateTo({ url: '/pages/sites/index' }) }
@@ -41,7 +48,23 @@ onMounted(load)
     <ContentState v-if="status !== 'ready'" :status="status === 'ready' ? 'loading' : status" :message="message" @retry="load" />
     <template v-else-if="home">
       <view class="hero">
-        <image class="hero-image" :src="heroSrc" mode="aspectFill" @error="heroSrc = placeholder" />
+        <swiper
+          class="hero-swiper"
+          indicator-dots
+          :autoplay="heroImages.length > 1"
+          :circular="heroImages.length > 1"
+          :interval="4000"
+        >
+          <swiper-item v-for="(image, index) in heroImages" :key="`${index}-${image}`">
+            <image
+              class="hero-image"
+              :src="resolveHeroImage(heroImages, failedHeroImages, index, placeholder)"
+              mode="aspectFill"
+              :aria-label="`${home.store.name}轮播图${index + 1}`"
+              @error="failHero(index)"
+            />
+          </swiper-item>
+        </swiper>
         <view class="veil" />
         <view class="hero-copy"><text class="eyebrow">专属门窗服务</text><text class="hero-title">{{ home.store.name }}</text><text class="address">{{ home.store.address }}</text></view>
       </view>
@@ -58,9 +81,10 @@ onMounted(load)
 <style scoped>
 .page { min-height: 100vh; padding-bottom: 70rpx; background: #f4f6f4; }
 .hero { position: relative; height: 610rpx; overflow: hidden; }
-.hero-image,.veil { position: absolute; inset: 0; width: 100%; height: 100%; }
-.veil { background: linear-gradient(180deg,rgba(10,30,25,.08),rgba(10,30,25,.78)); }
-.hero-copy { position: absolute; left: 40rpx; right: 40rpx; bottom: 62rpx; color: white; }
+.hero-swiper { width: 100%; height: 100%; }
+.hero-image { width: 100%; height: 100%; }
+.veil { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; background: linear-gradient(180deg,rgba(10,30,25,.08),rgba(10,30,25,.78)); }
+.hero-copy { position: absolute; left: 40rpx; right: 40rpx; bottom: 62rpx; z-index: 2; color: white; }
 .eyebrow,.kicker { display: block; letter-spacing: 4rpx; font-size: 20rpx; font-weight: 600; }
 .hero-title { display: block; margin-top: 18rpx; font-size: 52rpx; font-weight: 650; }
 .address { display: block; margin-top: 18rpx; color: rgba(255,255,255,.82); font-size: 25rpx; }
