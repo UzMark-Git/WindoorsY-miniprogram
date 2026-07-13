@@ -51,11 +51,13 @@ onMounted(load)
         <swiper
           class="hero-swiper"
           indicator-dots
+          indicator-color="rgba(255,255,255,.45)"
+          indicator-active-color="#fff"
           :autoplay="heroImages.length > 1"
           :circular="heroImages.length > 1"
           :interval="4000"
         >
-          <swiper-item v-for="(image, index) in heroImages" :key="`${index}-${image}`">
+          <swiper-item v-for="(image, index) in heroImages" :key="`${index}-${image}`" class="hero-slide">
             <image
               class="hero-image"
               :src="resolveHeroImage(heroImages, failedHeroImages, index, placeholder)"
@@ -63,9 +65,9 @@ onMounted(load)
               :aria-label="`${home.store.name}轮播图${index + 1}`"
               @error="failHero(index)"
             />
+            <view class="veil" />
           </swiper-item>
         </swiper>
-        <view class="veil" />
         <view class="hero-copy"><text class="eyebrow">专属门窗服务</text><text class="hero-title">{{ home.store.name }}</text><text class="address">{{ home.store.address }}</text></view>
       </view>
       <view class="actions"><button @click="callStore"><text class="action-icon">☎</text><text>电话咨询</text></button><view class="divider" /><button @click="copyAddress"><text class="action-icon">◇</text><text>门店地址</text></button></view>
@@ -82,6 +84,7 @@ onMounted(load)
 .page { min-height: 100vh; padding-bottom: 70rpx; background: #f4f6f4; }
 .hero { position: relative; height: 610rpx; overflow: hidden; }
 .hero-swiper { width: 100%; height: 100%; }
+.hero-slide { position: relative; }
 .hero-image { width: 100%; height: 100%; }
 .veil { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; background: linear-gradient(180deg,rgba(10,30,25,.08),rgba(10,30,25,.78)); }
 .hero-copy { position: absolute; left: 40rpx; right: 40rpx; bottom: 62rpx; z-index: 2; color: white; }
