@@ -31,6 +31,7 @@
 
 <script>
 	import config from '@/uni_modules/uni-id-pages/config.js'
+	import { getAgreementDestination } from '@/utils/login-agreements'
 	let retryFun = ()=>console.log('为定义')
 	/**
 		* uni-id-pages-agreements
@@ -95,11 +96,8 @@
 				url,
 				title
 			}) {
-				if (url.startsWith('/')) {
-					return uni.navigateTo({ url })
-				}
 				return uni.navigateTo({
-					url: '/uni_modules/uni-id-pages/pages/common/webview/webview?url=' + encodeURIComponent(url) + '&title=' + encodeURIComponent(title)
+					url: getAgreementDestination(url, title)
 				})
 			},
 			hasAnd(agreements, index) {

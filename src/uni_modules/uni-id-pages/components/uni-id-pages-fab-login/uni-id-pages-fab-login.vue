@@ -11,6 +11,7 @@
 </template>
 <script>
 	import config from '@/uni_modules/uni-id-pages/config.js'
+	import { shouldBlockLoginForAgreements } from '@/utils/login-agreements'
 	//前一个窗口的页面地址。控制点击切换快捷登录方式是创建还是返回
 	import {store,mutations} from '@/uni_modules/uni-id-pages/common/store.js'
 	let allServicesList = []
@@ -318,7 +319,7 @@
 				}
 				//判断是否需要弹出隐私协议授权框
 				let needAgreements = (config?.agreements?.scope || []).includes('register')
-				if (type != 'univerify' && needAgreements && !this.agree) {
+				if (shouldBlockLoginForAgreements(type, needAgreements, this.agree)) {
 					let agreementsRef = this.getParentComponent().$refs.agreements
 					return agreementsRef.popup(() => {
 						this.login_before(type, navigateBack, options)
