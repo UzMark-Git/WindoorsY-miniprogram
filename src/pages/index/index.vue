@@ -5,6 +5,7 @@ import ContentState from '../../components/content-state.vue'
 import SiteCard from '../../components/site-card.vue'
 import type { HomeContent } from '../../types/domain'
 import { markHeroImageFailed, normalizeHeroImages, resolveHeroImage } from '../../utils/hero-carousel'
+import { navigateToLegalPage } from '../../utils/legal-navigation'
 import { siteDetailUrl } from '../../utils/site-navigation'
 
 const STORE_ID = 'store_windoors_demo'
@@ -35,7 +36,7 @@ function failHero(index: number) {
   failedHeroImages.value = markHeroImageFailed(failedHeroImages.value, index)
 }
 
-function openLegal(url: string) { uni.navigateTo({ url }) }
+function openLegal(url: string) { navigateToLegalPage(url, uni) }
 function openSites() { uni.navigateTo({ url: '/pages/sites/index' }) }
 function callStore() { if (home.value) uni.makePhoneCall({ phoneNumber: home.value.store.phone }) }
 function copyAddress() { if (home.value) uni.setClipboardData({ data: home.value.store.address }) }
