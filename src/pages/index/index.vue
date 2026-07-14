@@ -35,6 +35,7 @@ function failHero(index: number) {
   failedHeroImages.value = markHeroImageFailed(failedHeroImages.value, index)
 }
 
+function openLegal(url: string) { uni.navigateTo({ url }) }
 function openSites() { uni.navigateTo({ url: '/pages/sites/index' }) }
 function callStore() { if (home.value) uni.makePhoneCall({ phoneNumber: home.value.store.phone }) }
 function copyAddress() { if (home.value) uni.setClipboardData({ data: home.value.store.address }) }
@@ -77,6 +78,11 @@ onMounted(load)
       </view>
       <view class="section sites"><view class="heading"><view><text class="kicker">SELECTED PROJECTS</text><text class="section-title">近期精选工地</text></view><text class="more" @click="openSites">查看全部 ›</text></view><view class="cards"><SiteCard v-for="site in home.sites.slice(0, 3)" :key="site._id" :site="site" @select="selectSite" /></view></view>
     </template>
+    <view class="legal-links">
+      <text @click="openLegal('/pages/legal/service-agreement')">用户服务协议</text>
+      <text class="dot">·</text>
+      <text @click="openLegal('/pages/legal/privacy-policy')">隐私政策</text>
+    </view>
   </view>
 </template>
 
@@ -96,4 +102,6 @@ onMounted(load)
 .actions button::after { border: 0; }.action-icon { color: #b8823e; font-size: 34rpx; }.divider { width: 1rpx; height: 50rpx; background: #e3e8e6; }
 .section { padding: 62rpx 30rpx 0; }.heading { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom: 28rpx; }.kicker { color: #a57941; }.section-title { display:block; margin-top:10rpx; color:#172d28; font-size:38rpx; font-weight:650; }.more { color:#567069; font-size:24rpx; }
 .staff-scroll { width: 100%; white-space: nowrap; }.staff-row { display:flex; gap:18rpx; }.person { flex: 0 0 370rpx; display:flex; align-items:center; gap:20rpx; margin:0; padding:22rpx; border:0; border-radius:18rpx; text-align:left; line-height:normal; background:#fff; }.person::after{border:0}.person image { width:92rpx; height:92rpx; border-radius:50%; background:#e6edeb; }.person-name,.person-role { display:block; }.person-name { color:#203832; font-size:28rpx; font-weight:600; }.person-role { margin-top:8rpx; color:#7d8985; font-size:22rpx; }.cards { display:flex; flex-direction:column; gap:28rpx; }
+.legal-links { display: flex; justify-content: center; gap: 14rpx; padding: 56rpx 30rpx 12rpx; color: #74827d; font-size: 22rpx; }
+.dot { color: #a6afac; }
 </style>
