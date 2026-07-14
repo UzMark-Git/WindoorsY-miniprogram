@@ -15,6 +15,13 @@ export function navigateToLegalPage(url: string, navigator: LegalNavigator): voi
   navigator.navigateTo({ url })
 }
 
+export function showNonWechatPrivacyNotice(showToast: ShowToast): void {
+  showToast({
+    title: '请在微信小程序中查看微信隐私保护指引',
+    icon: 'none',
+  })
+}
+
 export async function openWechatPolicy(
   client: WechatPrivacyClient,
   showToast: ShowToast,

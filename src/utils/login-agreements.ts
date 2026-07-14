@@ -20,3 +20,30 @@ export function shouldBlockLoginForAgreements(
 ): boolean {
   return type !== 'univerify' && needAgreements && !agreed
 }
+
+export interface AgreementGatedLoginOptions<T> {
+  type: string
+  needAgreements: boolean
+  isAgreed: () => boolean
+  openPopup: (onConfirm: () => void) => T
+  login: () => T
+}
+
+export function runLoginWithAgreementGate<T>({
+  type,
+  needAgreements,
+  isAgreed,
+  openPopup,
+  login,
+}: AgreementGatedLoginOptions<T>): T {
+  if (!shouldBlockLoginForAgreements(type, needAgreements, isAgreed())) {
+    return login()
+  }
+
+  let retried = false
+  return openPopup(() => {
+    if (retried || !isAgreed()) return
+    retried = true
+    login()
+  })
+}

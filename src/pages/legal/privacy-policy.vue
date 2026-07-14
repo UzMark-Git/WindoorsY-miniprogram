@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import LegalDocument from '../../components/legal-document.vue'
 import { PRIVACY_POLICY } from '../../config/legal'
-import { openWechatPolicy as openWechatPrivacyPolicy } from '../../utils/legal-navigation'
+import {
+  openWechatPolicy as openWechatPrivacyPolicy,
+  showNonWechatPrivacyNotice,
+} from '../../utils/legal-navigation'
 import type { WechatPrivacyClient } from '../../utils/wechat-privacy'
 
 declare const wx: WechatPrivacyClient
@@ -11,7 +14,7 @@ async function openWechatPolicy() {
   await openWechatPrivacyPolicy(wx, (options) => uni.showToast(options))
   // #endif
   // #ifndef MP-WEIXIN
-  uni.showToast({ title: '请在微信小程序中查看微信隐私保护指引', icon: 'none' })
+  showNonWechatPrivacyNotice((options) => uni.showToast(options))
   // #endif
 }
 </script>

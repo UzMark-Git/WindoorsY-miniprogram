@@ -11,7 +11,7 @@
 </template>
 <script>
 	import config from '@/uni_modules/uni-id-pages/config.js'
-	import { shouldBlockLoginForAgreements } from '@/utils/login-agreements'
+	import { runLoginWithAgreementGate } from '@/utils/login-agreements'
 	//前一个窗口的页面地址。控制点击切换快捷登录方式是创建还是返回
 	import {store,mutations} from '@/uni_modules/uni-id-pages/common/store.js'
 	let allServicesList = []
@@ -245,7 +245,17 @@
 					console.log('出乎意料的情况,path：' + path);
 				}
 			},
-			async login_before(type, navigateBack = true, options = {}) {
+			login_before(type, navigateBack = true, options = {}) {
+				let needAgreements = (config?.agreements?.scope || []).includes('register')
+				return runLoginWithAgreementGate({
+					type,
+					needAgreements,
+					isAgreed: () => this.agree,
+					openPopup: (onConfirm) => this.getParentComponent().$refs.agreements.popup(onConfirm),
+					login: () => this.login_after_agreements(type, navigateBack, options)
+				})
+			},
+			async login_after_agreements(type, navigateBack = true, options = {}) {
 				console.log(type, options);
 				//提示空实现
 				if (["qq",
@@ -316,14 +326,6 @@
 						icon: 'none',
 						duration: 3000
 					});
-				}
-				//判断是否需要弹出隐私协议授权框
-				let needAgreements = (config?.agreements?.scope || []).includes('register')
-				if (shouldBlockLoginForAgreements(type, needAgreements, this.agree)) {
-					let agreementsRef = this.getParentComponent().$refs.agreements
-					return agreementsRef.popup(() => {
-						this.login_before(type, navigateBack, options)
-					})
 				}
 				// #ifdef H5
 					if(type == 'weixin'){

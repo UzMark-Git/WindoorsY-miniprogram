@@ -12,6 +12,8 @@ export const LEGAL_PROFILE = Object.freeze({
   operatorName: '新建区小杨哥节能门窗经营部',
   contactEmail: 'i@WindoorsY.com',
   retentionPeriod: '自最后一次预约服务完成之日起保存 2 年；法律法规另有要求的除外',
+  securityLogRetentionPeriod: '自生成之日起保存 2 年；法律法规另有要求的除外',
+  accountLoginRetentionPeriod: '账号存续期间保留，账号注销后依法删除或匿名化',
   version: '1.0',
   effectiveDate: '2026年7月13日',
 })
@@ -72,7 +74,8 @@ export const PRIVACY_POLICY: LegalDocument = {
       paragraphs: [
         '用户主动登录时，我们通过微信登录和 uni-id 处理必要的微信登录账号标识，用于识别预约用户、维持登录状态、鉴权和防止重复提交。',
         '用户主动提交预约时，我们处理姓名、手机号、城市、需求描述、预约来源、提交时间和处理状态，用于联系用户、判断服务区域、安排咨询、跟进服务和处理争议。',
-        '云端接口可能形成必要的请求时间、错误信息和账号安全日志，用于故障定位、安全审计和防止滥用。',
+        '为保障登录与账号安全，uni-id 会记录账号安全日志：客户端应用标识 appid、设备标识 device_id、IP 地址 ip、登录或账号操作类型 type、User-Agent/设备信息 ua、日志生成时间 create_date、成功或失败结果 state，以及日志涉及时的关联账号字段 user_id、username、email、mobile。上述信息用于故障定位、安全审计和防止滥用。',
+        '登录成功后，uni-id 还会在账号记录中更新最后登录时间 last_login_date 和最后登录 IP last_login_ip，用于账号安全核验、异常登录排查和安全审计。',
       ],
     },
     {
@@ -86,6 +89,7 @@ export const PRIVACY_POLICY: LegalDocument = {
       title: '三、存储期限与保护',
       paragraphs: [
         `预约信息${LEGAL_PROFILE.retentionPeriod}。达到保存期限或处理目的后，我们将删除或匿名化处理。`,
+        `登录安全日志${LEGAL_PROFILE.securityLogRetentionPeriod}，期限届满后删除或匿名化；账号中的最后登录时间 last_login_date 和最后登录 IP last_login_ip 在${LEGAL_PROFILE.accountLoginRetentionPeriod}。法律法规要求延长保存的，从其规定。`,
         '信息存储于正式使用的 uniCloud 阿里云服务空间。我们采用服务端鉴权、门店数据隔离、敏感集合禁止客户端直写、最小权限和手机号脱敏等措施保护信息。',
       ],
     },
