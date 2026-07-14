@@ -95,12 +95,12 @@
 				url,
 				title
 			}) {
-				uni.navigateTo({
-					url: '/uni_modules/uni-id-pages/pages/common/webview/webview?url=' + url + '&title=' + title,
-					success: res => {},
-					fail: () => {},
-					complete: () => {}
-				});
+				if (url.startsWith('/')) {
+					return uni.navigateTo({ url })
+				}
+				return uni.navigateTo({
+					url: '/uni_modules/uni-id-pages/pages/common/webview/webview?url=' + encodeURIComponent(url) + '&title=' + encodeURIComponent(title)
+				})
 			},
 			hasAnd(agreements, index) {
 				return agreements.length - 1 > index
