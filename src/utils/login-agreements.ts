@@ -1,5 +1,7 @@
 const AGREEMENT_WEBVIEW_PATH = '/uni_modules/uni-id-pages/pages/common/webview/webview'
 
+export const DEFAULT_AGREEMENT_ACCEPTED = false
+
 export function getAgreementDestination(url: string, title: string): string {
   if (url.startsWith('/')) {
     return url

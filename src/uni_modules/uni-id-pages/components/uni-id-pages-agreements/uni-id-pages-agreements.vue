@@ -31,7 +31,7 @@
 
 <script>
 	import config from '@/uni_modules/uni-id-pages/config.js'
-	import { getAgreementDestination } from '@/utils/login-agreements'
+	import { DEFAULT_AGREEMENT_ACCEPTED, getAgreementDestination } from '@/utils/login-agreements'
 	let retryFun = ()=>console.log('为定义')
 	/**
 		* uni-id-pages-agreements
@@ -113,7 +113,7 @@
 		},
 		data() {
 			return {
-				isAgree: false,
+				isAgree: DEFAULT_AGREEMENT_ACCEPTED,
 				needAgreements:true,
 				needPopupAgreements:false
 			};
