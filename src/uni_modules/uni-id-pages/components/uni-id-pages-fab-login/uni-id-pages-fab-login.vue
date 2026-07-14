@@ -329,42 +329,11 @@
 				}
 				// #ifdef H5
 					if(type == 'weixin'){
-						// console.log('开始微信网页登录');
-						// let redirectUrl = location.protocol +'//'+
-						// 				document.domain +
-						// 				(window.location.href.includes('#')?'/#':'') +
-						// 				'/uni_modules/uni-id-pages/pages/login/login-withoutpwd?is_weixin_redirect=true&type=weixin'
-            // #ifdef VUE2
-            const baseUrl = process.env.BASE_URL
-            // #endif
-            // #ifdef VUE3
-            const baseUrl = import.meta.env.BASE_URL
-            // #endif
-
-            let redirectUrl = location.protocol +
-                '//' +
-                location.host +
-                baseUrl.replace(/\/$/, '') +
-                (window.location.href.includes('#')?'/#':'') +
-                '/uni_modules/uni-id-pages/pages/login/login-withoutpwd?is_weixin_redirect=true&type=weixin'
-
-						// console.log('redirectUrl----',redirectUrl);
-						let ua = window.navigator.userAgent.toLowerCase();
-						if (ua.match(/MicroMessenger/i) == 'micromessenger'){
-							// console.log('在微信公众号内');
-							return window.open(`https://open.weixin.qq.com/connect/oauth2/authorize?
-										appid=${config.appid.weixin.h5}
-										&redirect_uri=${encodeURIComponent(redirectUrl)}
-										&response_type=code
-										&scope=snsapi_userinfo
-										&state=STATE&connect_redirect=1#wechat_redirect`);
-
-						}else{
-							// console.log('非微信公众号内');
-							return location.href = `https://open.weixin.qq.com/connect/qrconnect?appid=${config.appid.weixin.web}
-											&redirect_uri=${encodeURIComponent(redirectUrl)}
-											&response_type=code&scope=snsapi_login&state=STATE#wechat_redirect`
-						}
+						return uni.showToast({
+							title: '当前项目未配置 H5 微信登录',
+							icon: 'none',
+							duration: 3000
+						});
 					}
 				// #endif
 				console.log('login ----')

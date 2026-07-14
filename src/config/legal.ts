@@ -74,7 +74,7 @@ export const PRIVACY_POLICY: LegalDocument = {
       paragraphs: [
         '用户主动登录时，我们通过微信登录和 uni-id 处理必要的微信登录账号标识，用于识别预约用户、维持登录状态、鉴权和防止重复提交。',
         '用户主动提交预约时，我们处理姓名、手机号、城市、需求描述、预约来源、提交时间和处理状态，用于联系用户、判断服务区域、安排咨询、跟进服务和处理争议。',
-        '为保障登录与账号安全，uni-id 会记录账号安全日志：客户端应用标识 appid、设备标识 device_id、IP 地址 ip、登录或账号操作类型 type、User-Agent/设备信息 ua、日志生成时间 create_date、成功或失败结果 state，以及日志涉及时的关联账号字段 user_id、username、email、mobile。上述信息用于故障定位、安全审计和防止滥用。',
+        '为保障登录与账号安全，uni-id 会记录账号安全日志：客户端应用标识 appid、设备标识 device_id、IP 地址 ip、登录或账号操作类型 type、User-Agent/设备信息 ua、安全日志生成时间/操作时间 create_date、成功或失败结果 state，以及日志涉及时的关联账号字段 user_id、username、email、mobile。上述信息用于故障定位、安全审计和防止滥用。',
         '登录成功后，uni-id 还会在账号记录中更新最后登录时间 last_login_date 和最后登录 IP last_login_ip，用于账号安全核验、异常登录排查和安全审计。',
       ],
     },
