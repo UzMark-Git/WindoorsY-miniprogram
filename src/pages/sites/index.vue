@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
+import { onPageScroll, onShow } from '@dcloudio/uni-app'
 import { getSiteFilters, listSites } from '../../api/content'
 import ContentState from '../../components/content-state.vue'
 import SiteCard from '../../components/site-card.vue'
 import type { SiteStage, SiteSummary } from '../../types/domain'
 import { createRequestGate } from '../../utils/request-gate'
 import { siteDetailUrl } from '../../utils/site-navigation'
+import { applyTabBarScroll, createTabBarScrollState, resetTabBar } from '../../utils/tab-bar-scroll'
 
 const PAGE_SIZE = 10
 const STORE_ID = 'store_windoors_demo'
@@ -16,6 +18,7 @@ const districtIndex = ref(0), stageIndex = ref(0), page = ref(1)
 const items = ref<SiteSummary[]>([]), hasMore = ref(true)
 const status = ref<'loading' | 'ready' | 'empty' | 'error' | 'offline'>('loading'), message = ref('')
 const gate = createRequestGate()
+const tabBarScroll = createTabBarScrollState()
 
 async function load(reset = false) {
   const request = reset ? gate.beginReset() : gate.beginMore()
@@ -52,11 +55,13 @@ onMounted(async () => {
     load(true)
   }
 })
+onShow(() => resetTabBar(tabBarScroll, uni))
+onPageScroll(({ scrollTop }) => applyTabBarScroll(tabBarScroll, scrollTop, uni))
 </script>
 
 <template>
   <view class="page">
-    <view class="intro"><text class="kicker">PROJECT GALLERY</text><text class="title">在建工地</text><text class="lead">看得见的过程，才是安心的交付</text></view>
+    <view class="intro"><text class="kicker">PROJECT GALLERY</text><text class="title">案例</text><text class="lead">看得见的过程，才是安心的交付</text></view>
     <view class="filters"><picker :range="['全部区域', ...districts]" :value="districtIndex" @change="changeDistrict"><view class="filter">{{ districtIndex ? districts[districtIndex - 1] : '全部区域' }} <text>⌄</text></view></picker><picker :range="stages" range-key="label" :value="stageIndex" @change="changeStage"><view class="filter">{{ stages[stageIndex].label }} <text>⌄</text></view></picker></view>
     <ContentState v-if="status !== 'ready'" :status="status === 'ready' ? 'loading' : status" :message="status === 'empty' ? '暂无符合条件的工地' : message" @retry="load(true)" />
     <view v-else class="list"><SiteCard v-for="site in items" :key="site._id" :site="site" @select="selectSite" /><button v-if="hasMore" class="load-more" @click="nextPage">加载更多</button><text v-else class="end">— 已展示全部工地 —</text></view>

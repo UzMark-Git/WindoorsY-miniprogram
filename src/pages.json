@@ -1,7 +1,10 @@
 {
   "pages": [
     { "path": "pages/index/index", "style": { "navigationBarTitleText": "风庭门窗", "navigationStyle": "custom" } },
-    { "path": "pages/sites/index", "style": { "navigationBarTitleText": "在建工地" } },
+    { "path": "pages/products/index", "style": { "navigationBarTitleText": "产品" } },
+    { "path": "pages/sites/index", "style": { "navigationBarTitleText": "案例" } },
+    { "path": "pages/services/index", "style": { "navigationBarTitleText": "服务" } },
+    { "path": "pages/profile/index", "style": { "navigationBarTitleText": "我的" } },
     { "path": "pages/legal/service-agreement", "style": { "navigationBarTitleText": "用户服务协议" } },
     { "path": "pages/legal/privacy-policy", "style": { "navigationBarTitleText": "隐私政策" } },
     { "path": "uni_modules/uni-id-pages/pages/login/login", "style": { "navigationBarTitleText": "登录" } },
@@ -10,6 +13,19 @@
     { "path": "uni_modules/uni-id-pages/pages/login/login-smscode", "style": { "navigationBarTitleText": "验证码登录" } },
     { "path": "uni_modules/uni-id-pages/pages/register/register", "style": { "navigationBarTitleText": "注册" } }
   ],
+  "tabBar": {
+    "color": "#7b8883",
+    "selectedColor": "#a57941",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "white",
+    "list": [
+      { "pagePath": "pages/index/index", "text": "首页" },
+      { "pagePath": "pages/products/index", "text": "产品" },
+      { "pagePath": "pages/sites/index", "text": "案例" },
+      { "pagePath": "pages/services/index", "text": "服务" },
+      { "pagePath": "pages/profile/index", "text": "我的" }
+    ]
+  },
   "subPackages": [
     { "root": "pages-sub", "pages": [
       { "path": "sites/detail", "style": { "navigationBarTitleText": "工地详情" } },

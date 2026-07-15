@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
+import { onPageScroll, onShow } from '@dcloudio/uni-app'
 import { getHome } from '../../api/content'
 import ContentState from '../../components/content-state.vue'
 import SiteCard from '../../components/site-card.vue'
@@ -7,6 +8,7 @@ import type { HomeContent } from '../../types/domain'
 import { markHeroImageFailed, normalizeHeroImages, resolveHeroImage } from '../../utils/hero-carousel'
 import { navigateToLegalPage } from '../../utils/legal-navigation'
 import { siteDetailUrl } from '../../utils/site-navigation'
+import { applyTabBarScroll, createTabBarScrollState, resetTabBar } from '../../utils/tab-bar-scroll'
 
 const STORE_ID = 'store_windoors_demo'
 const home = ref<HomeContent>()
@@ -16,6 +18,7 @@ const placeholder = '/static/demo/placeholder.png'
 const heroImages = ref<string[]>([placeholder])
 const failedHeroImages = ref<Record<number, boolean>>({})
 const failedAvatars = ref<Record<string, boolean>>({})
+const tabBarScroll = createTabBarScrollState()
 
 async function load() {
   status.value = 'loading'
@@ -37,12 +40,14 @@ function failHero(index: number) {
 }
 
 function openLegal(url: string) { navigateToLegalPage(url, uni) }
-function openSites() { uni.navigateTo({ url: '/pages/sites/index' }) }
+function openSites() { uni.switchTab({ url: '/pages/sites/index' }) }
 function callStore() { if (home.value) uni.makePhoneCall({ phoneNumber: home.value.store.phone }) }
 function copyAddress() { if (home.value) uni.setClipboardData({ data: home.value.store.address }) }
 function selectSite(siteId: string) { uni.navigateTo({ url: siteDetailUrl(siteId) }) }
 function selectStaff(person: HomeContent['staff'][number]) { uni.navigateTo({ url: `/pages-sub/staff/detail?id=${encodeURIComponent(person._id)}` }) }
 onMounted(load)
+onShow(() => resetTabBar(tabBarScroll, uni))
+onPageScroll(({ scrollTop }) => applyTabBarScroll(tabBarScroll, scrollTop, uni))
 </script>
 
 <template>
