@@ -1,10 +1,5 @@
 <script setup lang="ts">
-import { onPageScroll, onShow } from '@dcloudio/uni-app'
 import PrimaryPageIntro from '../../components/primary-page-intro.vue'
-import { applyTabBarScroll, createTabBarScrollState, resetTabBar } from '../../utils/tab-bar-scroll'
-const scrollState = createTabBarScrollState()
-onShow(() => resetTabBar(scrollState, uni))
-onPageScroll(({ scrollTop }) => applyTabBarScroll(scrollState, scrollTop, uni))
 </script>
 
 <template><view class="page"><PrimaryPageIntro kicker="TEN-YEAR WARRANTY" title="十年质保服务" lead="真实验收、清晰期限，让长期服务有据可查" /><view class="promise"><text class="years">10</text><view><text class="heading">十年质保体系</text><text class="copy">质保信息将在项目竣工并通过验收后，由门店核验并公开。</text></view></view><view class="notice">服务查询功能将在验收与质保数据链路接入后开放。</view></view></template>

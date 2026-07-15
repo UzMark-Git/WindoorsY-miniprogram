@@ -1,16 +1,14 @@
 <script setup lang="ts">
-import { onPageScroll, onShow } from '@dcloudio/uni-app'
+import { onShow } from '@dcloudio/uni-app'
 import { ref } from 'vue'
 import { listProducts } from '../../api/content'
 import ContentState from '../../components/content-state.vue'
 import PrimaryPageIntro from '../../components/primary-page-intro.vue'
 import type { ProductCategory, ProductSummary } from '../../types/domain'
-import { applyTabBarScroll, createTabBarScrollState, resetTabBar } from '../../utils/tab-bar-scroll'
 
 const STORE_ID = 'store_windoors_demo'
 const categories: Array<{value?:ProductCategory;label:string}> = [{label:'全部'}, {value:'system_window',label:'系统门窗'}, {value:'bridge_aluminum',label:'断桥铝'}, {value:'sliding_door',label:'推拉门'}, {value:'sunroom',label:'阳光房'}, {value:'screen_accessory',label:'纱窗配套'}]
 const active = ref(0), products = ref<ProductSummary[]>([]), status = ref<'loading'|'ready'|'empty'|'error'|'offline'>('loading'), message = ref('')
-const scrollState = createTabBarScrollState()
 
 async function load() {
   status.value='loading';message.value=''
@@ -19,8 +17,7 @@ async function load() {
 }
 function selectCategory(index:number){active.value=index;load()}
 function openProduct(id:string){uni.navigateTo({url:`/pages-sub/products/detail?id=${encodeURIComponent(id)}`})}
-onShow(()=>{resetTabBar(scrollState,uni);load()})
-onPageScroll(({scrollTop})=>applyTabBarScroll(scrollState,scrollTop,uni))
+onShow(load)
 </script>
 
 <template><view class="page"><PrimaryPageIntro kicker="WINDOW COLLECTION" title="门窗产品" lead="按空间与使用需求，找到适合你的门窗方案" />

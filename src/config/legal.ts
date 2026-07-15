@@ -14,8 +14,9 @@ export const LEGAL_PROFILE = Object.freeze({
   retentionPeriod: '自最后一次预约服务完成之日起保存 2 年；法律法规另有要求的除外',
   securityLogRetentionPeriod: '自生成之日起保存 2 年；法律法规另有要求的除外',
   accountLoginRetentionPeriod: '账号存续期间保留，账号注销后依法删除或匿名化',
-  version: '1.0',
-  effectiveDate: '2026年7月13日',
+  favoriteRetentionPeriod: '保留至用户主动取消收藏或注销账号；法律法规另有要求的除外',
+  version: '1.1',
+  effectiveDate: '2026年7月16日',
 })
 
 export const SERVICE_AGREEMENT: LegalDocument = {
@@ -76,6 +77,7 @@ export const PRIVACY_POLICY: LegalDocument = {
         '用户主动提交预约时，我们处理姓名、手机号、城市、需求描述、预约来源、提交时间和处理状态，用于联系用户、判断服务区域、安排咨询、跟进服务和处理争议。',
         '为保障登录与账号安全，uni-id 会记录账号安全日志：客户端应用标识 appid、设备标识 device_id、IP 地址 ip、登录或账号操作类型 type、User-Agent/设备信息 ua、安全日志生成时间/操作时间 create_date、成功或失败结果 state，以及日志涉及时的关联账号字段 user_id、username、email、mobile。上述信息用于故障定位、安全审计和防止滥用。',
         '登录成功后，uni-id 还会在账号记录中更新最后登录时间 last_login_date 和最后登录 IP last_login_ip，用于账号安全核验、异常登录排查和安全审计。',
+        '用户主动收藏公开内容时，我们处理收藏内容类型、内容标识和收藏时间，用于跨设备同步并展示“我的收藏”。',
       ],
     },
     {
@@ -90,6 +92,7 @@ export const PRIVACY_POLICY: LegalDocument = {
       paragraphs: [
         `预约信息${LEGAL_PROFILE.retentionPeriod}。达到保存期限或处理目的后，我们将删除或匿名化处理。`,
         `登录安全日志${LEGAL_PROFILE.securityLogRetentionPeriod}，期限届满后删除或匿名化；账号中的最后登录时间 last_login_date 和最后登录 IP last_login_ip 在${LEGAL_PROFILE.accountLoginRetentionPeriod}。法律法规要求延长保存的，从其规定。`,
+        `收藏记录${LEGAL_PROFILE.favoriteRetentionPeriod}。`,
         '信息存储于正式使用的 uniCloud 阿里云服务空间。我们采用服务端鉴权、门店数据隔离、敏感集合禁止客户端直写、最小权限和手机号脱敏等措施保护信息。',
       ],
     },
@@ -103,14 +106,14 @@ export const PRIVACY_POLICY: LegalDocument = {
       title: '五、权限说明',
       paragraphs: [
         '首版不调用设备定位接口。预约中的城市由用户手工填写，不属于设备精确位置信息。',
-        '首版不申请相册、摄像头或麦克风权限。用户可以在不登录的情况下浏览公开内容。',
+        '仅在用户主动点击“保存相册”时申请相册写入权限，用于保存其选择生成的分享海报；我们不读取相册、不上传用户本地照片。小程序不申请摄像头或麦克风权限。用户可以在不登录的情况下浏览公开内容。',
       ],
     },
     {
       title: '六、用户权利',
       paragraphs: [
         `用户可以通过 ${LEGAL_PROFILE.contactEmail} 申请查询、更正、复制或删除预约信息，撤回同意，或申请注销账号。我们会在核验身份后依法处理和反馈。`,
-        '撤回同意不影响撤回前处理活动的合法性；拒绝或撤回后仍可浏览公开内容，但不能继续使用需要登录的预约功能。',
+        '用户可以在详情页取消收藏；撤回同意不影响撤回前处理活动的合法性。拒绝相册权限不影响浏览、收藏或预约，只影响海报保存。',
       ],
     },
     {

@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { onLoad } from '@dcloudio/uni-app'
+import { onLoad, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app'
 import { getSiteDetail, getStaffProfile } from '../../api/content'
 import ContentState from '../../components/content-state.vue'
+import DetailActionBar from '../../components/detail-action-bar.vue'
 import MediaGallery from '../../components/media-gallery.vue'
 import SiteProgress from '../../components/site-progress.vue'
 import type { SiteDetail, SiteStage, StaffProfile } from '../../types/domain'
 import { classifyDetailError } from '../../utils/detail-state'
+import { shareMessage, timelineMessage } from '../../utils/content-sharing'
 
 const stageOrder: SiteStage[] = ['measuring', 'designing', 'installing', 'completed']
 const stageLabels = ['测量复尺', '方案设计', '安装施工', '竣工验收']
@@ -30,9 +32,10 @@ async function load() {
 }
 function openStaff(id: string) { uni.navigateTo({ url: `/pages-sub/staff/detail?id=${encodeURIComponent(id)}` }) }
 function appoint() { if (site.value) uni.navigateTo({ url: `/pages-sub/appointments/create?source_type=site&source_id=${encodeURIComponent(site.value._id)}&store_id=${encodeURIComponent(site.value.store_id)}` }) }
-function consult() { uni.showModal({ title: '联系客服', content: '请通过预约留下联系方式，我们会尽快联系您。', showCancel: false }) }
 function preview(src: string) { if (site.value) uni.previewImage({ current: src, urls: site.value.updates.flatMap(item => item.media).filter(Boolean) }) }
 onLoad((query: Record<string,string|undefined>) => { siteId.value = query.id || ''; load() })
+onShareAppMessage(() => site.value ? shareMessage('site', site.value._id, `门窗案例：${site.value.title}`, site.value.cover_image) : {})
+onShareTimeline(() => site.value ? timelineMessage(`门窗案例：${site.value.title}`, site.value.cover_image) : {})
 </script>
 
 <template><view class="page">
@@ -44,7 +47,7 @@ onLoad((query: Record<string,string|undefined>) => { siteId.value = query.id || 
     <view class="panel"><text class="section-title">施工动态</text><view v-for="update in site.updates" :key="update._id" class="update"><text class="update-title">{{ update.title }}</text><text class="copy">{{ update.content }}</text><MediaGallery :media="update.media" @preview="preview" /></view><text v-if="!site.updates.length" class="muted">暂无施工动态</text></view>
     <view class="panel"><text class="section-title">服务人员</text><button v-for="person in staff" :key="person._id" class="person-control" :aria-label="`查看${person.name}的人员详情`" @click="openStaff(person._id)"><image :src="person.avatar || placeholder" mode="aspectFill" :aria-label="`${person.name}头像`"/><view><text class="person-name">{{ person.name }}</text><text class="muted">{{ person.role }}</text></view><text class="arrow">›</text></button><text v-if="!staff.length" class="muted">暂无人员信息</text></view>
   </template>
-  <view v-if="status === 'ready'" class="footer"><button class="secondary" @click="consult">联系客服</button><button class="primary" @click="appoint">立即预约</button></view>
+  <DetailActionBar v-if="status==='ready'&&site" type="site" :content-id="site._id" :title="site.title" :image="site.cover_image" :return-url="`/pages-sub/sites/detail?id=${encodeURIComponent(site._id)}`" @appoint="appoint"/>
 </view></template>
 
 <style scoped>

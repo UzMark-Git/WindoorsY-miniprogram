@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { onPageScroll, onShow } from '@dcloudio/uni-app'
 import { getHome } from '../../api/content'
 import ContentState from '../../components/content-state.vue'
 import SiteCard from '../../components/site-card.vue'
@@ -8,7 +7,6 @@ import type { HomeContent } from '../../types/domain'
 import { markHeroImageFailed, normalizeHeroImages, resolveHeroImage } from '../../utils/hero-carousel'
 import { navigateToLegalPage } from '../../utils/legal-navigation'
 import { siteDetailUrl } from '../../utils/site-navigation'
-import { applyTabBarScroll, createTabBarScrollState, resetTabBar } from '../../utils/tab-bar-scroll'
 
 const STORE_ID = 'store_windoors_demo'
 const home = ref<HomeContent>()
@@ -18,7 +16,6 @@ const placeholder = '/static/demo/placeholder.png'
 const heroImages = ref<string[]>([placeholder])
 const failedHeroImages = ref<Record<number, boolean>>({})
 const failedAvatars = ref<Record<string, boolean>>({})
-const tabBarScroll = createTabBarScrollState()
 
 async function load() {
   status.value = 'loading'
@@ -48,8 +45,6 @@ function selectSite(siteId: string) { uni.navigateTo({ url: siteDetailUrl(siteId
 function selectStaff(person: HomeContent['staff'][number]) { uni.navigateTo({ url: `/pages-sub/staff/detail?id=${encodeURIComponent(person._id)}` }) }
 function selectProduct(id: string) { uni.navigateTo({ url: `/pages-sub/products/detail?id=${encodeURIComponent(id)}` }) }
 onMounted(load)
-onShow(() => resetTabBar(tabBarScroll, uni))
-onPageScroll(({ scrollTop }) => applyTabBarScroll(tabBarScroll, scrollTop, uni))
 </script>
 
 <template>
@@ -96,7 +91,7 @@ onPageScroll(({ scrollTop }) => applyTabBarScroll(tabBarScroll, scrollTop, uni))
 </template>
 
 <style scoped>
-.page { min-height: 100vh; padding-bottom: 70rpx; background: #f4f6f4; }
+.page { min-height: 100vh; padding-bottom: calc(70rpx + env(safe-area-inset-bottom)); background: #f4f6f4; }
 .hero { position: relative; height: 610rpx; overflow: hidden; }
 .hero-swiper { width: 100%; height: 100%; }
 .hero-slide { position: relative; }

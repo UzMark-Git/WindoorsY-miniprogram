@@ -5,6 +5,7 @@
     { "path": "pages/sites/index", "style": { "navigationBarTitleText": "案例" } },
     { "path": "pages/services/index", "style": { "navigationBarTitleText": "服务" } },
     { "path": "pages/profile/index", "style": { "navigationBarTitleText": "我的" } },
+    { "path": "pages/share/entry", "style": { "navigationBarTitleText": "分享内容" } },
     { "path": "pages/legal/service-agreement", "style": { "navigationBarTitleText": "用户服务协议" } },
     { "path": "pages/legal/privacy-policy", "style": { "navigationBarTitleText": "隐私政策" } },
     { "path": "uni_modules/uni-id-pages/pages/login/login", "style": { "navigationBarTitleText": "登录" } },
@@ -19,11 +20,11 @@
     "backgroundColor": "#ffffff",
     "borderStyle": "white",
     "list": [
-      { "pagePath": "pages/index/index", "text": "首页" },
-      { "pagePath": "pages/products/index", "text": "产品" },
-      { "pagePath": "pages/sites/index", "text": "案例" },
-      { "pagePath": "pages/services/index", "text": "服务" },
-      { "pagePath": "pages/profile/index", "text": "我的" }
+      { "pagePath": "pages/index/index", "text": "首页", "iconPath": "static/tabbar/home.png", "selectedIconPath": "static/tabbar/home-selected.png" },
+      { "pagePath": "pages/products/index", "text": "产品", "iconPath": "static/tabbar/products.png", "selectedIconPath": "static/tabbar/products-selected.png" },
+      { "pagePath": "pages/sites/index", "text": "案例", "iconPath": "static/tabbar/cases.png", "selectedIconPath": "static/tabbar/cases-selected.png" },
+      { "pagePath": "pages/services/index", "text": "服务", "iconPath": "static/tabbar/services.png", "selectedIconPath": "static/tabbar/services-selected.png" },
+      { "pagePath": "pages/profile/index", "text": "我的", "iconPath": "static/tabbar/profile.png", "selectedIconPath": "static/tabbar/profile-selected.png" }
     ]
   },
   "subPackages": [

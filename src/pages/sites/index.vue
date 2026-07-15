@@ -1,13 +1,11 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { onPageScroll, onShow } from '@dcloudio/uni-app'
 import { getSiteFilters, listSites } from '../../api/content'
 import ContentState from '../../components/content-state.vue'
 import SiteCard from '../../components/site-card.vue'
 import type { SiteStage, SiteSummary } from '../../types/domain'
 import { createRequestGate } from '../../utils/request-gate'
 import { siteDetailUrl } from '../../utils/site-navigation'
-import { applyTabBarScroll, createTabBarScrollState, resetTabBar } from '../../utils/tab-bar-scroll'
 
 const PAGE_SIZE = 10
 const STORE_ID = 'store_windoors_demo'
@@ -18,7 +16,6 @@ const districtIndex = ref(0), stageIndex = ref(0), page = ref(1)
 const items = ref<SiteSummary[]>([]), hasMore = ref(true)
 const status = ref<'loading' | 'ready' | 'empty' | 'error' | 'offline'>('loading'), message = ref('')
 const gate = createRequestGate()
-const tabBarScroll = createTabBarScrollState()
 
 async function load(reset = false) {
   const request = reset ? gate.beginReset() : gate.beginMore()
@@ -55,8 +52,6 @@ onMounted(async () => {
     load(true)
   }
 })
-onShow(() => resetTabBar(tabBarScroll, uni))
-onPageScroll(({ scrollTop }) => applyTabBarScroll(tabBarScroll, scrollTop, uni))
 </script>
 
 <template>
@@ -69,5 +64,5 @@ onPageScroll(({ scrollTop }) => applyTabBarScroll(tabBarScroll, scrollTop, uni))
 </template>
 
 <style scoped>
-.page { min-height:100vh; padding-bottom:70rpx; background:#f4f6f4; }.intro { padding:70rpx 32rpx 42rpx; background:#183d34; color:#fff; }.kicker { display:block; color:#d7aa6d; letter-spacing:4rpx; font-size:20rpx; }.title { display:block; margin-top:13rpx; font-size:48rpx; font-weight:650; }.lead { display:block; margin-top:15rpx; color:rgba(255,255,255,.68); font-size:24rpx; }.filters { display:flex; gap:18rpx; padding:25rpx 30rpx; position:sticky; top:0; z-index:2; background:rgba(244,246,244,.96); }.filters picker { flex:1; }.filter { padding:20rpx 22rpx; border-radius:12rpx; color:#334b45; background:#fff; font-size:25rpx; box-shadow:0 5rpx 20rpx rgba(25,61,52,.05); }.filter text { float:right; color:#9ba7a3; }.list { display:flex; flex-direction:column; gap:28rpx; padding:8rpx 30rpx; }.load-more { margin:12rpx 0 0; border:1rpx solid #b9c8c3; border-radius:36rpx; color:#245c50; background:transparent; font-size:25rpx; }.load-more::after { border:0; }.end { padding:20rpx; text-align:center; color:#99a5a1; font-size:22rpx; }
+.page { min-height:100vh; padding-bottom:calc(70rpx + env(safe-area-inset-bottom)); background:#f4f6f4; }.intro { padding:70rpx 32rpx 42rpx; background:#183d34; color:#fff; }.kicker { display:block; color:#d7aa6d; letter-spacing:4rpx; font-size:20rpx; }.title { display:block; margin-top:13rpx; font-size:48rpx; font-weight:650; }.lead { display:block; margin-top:15rpx; color:rgba(255,255,255,.68); font-size:24rpx; }.filters { display:flex; gap:18rpx; padding:25rpx 30rpx; position:sticky; top:0; z-index:2; background:rgba(244,246,244,.96); }.filters picker { flex:1; }.filter { padding:20rpx 22rpx; border-radius:12rpx; color:#334b45; background:#fff; font-size:25rpx; box-shadow:0 5rpx 20rpx rgba(25,61,52,.05); }.filter text { float:right; color:#9ba7a3; }.list { display:flex; flex-direction:column; gap:28rpx; padding:8rpx 30rpx; }.load-more { margin:12rpx 0 0; border:1rpx solid #b9c8c3; border-radius:36rpx; color:#245c50; background:transparent; font-size:25rpx; }.load-more::after { border:0; }.end { padding:20rpx; text-align:center; color:#99a5a1; font-size:22rpx; }
 </style>
