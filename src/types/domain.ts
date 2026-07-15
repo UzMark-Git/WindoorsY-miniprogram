@@ -58,7 +58,25 @@ export interface HomeContent {
   store: StoreSummary
   sites: SiteSummary[]
   staff: StaffProfile[]
+  products: ProductSummary[]
 }
+
+export type ProductCategory = 'system_window' | 'bridge_aluminum' | 'sliding_door' | 'sunroom' | 'screen_accessory'
+
+export interface ProductSummary extends ContentRecord {
+  name: string
+  category: ProductCategory
+  cover_image: string
+  gallery: string[]
+  summary: string
+  highlights: string[]
+  specifications: string[]
+  scenarios: string[]
+  sort_order: number
+}
+
+export type ProductDetail = ProductSummary
+export interface ProductListResult { items: ProductSummary[]; page: number; pageSize: number }
 
 export interface SiteListResult {
   items: SiteSummary[]

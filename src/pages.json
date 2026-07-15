@@ -30,6 +30,7 @@
     { "root": "pages-sub", "pages": [
       { "path": "sites/detail", "style": { "navigationBarTitleText": "工地详情" } },
       { "path": "staff/detail", "style": { "navigationBarTitleText": "人员详情" } },
+      { "path": "products/detail", "style": { "navigationBarTitleText": "产品详情" } },
       { "path": "appointments/create", "style": { "navigationBarTitleText": "预约咨询" } },
       { "path": "appointments/result", "style": { "navigationBarTitleText": "预约成功" } }
     ] }

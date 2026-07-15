@@ -41,10 +41,12 @@ function failHero(index: number) {
 
 function openLegal(url: string) { navigateToLegalPage(url, uni) }
 function openSites() { uni.switchTab({ url: '/pages/sites/index' }) }
+function openProducts() { uni.switchTab({ url: '/pages/products/index' }) }
 function callStore() { if (home.value) uni.makePhoneCall({ phoneNumber: home.value.store.phone }) }
 function copyAddress() { if (home.value) uni.setClipboardData({ data: home.value.store.address }) }
 function selectSite(siteId: string) { uni.navigateTo({ url: siteDetailUrl(siteId) }) }
 function selectStaff(person: HomeContent['staff'][number]) { uni.navigateTo({ url: `/pages-sub/staff/detail?id=${encodeURIComponent(person._id)}` }) }
+function selectProduct(id: string) { uni.navigateTo({ url: `/pages-sub/products/detail?id=${encodeURIComponent(id)}` }) }
 onMounted(load)
 onShow(() => resetTabBar(tabBarScroll, uni))
 onPageScroll(({ scrollTop }) => applyTabBarScroll(tabBarScroll, scrollTop, uni))
@@ -82,6 +84,7 @@ onPageScroll(({ scrollTop }) => applyTabBarScroll(tabBarScroll, scrollTop, uni))
         <view class="heading"><view><text class="kicker">SERVICE TEAM</text><text class="section-title">为你服务的人</text></view></view>
         <scroll-view scroll-x class="staff-scroll"><view class="staff-row"><button v-for="person in home.staff" :key="person._id" class="person" :aria-label="`查看${person.name}的人员详情`" @click="selectStaff(person)"><image :src="failedAvatars[person._id] ? placeholder : (person.avatar || placeholder)" mode="aspectFill" :aria-label="`${person.name}头像`" @error="failedAvatars[person._id] = true" /><view><text class="person-name">{{ person.name }}</text><text class="person-role">{{ person.role }}</text></view></button></view></scroll-view>
       </view>
+      <view v-if="home.products.length" class="section products"><view class="heading"><view><text class="kicker">FEATURED WINDOWS</text><text class="section-title">精选门窗产品</text></view><text class="more" @click="openProducts">查看全部 ›</text></view><scroll-view scroll-x class="product-scroll"><view class="product-row"><button v-for="product in home.products" :key="product._id" class="product" @click="selectProduct(product._id)"><image :src="product.cover_image || placeholder" mode="aspectFill"/><text class="product-name">{{product.name}}</text><text class="product-summary">{{product.summary}}</text></button></view></scroll-view></view>
       <view class="section sites"><view class="heading"><view><text class="kicker">SELECTED PROJECTS</text><text class="section-title">近期精选工地</text></view><text class="more" @click="openSites">查看全部 ›</text></view><view class="cards"><SiteCard v-for="site in home.sites.slice(0, 3)" :key="site._id" :site="site" @select="selectSite" /></view></view>
     </template>
     <view class="legal-links">
@@ -108,6 +111,7 @@ onPageScroll(({ scrollTop }) => applyTabBarScroll(tabBarScroll, scrollTop, uni))
 .actions button::after { border: 0; }.action-icon { color: #b8823e; font-size: 34rpx; }.divider { width: 1rpx; height: 50rpx; background: #e3e8e6; }
 .section { padding: 62rpx 30rpx 0; }.heading { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom: 28rpx; }.kicker { color: #a57941; }.section-title { display:block; margin-top:10rpx; color:#172d28; font-size:38rpx; font-weight:650; }.more { color:#567069; font-size:24rpx; }
 .staff-scroll { width: 100%; white-space: nowrap; }.staff-row { display:flex; gap:18rpx; }.person { flex: 0 0 370rpx; display:flex; align-items:center; gap:20rpx; margin:0; padding:22rpx; border:0; border-radius:18rpx; text-align:left; line-height:normal; background:#fff; }.person::after{border:0}.person image { width:92rpx; height:92rpx; border-radius:50%; background:#e6edeb; }.person-name,.person-role { display:block; }.person-name { color:#203832; font-size:28rpx; font-weight:600; }.person-role { margin-top:8rpx; color:#7d8985; font-size:22rpx; }.cards { display:flex; flex-direction:column; gap:28rpx; }
+.product-scroll{width:100%;white-space:nowrap}.product-row{display:flex;gap:20rpx}.product{flex:0 0 310rpx;margin:0;padding:0 0 20rpx;overflow:hidden;border:0;border-radius:18rpx;text-align:left;line-height:normal;background:#fff}.product::after{border:0}.product image{width:100%;height:220rpx}.product-name,.product-summary{display:block;margin-left:20rpx;margin-right:20rpx}.product-name{margin-top:18rpx;color:#203832;font-size:27rpx;font-weight:650}.product-summary{margin-top:9rpx;overflow:hidden;color:#7d8985;font-size:21rpx;white-space:nowrap;text-overflow:ellipsis}
 .legal-links { display: flex; justify-content: center; gap: 14rpx; padding: 56rpx 30rpx 12rpx; color: #74827d; font-size: 22rpx; }
 .dot { color: #a6afac; }
 </style>
