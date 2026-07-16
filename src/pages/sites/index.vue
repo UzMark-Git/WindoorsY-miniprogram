@@ -34,7 +34,7 @@ async function load(reset = false) {
     if (!gate.isCurrent(request)) return
     const text = error instanceof Error ? error.message : String(error)
     status.value = /network|offline|网络/i.test(text) ? 'offline' : 'error'
-    message.value = status.value === 'offline' ? '网络已断开，请检查后重试' : '工地列表加载失败'
+    message.value = status.value === 'offline' ? '网络已断开，请检查后重试' : '案例列表加载失败'
   } finally {
     gate.finish(request)
   }
@@ -58,8 +58,8 @@ onMounted(async () => {
   <view class="page">
     <view class="intro"><text class="kicker">PROJECT GALLERY</text><text class="title">案例</text><text class="lead">看得见的过程，才是安心的交付</text></view>
     <view class="filters"><picker :range="['全部区域', ...districts]" :value="districtIndex" @change="changeDistrict"><view class="filter">{{ districtIndex ? districts[districtIndex - 1] : '全部区域' }} <text>⌄</text></view></picker><picker :range="stages" range-key="label" :value="stageIndex" @change="changeStage"><view class="filter">{{ stages[stageIndex].label }} <text>⌄</text></view></picker></view>
-    <ContentState v-if="status !== 'ready'" :status="status === 'ready' ? 'loading' : status" :message="status === 'empty' ? '暂无符合条件的工地' : message" @retry="load(true)" />
-    <view v-else class="list"><SiteCard v-for="site in items" :key="site._id" :site="site" @select="selectSite" /><button v-if="hasMore" class="load-more" @click="nextPage">加载更多</button><text v-else class="end">— 已展示全部工地 —</text></view>
+    <ContentState v-if="status !== 'ready'" :status="status === 'ready' ? 'loading' : status" :message="status === 'empty' ? '暂无符合条件的案例' : message" @retry="load(true)" />
+    <view v-else class="list"><SiteCard v-for="site in items" :key="site._id" :site="site" @select="selectSite" /><button v-if="hasMore" class="load-more" @click="nextPage">加载更多</button><text v-else class="end">— 已展示全部案例 —</text></view>
   </view>
 </template>
 

@@ -17,7 +17,7 @@ const siteId = ref(''), site = ref<SiteDetail>(), staff = ref<StaffProfile[]>([]
 const status = ref<'loading'|'ready'|'empty'|'error'|'offline'>('loading'), message = ref('')
 
 async function load() {
-  if (!siteId.value) { status.value = 'empty'; message.value = '该工地内容已失效'; return }
+  if (!siteId.value) { status.value = 'empty'; message.value = '该案例内容已失效'; return }
   status.value = 'loading'
   try {
     site.value = await getSiteDetail(siteId.value)
@@ -27,7 +27,7 @@ async function load() {
   } catch (error) {
     const failure = classifyDetailError(error)
     status.value = failure.status
-    message.value = failure.retryable ? (failure.status === 'offline' ? '网络已断开，请检查后重试' : '工地详情加载失败') : '该工地内容已下架或不存在'
+    message.value = failure.retryable ? (failure.status === 'offline' ? '网络已断开，请检查后重试' : '案例详情加载失败') : '该案例内容已下架或不存在'
   }
 }
 function openStaff(id: string) { uni.navigateTo({ url: `/pages-sub/staff/detail?id=${encodeURIComponent(id)}` }) }

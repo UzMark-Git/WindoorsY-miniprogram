@@ -1,4 +1,4 @@
-import type { HomeContent, ProductCategory, ProductDetail, ProductListResult, SiteDetail, SiteFilters, SiteListResult, SiteStage, StaffProfile } from '../types/domain'
+import type { HomeContent, ProductCategory, ProductDetail, ProductListResult, SiteDetail, SiteFilters, SiteListResult, SiteStage, StaffProfile, WarrantyDetail, WarrantyListResult } from '../types/domain'
 
 export type SiteQuery = {
   page?: number
@@ -24,6 +24,8 @@ type ContentCloudObject = {
   getStaffProfile(staffId: string): Promise<StaffProfile>
   listProducts(query: NormalizedProductQuery): Promise<ProductListResult>
   getProductDetail(productId: string): Promise<ProductDetail>
+  listWarranties(query:{page:number;pageSize:number;storeId?:string}):Promise<WarrantyListResult>
+  getWarrantyDetail(siteId:string):Promise<WarrantyDetail>
 }
 
 declare const uniCloud: {
@@ -60,3 +62,5 @@ export const getSiteDetail = (siteId: string) => content().getSiteDetail(siteId)
 export const getStaffProfile = (staffId: string) => content().getStaffProfile(staffId)
 export const listProducts = (query: ProductQuery = {}) => content().listProducts(normalizeProductQuery(query))
 export const getProductDetail = (productId: string) => content().getProductDetail(productId)
+export const listWarranties = (query:{page?:number;pageSize?:number;storeId?:string}={}) => content().listWarranties({page:Math.max(1,Math.trunc(query.page||1)),pageSize:Math.min(20,Math.max(1,Math.trunc(query.pageSize||10))),...(query.storeId?.trim()?{storeId:query.storeId.trim()}:{})})
+export const getWarrantyDetail = (siteId:string) => content().getWarrantyDetail(siteId)

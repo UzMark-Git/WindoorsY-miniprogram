@@ -89,6 +89,11 @@ export interface SiteFilters {
   stages: SiteStage[]
 }
 
+export type WarrantyStatus = 'active' | 'expired'
+export interface WarrantySummary extends ContentRecord { title:string;cover_image:string;summary:string;district:string;area:number;store_name:string;stage:'completed';acceptance_status:'passed';accepted_at:number;warranty_years:10;warranty_expires_at:number;warranty_no:string;warranty_visible:true;warranty_description:string;warranty_status:WarrantyStatus }
+export interface WarrantyDetail extends WarrantySummary { updates:SiteUpdate[];store_phone:string }
+export interface WarrantyListResult { items:WarrantySummary[];page:number;pageSize:number }
+
 export interface AppointmentInput {
   store_id: string
   source_type: AppointmentSourceType

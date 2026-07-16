@@ -6,7 +6,7 @@ import { preparePoster } from '../api/sharing'
 import { currentMiniProgramEnv, isAuthFailure, loginUrl } from '../utils/content-sharing'
 import { localImage, posterLines, shouldOfferSettings } from '../utils/poster'
 
-const props=defineProps<{type:FavoriteType;contentId:string;title:string;image:string;returnUrl:string}>()
+const props=withDefaults(defineProps<{type:FavoriteType;contentId:string;title:string;image:string;returnUrl:string;primaryLabel?:string}>(),{primaryLabel:'立即预约'})
 const emit=defineEmits<{appoint:[]}>()
 const favorited=ref(false),favoriteBusy=ref(false),guide=ref(false),posterOpen=ref(false),posterBusy=ref(false),posterError=ref(''),posterPath=ref('')
 const canvasId='share-poster-canvas',instance=getCurrentInstance()?.proxy
@@ -50,10 +50,42 @@ async function savePoster(){
 onMounted(()=>{refreshFavorite();uni.showShareMenu({menus:['shareAppMessage','shareTimeline'] as any})})
 </script>
 
-<template><view class="bar"><view class="tools"><button open-type="share"><text class="icon">↗</text><text>转发</text></button><button :disabled="favoriteBusy" @click="favorite"><text class="icon">{{favorited?'★':'☆'}}</text><text>{{favorited?'已收藏':'收藏'}}</text></button><button @click="timeline"><text class="icon">◎</text><text>朋友圈</text></button><button @click="drawPoster"><text class="icon">▧</text><text>海报</text></button></view><button class="appoint" @click="emit('appoint')">立即预约</button></view>
+<template><view class="bar"><view class="tools"><button class="tool-button" open-type="share" hover-class="tool-button--pressed"><uni-icons type="forward" size="18"/><text>转发</text></button><button class="tool-button" :class="{'tool-button--active':favorited,'tool-button--busy':favoriteBusy}" :disabled="favoriteBusy" hover-class="tool-button--pressed" @click="favorite"><uni-icons :type="favorited?'star-filled':'star'" size="18"/><text>{{favorited?'已收藏':'收藏'}}</text></button><button class="tool-button" hover-class="tool-button--pressed" @click="timeline"><uni-icons type="pyq" size="18"/><text>朋友圈</text></button><button class="tool-button" hover-class="tool-button--pressed" @click="drawPoster"><uni-icons type="image" size="18"/><text>海报</text></button></view><button class="appoint" hover-class="appoint--pressed" @click="emit('appoint')">{{primaryLabel}}</button></view>
 <view v-if="guide" class="mask" @click="closeGuide"><view class="timeline-guide"><text class="arrow">↗</text><text>点击右上角“…”</text><text>选择“分享到朋友圈”</text><button @click.stop="closeGuide">知道了</button></view></view>
-<view v-if="posterOpen" class="mask poster-mask"><view class="poster-panel"><text class="poster-title">分享海报</text><view v-if="posterBusy" class="poster-state">正在生成品牌海报…</view><view v-else-if="posterError" class="poster-state error">{{posterError}}<button @click="drawPoster">重新生成</button></view><image v-else-if="posterPath" class="poster-preview" :src="posterPath" mode="widthFix" show-menu-by-longpress/><view class="poster-actions"><button @click="posterOpen=false">取消</button><button class="save" :disabled="!posterPath" @click="savePoster">保存相册</button></view></view></view>
+<view v-if="posterOpen" class="mask poster-mask"><view class="poster-panel"><text class="poster-title">分享海报</text><view v-if="posterBusy" class="poster-state">正在生成品牌海报…</view><view v-else-if="posterError" class="poster-state error">{{posterError}}<button hover-class="dialog-button--pressed" @click="drawPoster">重新生成</button></view><image v-else-if="posterPath" class="poster-preview" :src="posterPath" mode="widthFix" show-menu-by-longpress/><view class="poster-actions"><button hover-class="dialog-button--pressed" @click="posterOpen=false">取消</button><button class="save" :disabled="!posterPath" hover-class="save--pressed" @click="savePoster">保存相册</button></view></view></view>
 <canvas :canvas-id="canvasId" :id="canvasId" class="poster-canvas"/>
 </template>
 
-<style scoped>.bar{position:fixed;left:0;right:0;bottom:0;z-index:20;display:flex;align-items:center;gap:12rpx;padding:14rpx 20rpx calc(14rpx + env(safe-area-inset-bottom));background:#fff;box-shadow:0 -6rpx 24rpx rgba(25,55,47,.08)}.tools{display:grid;grid-template-columns:repeat(4,1fr);flex:1;min-width:0}.tools button{min-width:0;margin:0;padding:4rpx 0;border:0;line-height:1.2;background:transparent;color:#68756f;font-size:19rpx}.tools button::after,.appoint::after{border:0}.tools button text{display:block}.icon{height:36rpx;color:#31574d;font-size:32rpx}.appoint{flex:0 0 218rpx;height:78rpx;margin:0;border:0;border-radius:42rpx;line-height:78rpx;color:#fff;background:#24564a;font-size:27rpx;font-weight:650}.mask{position:fixed;inset:0;z-index:80;background:rgba(9,28,23,.58);display:flex;align-items:flex-start;justify-content:flex-end;padding:25rpx}.timeline-guide{width:330rpx;margin-top:70rpx;padding:30rpx;border-radius:18rpx;background:#fff;color:#27443c}.timeline-guide>text{display:block;margin-top:8rpx;font-size:25rpx}.timeline-guide .arrow{text-align:right;color:#a57941;font-size:52rpx}.timeline-guide button{margin-top:22rpx;border:0;border-radius:30rpx;color:#fff;background:#24564a;font-size:23rpx}.timeline-guide button::after{border:0}.poster-mask{align-items:center;justify-content:center;padding:30rpx}.poster-panel{box-sizing:border-box;width:100%;max-height:92vh;padding:26rpx;border-radius:22rpx;background:#fff}.poster-title{display:block;margin-bottom:20rpx;color:#183b32;font-size:30rpx;font-weight:650}.poster-preview{display:block;width:420rpx;max-height:68vh;margin:auto}.poster-state{padding:100rpx 20rpx;text-align:center;color:#74827e;font-size:25rpx}.poster-state.error{color:#b5483f}.poster-state button{margin-top:20rpx}.poster-actions{display:flex;gap:16rpx;margin-top:20rpx}.poster-actions button{flex:1;margin:0;border:0;border-radius:34rpx;background:#edf2ef;color:#31574d;font-size:25rpx}.poster-actions .save{color:#fff;background:#24564a}.poster-canvas{position:fixed;left:-2000px;top:0;width:750px;height:1200px;pointer-events:none}@media(max-width:350px){.appoint{flex-basis:190rpx}.tools button{font-size:17rpx}}</style>
+<style scoped>
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:20;display:flex;align-items:center;gap:14rpx;padding:12rpx 20rpx calc(12rpx + env(safe-area-inset-bottom));border-top:1rpx solid rgba(36,86,74,.08);background:rgba(255,255,255,.98);box-shadow:0 -8rpx 28rpx rgba(24,59,50,.08)}
+.tools{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));flex:1;min-width:0;gap:2rpx}
+.tool-button{display:flex;min-width:0;height:72rpx;margin:0;padding:7rpx 0 4rpx;flex-direction:column;align-items:center;justify-content:center;gap:4rpx;border:0;border-radius:16rpx;line-height:1;background:transparent;color:#31574d;font-size:20rpx;transition:opacity .15s ease,background-color .15s ease}
+.tool-button::after,.appoint::after,.poster-actions button::after,.poster-state button::after{border:0}
+.tool-button text{display:block;max-width:100%;overflow:hidden;color:#687873;line-height:24rpx;white-space:nowrap;text-overflow:ellipsis}
+.tool-button--pressed{background:#f0f5f2;opacity:.72}
+.tool-button--active,.tool-button--active text{color:#a57941}
+.tool-button--busy{opacity:.48}
+.appoint{flex:0 0 218rpx;height:76rpx;margin:0;border:0;border-radius:40rpx;line-height:76rpx;color:#fff;background:#24564a;box-shadow:0 8rpx 20rpx rgba(36,86,74,.2);font-size:27rpx;font-weight:650;transition:transform .15s ease,opacity .15s ease}
+.appoint--pressed{opacity:.86;transform:scale(.98)}
+.mask{position:fixed;inset:0;z-index:80;display:flex;padding:25rpx;align-items:flex-start;justify-content:flex-end;background:rgba(9,28,23,.58)}
+.timeline-guide{width:330rpx;margin-top:70rpx;padding:30rpx;border-radius:18rpx;background:#fff;color:#27443c}
+.timeline-guide>text{display:block;margin-top:8rpx;font-size:25rpx}
+.timeline-guide .arrow{text-align:right;color:#a57941;font-size:52rpx}
+.timeline-guide button{margin-top:22rpx;border:0;border-radius:30rpx;color:#fff;background:#24564a;font-size:23rpx}
+.timeline-guide button::after{border:0}
+.poster-mask{align-items:center;justify-content:center;padding:30rpx}
+.poster-panel{box-sizing:border-box;width:100%;max-height:92vh;padding:30rpx;border-radius:28rpx;background:#fff;box-shadow:0 24rpx 60rpx rgba(9,28,23,.22)}
+.poster-title{display:block;margin-bottom:20rpx;color:#183b32;font-size:30rpx;font-weight:650}
+.poster-preview{display:block;width:420rpx;max-height:68vh;margin:auto;border-radius:12rpx;box-shadow:0 8rpx 24rpx rgba(24,59,50,.1)}
+.poster-state{padding:100rpx 20rpx;text-align:center;color:#74827e;font-size:25rpx}
+.poster-state.error{color:#b5483f}
+.poster-state button{margin-top:24rpx;border:0;border-radius:34rpx;background:#edf2ef;color:#31574d;font-size:25rpx}
+.poster-actions{display:flex;gap:18rpx;margin-top:24rpx}
+.poster-actions button{flex:1;height:72rpx;margin:0;border:0;border-radius:38rpx;line-height:72rpx;background:#edf2ef;color:#31574d;font-size:25rpx;font-weight:600}
+.poster-actions .save{color:#fff;background:#24564a;box-shadow:0 8rpx 18rpx rgba(36,86,74,.16)}
+.poster-actions .save[disabled]{box-shadow:none;opacity:.42}
+.dialog-button--pressed{background:#e1ebe6!important;opacity:.8}
+.save--pressed{opacity:.84}
+.poster-canvas{position:fixed;left:-2000px;top:0;width:750px;height:1200px;pointer-events:none}
+@media(max-width:350px){.bar{gap:8rpx;padding-left:14rpx;padding-right:14rpx}.appoint{flex-basis:184rpx;font-size:25rpx}.tool-button{font-size:18rpx}.tools{gap:0}}
+</style>
