@@ -4,6 +4,7 @@
   "version": "0.1.0",
   "scripts": { "dev:mp-weixin": "uni -p mp-weixin", "build:mp-weixin": "uni build -p mp-weixin" },
   "dependencies": {
+    "@windoors/shared": "workspace:*",
     "@dcloudio/uni-app": "3.0.0-4060620250520001",
     "@dcloudio/uni-components": "3.0.0-4060620250520001",
     "@dcloudio/uni-mp-weixin": "3.0.0-4060620250520001",

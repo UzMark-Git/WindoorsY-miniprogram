@@ -1,4 +1,5 @@
 import type { HomeContent, ProductCategory, ProductDetail, ProductListResult, SiteDetail, SiteFilters, SiteListResult, SiteStage, StaffProfile, WarrantyDetail, WarrantyListResult } from '../types/domain'
+import type { WebsiteHome } from '@windoors/shared'
 
 export type SiteQuery = {
   page?: number
@@ -26,6 +27,7 @@ type ContentCloudObject = {
   getProductDetail(productId: string): Promise<ProductDetail>
   listWarranties(query:{page:number;pageSize:number;storeId?:string}):Promise<WarrantyListResult>
   getWarrantyDetail(siteId:string):Promise<WarrantyDetail>
+  getWebsiteHome(storeId:string):Promise<WebsiteHome>
 }
 
 declare const uniCloud: {
@@ -64,3 +66,4 @@ export const listProducts = (query: ProductQuery = {}) => content().listProducts
 export const getProductDetail = (productId: string) => content().getProductDetail(productId)
 export const listWarranties = (query:{page?:number;pageSize?:number;storeId?:string}={}) => content().listWarranties({page:Math.max(1,Math.trunc(query.page||1)),pageSize:Math.min(20,Math.max(1,Math.trunc(query.pageSize||10))),...(query.storeId?.trim()?{storeId:query.storeId.trim()}:{})})
 export const getWarrantyDetail = (siteId:string) => content().getWarrantyDetail(siteId)
+export const getWebsiteHome = (storeId:string) => content().getWebsiteHome(storeId)
