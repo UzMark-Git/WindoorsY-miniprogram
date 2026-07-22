@@ -30,6 +30,7 @@
   "subPackages": [
     { "root": "pages-sub", "pages": [
       { "path": "sites/detail", "style": { "navigationBarTitleText": "案例详情" } },
+      { "path": "sites/update-create", "style": { "navigationBarTitleText": "记录施工动态" } },
       { "path": "staff/detail", "style": { "navigationBarTitleText": "人员详情" } },
       { "path": "products/detail", "style": { "navigationBarTitleText": "产品详情" } },
       { "path": "services/detail", "style": { "navigationBarTitleText": "质保详情" } },

@@ -51,7 +51,12 @@ export interface SiteUpdate extends ContentRecord {
   title: string
   content: string
   media: string[]
-  sort_order: number
+  sort_order?: number
+  occurred_at?: number
+  stage?: SiteStage
+  quality_tags?: string[]
+  next_step?: string
+  staff_ids?: string[]
 }
 
 export interface HomeContent {
