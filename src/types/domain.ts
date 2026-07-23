@@ -80,11 +80,11 @@ export interface ProductSummary extends ContentRecord {
   summary: string
   highlights: string[]
   specifications: string[]
-  scenarios: string[]
+  scenarios?: string[]
   sort_order: number
 }
 
-export type ProductDetail = ProductSummary
+export interface ProductDetail extends ProductSummary { related_sites:SiteSummary[] }
 export interface ProductListResult { items: ProductSummary[]; page: number; pageSize: number }
 
 export interface SiteListResult {
