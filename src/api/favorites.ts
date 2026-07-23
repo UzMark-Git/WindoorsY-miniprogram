@@ -5,7 +5,7 @@ type FavoriteCloud = {
   toggle(input:{type:FavoriteType;id:string}):Promise<{favorited:boolean}>
   list(input:{type:FavoriteType;page:number;pageSize:number}):Promise<{items:FavoriteCard[];page:number;pageSize:number;hasMore:boolean}>
 }
-const cloud=()=>uniCloud.importObject('favorite-co') as FavoriteCloud
+const cloud=()=>uniCloud.importObject('favorite-co', { customUI: true }) as FavoriteCloud
 export const getFavoriteState=(type:FavoriteType,id:string)=>cloud().getState({type,id})
 export const toggleFavorite=(type:FavoriteType,id:string)=>cloud().toggle({type,id})
 export const listFavorites=(type:FavoriteType,page=1,pageSize=20)=>cloud().list({type,page,pageSize})

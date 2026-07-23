@@ -13,7 +13,7 @@ const districts = ref<string[]>([])
 const stageLabels: Record<SiteStage, string> = { measuring: '复尺', designing: '设计', installing: '安装', completed: '已交付' }
 const stages = ref<Array<{ label: string; value?: SiteStage }>>([{ label: '全部阶段' }])
 const districtIndex = ref(0), stageIndex = ref(0), page = ref(1)
-const items = ref<SiteSummary[]>([]), hasMore = ref(true)
+const items = ref<SiteSummary[]>([]), hasMore = ref(true), loadingMore = ref(false)
 const status = ref<'loading' | 'ready' | 'empty' | 'error' | 'offline'>('loading'), message = ref('')
 const gate = createRequestGate()
 
@@ -22,7 +22,8 @@ async function load(reset = false) {
   if (request == null) return
   if (reset) { page.value = 1; items.value = []; hasMore.value = true }
   else page.value += 1
-  status.value = 'loading'
+  if (reset) status.value = 'loading'
+  else loadingMore.value = true
   message.value = ''
   try {
     const result = await listSites({ storeId: STORE_ID, page: page.value, pageSize: PAGE_SIZE, district: districtIndex.value ? districts.value[districtIndex.value - 1] : undefined, stage: stages.value[stageIndex.value].value })
@@ -33,9 +34,15 @@ async function load(reset = false) {
   } catch (error) {
     if (!gate.isCurrent(request)) return
     const text = error instanceof Error ? error.message : String(error)
-    status.value = /network|offline|网络/i.test(text) ? 'offline' : 'error'
-    message.value = status.value === 'offline' ? '网络已断开，请检查后重试' : '案例列表加载失败'
+    if (reset) {
+      status.value = /network|offline|网络/i.test(text) ? 'offline' : 'error'
+      message.value = status.value === 'offline' ? '网络已断开，请检查后重试' : '案例列表加载失败'
+    } else {
+      page.value -= 1
+      uni.showToast({ title: '加载更多失败，请重试', icon: 'none' })
+    }
   } finally {
+    if (!reset) loadingMore.value = false
     gate.finish(request)
   }
 }
@@ -59,7 +66,7 @@ onMounted(async () => {
     <view class="intro"><text class="kicker">PROJECT GALLERY</text><text class="title">案例</text><text class="lead">看得见的过程，才是安心的交付</text></view>
     <view class="filters"><picker :range="['全部区域', ...districts]" :value="districtIndex" @change="changeDistrict"><view class="filter">{{ districtIndex ? districts[districtIndex - 1] : '全部区域' }} <text>⌄</text></view></picker><picker :range="stages" range-key="label" :value="stageIndex" @change="changeStage"><view class="filter">{{ stages[stageIndex].label }} <text>⌄</text></view></picker></view>
     <ContentState v-if="status !== 'ready'" :status="status === 'ready' ? 'loading' : status" :message="status === 'empty' ? '暂无符合条件的案例' : message" @retry="load(true)" />
-    <view v-else class="list"><SiteCard v-for="site in items" :key="site._id" :site="site" @select="selectSite" /><button v-if="hasMore" class="load-more" @click="nextPage">加载更多</button><text v-else class="end">— 已展示全部案例 —</text></view>
+    <view v-else class="list"><SiteCard v-for="site in items" :key="site._id" :site="site" @select="selectSite" /><button v-if="hasMore" class="load-more" :disabled="loadingMore" @click="nextPage">{{ loadingMore ? '加载中…' : '加载更多' }}</button><text v-else class="end">— 已展示全部案例 —</text></view>
   </view>
 </template>
 
