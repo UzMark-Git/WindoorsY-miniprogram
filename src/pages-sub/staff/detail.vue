@@ -4,19 +4,53 @@ import { onLoad, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app'
 import { getStaffProfile } from '../../api/content'
 import ContentState from '../../components/content-state.vue'
 import DetailActionBar from '../../components/detail-action-bar.vue'
-import type { StaffProfile } from '../../types/domain'
+import SiteCard from '../../components/site-card.vue'
+import type { StaffDetail } from '../../types/domain'
 import { classifyDetailError } from '../../utils/detail-state'
 import { shareMessage, timelineMessage } from '../../utils/content-sharing'
+import { siteDetailUrl } from '../../utils/site-navigation'
 
 const placeholder='/static/demo/placeholder.png'
-const staffId=ref(''), profile=ref<StaffProfile>(), status=ref<'loading'|'ready'|'empty'|'error'|'offline'>('loading'), message=ref('')
-async function load(){if(!staffId.value){status.value='empty';message.value='该人员内容已失效';return}status.value='loading';try{profile.value=await getStaffProfile(staffId.value);status.value='ready'}catch(error){const failure=classifyDetailError(error);status.value=failure.status;message.value=failure.retryable?(failure.status==='offline'?'网络已断开，请检查后重试':'人员详情加载失败'):'该人员内容已下架或不存在'}}
+const staffId=ref(''),profile=ref<StaffDetail>(),avatarSrc=ref(placeholder)
+const status=ref<'loading'|'ready'|'empty'|'error'|'offline'>('loading'),message=ref('')
+
+async function load(){
+  if(!staffId.value){status.value='empty';message.value='该人员内容已失效';return}
+  status.value='loading'
+  try{profile.value=await getStaffProfile(staffId.value);avatarSrc.value=profile.value.avatar||placeholder;status.value='ready'}
+  catch(error){const failure=classifyDetailError(error);status.value=failure.status;message.value=failure.retryable?(failure.status==='offline'?'网络已断开，请检查后重试':'人员详情加载失败'):'该人员内容已下架或不存在'}
+}
 function appoint(){if(profile.value)uni.navigateTo({url:`/pages-sub/appointments/create?source_type=staff&source_id=${encodeURIComponent(profile.value._id)}&store_id=${encodeURIComponent(profile.value.store_id)}`})}
+function openSite(id:string){uni.navigateTo({url:siteDetailUrl(id)})}
 onLoad((query:Record<string,string|undefined>)=>{staffId.value=query.id||'';load()})
 onShareAppMessage(()=>profile.value?shareMessage('staff',profile.value._id,`门窗服务顾问：${profile.value.name}`,profile.value.avatar):{})
 onShareTimeline(()=>profile.value?timelineMessage(`门窗服务顾问：${profile.value.name}`,profile.value.avatar):{})
 </script>
-<template><view class="page"><ContentState v-if="status!=='ready'" :status="status==='empty'?'empty':status" :message="message" @retry="load"/><template v-else-if="profile"><view class="hero"><image :src="profile.avatar||placeholder" mode="aspectFill" :aria-label="`${profile.name}头像`"/><text class="name">{{profile.name}}</text><text class="role">{{profile.role}}</text></view><view class="panel"><text class="title">个人简介</text><text class="copy">{{profile.bio}}</text></view><view class="panel"><text class="title">擅长领域</text><view class="tags"><text v-for="item in profile.specialties" :key="item">{{item}}</text></view></view><view class="panel"><text class="title">服务区域</text><text class="copy">服务区域暂未提供</text></view><view class="panel"><text class="title">相关案例</text><view class="placeholder">服务案例持续更新中</view></view><view class="panel"><text class="title">案例展示</text><view class="case-grid"><image :src="placeholder" aria-label="案例图片占位一"/><image :src="placeholder" aria-label="案例图片占位二"/></view></view><DetailActionBar type="staff" :content-id="profile._id" :title="profile.name" :image="profile.avatar" :return-url="`/pages-sub/staff/detail?id=${encodeURIComponent(profile._id)}`" @appoint="appoint"/></template></view></template>
+
+<template>
+  <view class="page">
+    <ContentState v-if="status!=='ready'" :status="status==='empty'?'empty':status" :message="message" @retry="load"/>
+    <template v-else-if="profile">
+      <view class="hero">
+        <image :src="avatarSrc" mode="aspectFill" :aria-label="`${profile.name}头像`" @error="avatarSrc=placeholder"/>
+        <text class="name">{{profile.name}}</text><text class="role">{{profile.role}}</text>
+        <text class="bio">{{profile.bio}}</text>
+      </view>
+      <view class="panel ability">
+        <text class="title">专业能力</text>
+        <view v-if="profile.specialties.length" class="group"><text class="label">擅长领域</text><view class="tags"><text v-for="item in profile.specialties" :key="item">{{item}}</text></view></view>
+        <view v-if="profile.service_regions?.length" class="group"><text class="label">服务区域</text><view class="region-list"><text v-for="region in profile.service_regions" :key="region.code">{{region.city}} · {{region.district}}</text></view></view>
+      </view>
+      <view class="cases">
+        <view class="section-heading"><view><text class="title">近期参与案例</text><text class="case-count">{{profile.related_sites.length?'展示最近公开参与的项目':'真实项目记录将在这里展示'}}</text></view></view>
+        <scroll-view v-if="profile.related_sites.length" scroll-x class="case-scroll"><view class="case-row"><view v-for="site in profile.related_sites" :key="site._id" class="case-item"><SiteCard :site="site" @select="openSite"/></view></view></scroll-view>
+        <view v-else class="empty-cases"><text>暂无公开的近期参与案例</text><text>项目经门店审核发布后会展示在这里</text></view>
+      </view>
+      <DetailActionBar type="staff" :content-id="profile._id" :title="profile.name" :image="profile.avatar" :return-url="`/pages-sub/staff/detail?id=${encodeURIComponent(profile._id)}`" @appoint="appoint"/>
+    </template>
+  </view>
+</template>
+
 <style scoped>
-.page{min-height:100vh;padding-bottom:150rpx;background:#f1f4f2}.hero{padding:70rpx 30rpx 48rpx;text-align:center;background:#183e34;color:#fff}.hero image{display:block;width:180rpx;height:180rpx;margin:auto;border:7rpx solid rgba(255,255,255,.18);border-radius:50%}.name{display:block;margin-top:22rpx;font-size:40rpx;font-weight:650}.role{display:block;margin-top:9rpx;color:rgba(255,255,255,.7);font-size:24rpx}.panel{margin:22rpx 26rpx;padding:30rpx;border-radius:20rpx;background:#fff}.title{display:block;color:#193c33;font-size:30rpx;font-weight:650}.copy{display:block;margin-top:18rpx;color:#697975;font-size:25rpx;line-height:1.8}.tags{display:flex;flex-wrap:wrap;gap:14rpx;margin-top:20rpx}.tags text{padding:10rpx 20rpx;border-radius:26rpx;color:#89612f;background:#faf2e7;font-size:22rpx}.placeholder{margin-top:20rpx;padding:40rpx;text-align:center;color:#929e9a;background:#f4f6f5}.case-grid{display:grid;grid-template-columns:1fr 1fr;gap:14rpx;margin-top:20rpx}.case-grid image{width:100%;height:210rpx;border-radius:12rpx}.footer{position:fixed;left:0;right:0;bottom:0;display:flex;gap:18rpx;padding:18rpx 26rpx calc(18rpx + env(safe-area-inset-bottom));background:#fff}.footer button{flex:1;border:0;border-radius:40rpx;font-size:27rpx}.footer button::after{border:0}.secondary{color:#24564a;background:#edf3f1}.primary{color:#fff;background:#24564a}
+.page{min-height:100vh;padding-bottom:150rpx;background:#f1f4f2}.hero{padding:48rpx 40rpx 44rpx;text-align:center;background:#183e34;color:#fff}.hero image{display:block;width:168rpx;height:168rpx;margin:auto;border:7rpx solid rgba(255,255,255,.18);border-radius:50%;background:#284e44}.name{display:block;margin-top:20rpx;font-size:40rpx;font-weight:650}.role{display:block;margin-top:8rpx;color:#d7aa6d;font-size:24rpx}.bio{display:block;max-width:590rpx;margin:22rpx auto 0;color:rgba(255,255,255,.76);font-size:24rpx;line-height:1.75}.panel,.cases{margin:22rpx 26rpx;padding:30rpx;border-radius:20rpx;background:#fff}.title{display:block;color:#193c33;font-size:31rpx;font-weight:650}.group{margin-top:26rpx}.label{display:block;color:#71807b;font-size:22rpx}.tags,.region-list{display:flex;flex-wrap:wrap;gap:12rpx;margin-top:14rpx}.tags text{padding:10rpx 20rpx;border-radius:26rpx;color:#89612f;background:#faf2e7;font-size:22rpx}.region-list text{padding:10rpx 18rpx;border-radius:10rpx;color:#315f53;background:#edf5f1;font-size:22rpx}.case-count{display:block;margin-top:8rpx;color:#8a9893;font-size:21rpx}.case-scroll{width:100%;margin-top:24rpx;white-space:nowrap}.case-row{display:flex;gap:18rpx}.case-item{flex:0 0 430rpx;white-space:normal}.case-item :deep(.cover){height:250rpx}.case-item :deep(.body){padding:22rpx}.case-item :deep(.title){font-size:29rpx}.case-item :deep(.summary){display:none}.case-item :deep(.meta){flex-direction:column;gap:8rpx}.empty-cases{margin-top:24rpx;padding:38rpx 22rpx;border-radius:14rpx;text-align:center;background:#f5f7f6}.empty-cases text{display:block;color:#788782;font-size:23rpx}.empty-cases text+text{margin-top:9rpx;color:#a0aaa6;font-size:20rpx}
 </style>

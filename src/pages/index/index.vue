@@ -16,6 +16,7 @@ const placeholder = '/static/demo/placeholder.png'
 const heroImages = ref<string[]>([placeholder])
 const failedHeroImages = ref<Record<number, boolean>>({})
 const failedAvatars = ref<Record<string, boolean>>({})
+const searchKeyword = ref('')
 
 async function load() {
   status.value = 'loading'
@@ -39,8 +40,7 @@ function failHero(index: number) {
 function openLegal(url: string) { navigateToLegalPage(url, uni) }
 function openSites() { uni.switchTab({ url: '/pages/sites/index' }) }
 function openProducts() { uni.switchTab({ url: '/pages/products/index' }) }
-function callStore() { if (home.value) uni.makePhoneCall({ phoneNumber: home.value.store.phone }) }
-function copyAddress() { if (home.value) uni.setClipboardData({ data: home.value.store.address }) }
+function openSearch(){uni.navigateTo({url:`/pages-sub/search/index?keyword=${encodeURIComponent(searchKeyword.value.trim())}`})}
 function selectSite(siteId: string) { uni.navigateTo({ url: siteDetailUrl(siteId) }) }
 function selectStaff(person: HomeContent['staff'][number]) { uni.navigateTo({ url: `/pages-sub/staff/detail?id=${encodeURIComponent(person._id)}` }) }
 function selectProduct(id: string) { uni.navigateTo({ url: `/pages-sub/products/detail?id=${encodeURIComponent(id)}` }) }
@@ -74,7 +74,7 @@ onMounted(load)
         </swiper>
         <view class="hero-copy"><text class="eyebrow">专属门窗服务</text><text class="hero-title">{{ home.store.name }}</text><text class="address">{{ home.store.address }}</text></view>
       </view>
-      <view class="actions"><button @click="callStore"><text class="action-icon">☎</text><text>电话咨询</text></button><view class="divider" /><button @click="copyAddress"><text class="action-icon">◇</text><text>门店地址</text></button></view>
+      <view class="search-entry"><text class="search-icon">⌕</text><input v-model="searchKeyword" confirm-type="search" maxlength="30" placeholder="搜索产品、人员、案例、质保" @focus="openSearch" @confirm="openSearch"/></view>
       <view class="section">
         <view class="heading"><view><text class="kicker">SERVICE TEAM</text><text class="section-title">为你服务的人</text></view></view>
         <scroll-view scroll-x class="staff-scroll"><view class="staff-row"><button v-for="person in home.staff" :key="person._id" class="person" :aria-label="`查看${person.name}的人员详情`" @click="selectStaff(person)"><image :src="failedAvatars[person._id] ? placeholder : (person.avatar || placeholder)" mode="aspectFill" :aria-label="`${person.name}头像`" @error="failedAvatars[person._id] = true" /><view><text class="person-name">{{ person.name }}</text><text class="person-role">{{ person.role }}</text></view></button></view></scroll-view>
@@ -101,9 +101,7 @@ onMounted(load)
 .eyebrow,.kicker { display: block; letter-spacing: 4rpx; font-size: 20rpx; font-weight: 600; }
 .hero-title { display: block; margin-top: 18rpx; font-size: 52rpx; font-weight: 650; }
 .address { display: block; margin-top: 18rpx; color: rgba(255,255,255,.82); font-size: 25rpx; }
-.actions { display: flex; align-items: center; margin: -25rpx 30rpx 0; position: relative; border-radius: 22rpx; background: white; box-shadow: 0 10rpx 40rpx rgba(20,55,46,.12); }
-.actions button { flex: 1; height: 116rpx; display: flex; align-items: center; justify-content: center; gap: 14rpx; border: 0; background: transparent; color: #27433c; font-size: 26rpx; }
-.actions button::after { border: 0; }.action-icon { color: #b8823e; font-size: 34rpx; }.divider { width: 1rpx; height: 50rpx; background: #e3e8e6; }
+.search-entry{display:flex;align-items:center;gap:16rpx;height:92rpx;margin:-25rpx 30rpx 0;padding:0 26rpx;position:relative;border-radius:22rpx;background:white;box-shadow:0 10rpx 40rpx rgba(20,55,46,.12)}.search-icon{color:#a57941;font-size:38rpx}.search-entry input{flex:1;height:72rpx;color:#263e37;font-size:25rpx}
 .section { padding: 62rpx 30rpx 0; }.heading { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom: 28rpx; }.kicker { color: #a57941; }.section-title { display:block; margin-top:10rpx; color:#172d28; font-size:38rpx; font-weight:650; }.more { color:#567069; font-size:24rpx; }
 .staff-scroll { width: 100%; white-space: nowrap; }.staff-row { display:flex; gap:18rpx; }.person { flex: 0 0 370rpx; display:flex; align-items:center; gap:20rpx; margin:0; padding:22rpx; border:0; border-radius:18rpx; text-align:left; line-height:normal; background:#fff; }.person::after{border:0}.person image { width:92rpx; height:92rpx; border-radius:50%; background:#e6edeb; }.person-name,.person-role { display:block; }.person-name { color:#203832; font-size:28rpx; font-weight:600; }.person-role { margin-top:8rpx; color:#7d8985; font-size:22rpx; }.cards { display:flex; flex-direction:column; gap:28rpx; }
 .product-scroll{width:100%;white-space:nowrap}.product-row{display:flex;gap:20rpx}.product{flex:0 0 310rpx;margin:0;padding:0 0 20rpx;overflow:hidden;border:0;border-radius:18rpx;text-align:left;line-height:normal;background:#fff}.product::after{border:0}.product image{width:100%;height:220rpx}.product-name,.product-summary{display:block;margin-left:20rpx;margin-right:20rpx}.product-name{margin-top:18rpx;color:#203832;font-size:27rpx;font-weight:650}.product-summary{margin-top:9rpx;overflow:hidden;color:#7d8985;font-size:21rpx;white-space:nowrap;text-overflow:ellipsis}

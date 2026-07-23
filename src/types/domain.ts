@@ -41,8 +41,12 @@ export interface StaffProfile extends ContentRecord {
   role: string
   bio: string
   specialties: string[]
+  service_regions?: ServiceRegion[]
   sort_order: number
 }
+
+export interface ServiceRegion { code:string;province:string;city:string;district:string }
+export interface StaffDetail extends StaffProfile { related_sites:SiteSummary[] }
 
 export type SiteStage = 'measuring' | 'designing' | 'installing' | 'completed'
 
@@ -88,6 +92,11 @@ export interface SiteListResult {
   page: number
   pageSize: number
 }
+
+export type SearchContentType = 'products'|'staff'|'sites'|'warranties'
+export interface SearchItem { id:string;type:SearchContentType;title:string;summary:string;image:string;meta:string }
+export interface SearchGroup { items:SearchItem[];page:number;pageSize:number;hasMore:boolean }
+export interface SearchResult { keyword:string;groups:Record<SearchContentType,SearchGroup> }
 
 export interface SiteFilters {
   districts: string[]
