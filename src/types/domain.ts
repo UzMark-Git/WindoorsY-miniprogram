@@ -27,6 +27,7 @@ export interface SiteSummary extends ContentRecord {
   area: number
   store_name: string
   stage: SiteStage
+    display_group?: SiteDisplayGroup
   sort_order: number
 }
 
@@ -49,6 +50,7 @@ export interface ServiceRegion { code:string;province:string;city:string;distric
 export interface StaffDetail extends StaffProfile { related_sites:SiteSummary[] }
 
 export type SiteStage = 'measuring' | 'designing' | 'installing' | 'completed'
+export type SiteDisplayGroup = 'case' | 'service'
 
 export interface SiteUpdate extends ContentRecord {
   site_id: string
@@ -64,8 +66,8 @@ export interface SiteUpdate extends ContentRecord {
 }
 
 export interface HomeContent {
-  store: StoreSummary
-  sites: SiteSummary[]
+    store: StoreSummary
+    services: ServiceSummary[]
   staff: StaffProfile[]
   products: ProductSummary[]
 }
@@ -93,10 +95,11 @@ export interface SiteListResult {
   pageSize: number
 }
 
-export type SearchContentType = 'products'|'staff'|'sites'|'warranties'
+export type SearchContentType = 'sites'|'construction'|'warranties'
 export interface SearchItem { id:string;type:SearchContentType;title:string;summary:string;image:string;meta:string }
 export interface SearchGroup { items:SearchItem[];page:number;pageSize:number;hasMore:boolean }
 export interface SearchResult { keyword:string;groups:Record<SearchContentType,SearchGroup> }
+export interface SearchDiscovery { keywords:string[];groups:Record<SearchContentType,SearchItem[]> }
 
 export interface SiteFilters {
   districts: string[]
@@ -107,6 +110,8 @@ export type WarrantyStatus = 'active' | 'expired'
 export interface WarrantySummary extends ContentRecord { title:string;cover_image:string;summary:string;district:string;area:number;store_name:string;stage:'completed';acceptance_status:'passed';accepted_at:number;warranty_years:10;warranty_expires_at:number;warranty_no:string;warranty_visible:true;warranty_description:string;warranty_status:WarrantyStatus }
 export interface WarrantyDetail extends WarrantySummary { updates:SiteUpdate[];store_phone:string }
 export interface WarrantyListResult { items:WarrantySummary[];page:number;pageSize:number }
+export interface ServiceSummary extends SiteSummary { service_type:'construction'|'warranty';warranty_status?:WarrantyStatus;accepted_at?:number;warranty_expires_at?:number;warranty_no?:string }
+export interface ServiceListResult { items:ServiceSummary[];page:number;pageSize:number }
 
 export interface AppointmentInput {
   store_id: string

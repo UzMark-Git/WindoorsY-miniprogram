@@ -1,4 +1,4 @@
-import type { HomeContent, ProductCategory, ProductDetail, ProductListResult, SearchContentType, SearchGroup, SearchResult, SiteDetail, SiteFilters, SiteListResult, SiteStage, StaffDetail, WarrantyDetail, WarrantyListResult } from '../types/domain'
+import type { HomeContent, ProductCategory, ProductDetail, ProductListResult, SearchContentType, SearchDiscovery, SearchGroup, SearchResult, SiteDetail, SiteFilters, SiteListResult, SiteStage, StaffDetail, WarrantyDetail, WarrantyListResult, ServiceListResult } from '../types/domain'
 import type { WebsiteHome } from '@windoors/shared'
 
 export type SiteQuery = {
@@ -28,9 +28,12 @@ type ContentCloudObject = {
   listProducts(query: NormalizedProductQuery): Promise<ProductListResult>
   getProductDetail(productId: string): Promise<ProductDetail>
   listWarranties(query:{page:number;pageSize:number;storeId?:string}):Promise<WarrantyListResult>
+  listServices(query:{page:number;pageSize:number;storeId?:string;district?:string;type?:'construction'|'warranty'}):Promise<ServiceListResult>
+  getServiceFilters(storeId?:string):Promise<{districts:string[]}>
   getWarrantyDetail(siteId:string):Promise<WarrantyDetail>
   getWebsiteHome(storeId:string):Promise<WebsiteHome>
   searchContent(query:NormalizedSearchQuery):Promise<SearchResult|{keyword:string;type:SearchContentType;group:SearchGroup}>
+  getSearchDiscovery(storeId:string):Promise<SearchDiscovery>
 }
 
 declare const uniCloud: {
@@ -77,6 +80,9 @@ export const getStaffProfile = (staffId: string) => content().getStaffProfile(st
 export const listProducts = (query: ProductQuery = {}) => content().listProducts(normalizeProductQuery(query))
 export const getProductDetail = (productId: string) => content().getProductDetail(productId)
 export const listWarranties = (query:{page?:number;pageSize?:number;storeId?:string}={}) => content().listWarranties({page:Math.max(1,Math.trunc(query.page||1)),pageSize:Math.min(20,Math.max(1,Math.trunc(query.pageSize||10))),...(query.storeId?.trim()?{storeId:query.storeId.trim()}:{})})
+export const listServices = (query:{page?:number;pageSize?:number;storeId?:string;district?:string;type?:'construction'|'warranty'}={}) => content().listServices({page:Math.max(1,Math.trunc(query.page||1)),pageSize:Math.min(20,Math.max(1,Math.trunc(query.pageSize||10))),...(query.storeId?.trim()?{storeId:query.storeId.trim()}:{}),...(query.district?.trim()?{district:query.district.trim()}:{}),...(query.type?{type:query.type}:{})})
+export const getServiceFilters = (storeId?:string) => content().getServiceFilters(storeId?.trim()||undefined)
 export const getWarrantyDetail = (siteId:string) => content().getWarrantyDetail(siteId)
 export const getWebsiteHome = (storeId:string) => content().getWebsiteHome(storeId)
 export const searchContent = (query:SearchQuery) => content().searchContent(normalizeSearchQuery(query))
+export const getSearchDiscovery = (storeId:string) => content().getSearchDiscovery(storeId.trim())

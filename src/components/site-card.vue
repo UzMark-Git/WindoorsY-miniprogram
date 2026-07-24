@@ -3,7 +3,7 @@ import { ref, watch } from 'vue'
 import type { SiteSummary, SiteStage } from '../types/domain'
 import { formatSiteMeta } from './site-card'
 
-const props = defineProps<{ site: SiteSummary }>()
+const props = defineProps<{ site: SiteSummary; compact?:boolean }>()
 defineEmits<{ select: [siteId: string] }>()
 const placeholder = '/static/demo/placeholder.png'
 const imageSrc = ref(props.site.cover_image || placeholder)
@@ -12,7 +12,7 @@ const stageLabel: Record<SiteStage, string> = { measuring: '现场复尺', desig
 </script>
 
 <template>
-  <view class="card" hover-class="card--pressed" @click="$emit('select', site._id)">
+  <view :class="['card',{'card--compact':compact}]" hover-class="card--pressed" @click="$emit('select', site._id)">
     <image class="cover" :src="imageSrc" mode="aspectFill" @error="imageSrc = placeholder" />
     <view class="body">
       <view class="topline"><text class="stage">{{ stageLabel[site.stage] }}</text><text class="arrow">›</text></view>
@@ -35,3 +35,4 @@ const stageLabel: Record<SiteStage, string> = { measuring: '现场复尺', desig
 .summary { display: block; margin-top: 10rpx; color: #66746f; font-size: 25rpx; line-height: 1.55; }
 .meta { display: flex; justify-content: space-between; gap: 20rpx; margin-top: 22rpx; padding-top: 20rpx; border-top: 1rpx solid #edf1f0; color: #89938f; font-size: 22rpx; }
 </style>
+<style scoped>.card--compact{min-width:0;border-radius:16rpx}.card--compact .cover{height:210rpx}.card--compact .body{padding:18rpx}.card--compact .stage{padding:6rpx 10rpx;font-size:18rpx}.card--compact .arrow{font-size:34rpx}.card--compact .title{margin-top:13rpx;overflow:hidden;font-size:27rpx;white-space:nowrap;text-overflow:ellipsis}.card--compact .summary{display:-webkit-box;margin-top:8rpx;overflow:hidden;font-size:20rpx;line-height:1.45;-webkit-box-orient:vertical;-webkit-line-clamp:2}.card--compact .meta{display:block;margin-top:14rpx;padding-top:12rpx;overflow:hidden;font-size:18rpx;white-space:nowrap;text-overflow:ellipsis}.card--compact .meta text{display:block;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.card--compact .meta text+text{margin-top:5rpx}</style>
