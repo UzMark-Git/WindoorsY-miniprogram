@@ -59,7 +59,7 @@ onMounted(async () => {
 
 <template>
   <view class="page">
-    <view class="intro"><text class="kicker">PROJECT GALLERY</text><text class="title">案例</text><text class="lead">看得见的过程，才是安心的交付</text></view>
+    <view class="intro"><text class="kicker">CASE LIBRARY</text><text class="title">案例</text><text class="lead">封窗案例、楼盘资料与方案参考，报价需留下信息后获取</text></view>
     <view class="filters"><picker :range="['全部区域', ...districts]" :value="districtIndex" @change="changeDistrict"><view class="filter">{{ districtIndex ? districts[districtIndex - 1] : '全部区域' }} <text>⌄</text></view></picker></view>
     <ContentState v-if="status !== 'ready'" :status="status === 'ready' ? 'loading' : status" :message="status === 'empty' ? '暂无符合条件的案例' : message" @retry="load(true)" />
     <view v-else class="list"><SiteCard v-for="site in items" :key="site._id" compact :site="site" @select="selectSite" /><button v-if="hasMore" class="load-more" :disabled="loadingMore" @click="nextPage">{{ loadingMore ? '加载中…' : '加载更多' }}</button><text v-else class="end">— 已展示全部案例 —</text></view>

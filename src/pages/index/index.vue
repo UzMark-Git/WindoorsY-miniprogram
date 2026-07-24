@@ -2,10 +2,11 @@
 import { onMounted, ref } from 'vue'
 import { getHome } from '../../api/content'
 import ContentState from '../../components/content-state.vue'
-import SiteCard from '../../components/site-card.vue'
+import ServiceCard from '../../components/service-card.vue'
 import type { HomeContent } from '../../types/domain'
 import { markHeroImageFailed, normalizeHeroImages, resolveHeroImage } from '../../utils/hero-carousel'
 import { navigateToLegalPage } from '../../utils/legal-navigation'
+import { constructionDetailUrl } from '../../utils/site-navigation'
 
 const STORE_ID = 'store_windoors_demo'
 const home = ref<HomeContent>()
@@ -39,7 +40,7 @@ function openLegal(url: string) { navigateToLegalPage(url, uni) }
 function openServices() { uni.switchTab({ url: '/pages/services/index' }) }
 function openProducts() { uni.switchTab({ url: '/pages/products/index' }) }
 function openSearch(){uni.navigateTo({url:'/pages-sub/search/index'})}
-function selectService(item:HomeContent['services'][number]) { uni.navigateTo({url:item.service_type==='warranty'?`/pages-sub/services/detail?id=${encodeURIComponent(item._id)}`:`/pages-sub/sites/detail?id=${encodeURIComponent(item._id)}`}) }
+function selectService(item:HomeContent['services'][number]) { uni.navigateTo({url:item.service_type==='warranty'?`/pages-sub/services/detail?id=${encodeURIComponent(item._id)}`:constructionDetailUrl(item._id)}) }
 function selectStaff(person: HomeContent['staff'][number]) { uni.navigateTo({ url: `/pages-sub/staff/detail?id=${encodeURIComponent(person._id)}` }) }
 function selectProduct(id: string) { uni.navigateTo({ url: `/pages-sub/products/detail?id=${encodeURIComponent(id)}` }) }
 onMounted(load)
@@ -78,7 +79,7 @@ onMounted(load)
         <scroll-view scroll-x class="staff-scroll"><view class="staff-row"><button v-for="person in home.staff" :key="person._id" class="person" :aria-label="`查看${person.name}的人员详情`" @click="selectStaff(person)"><image :src="failedAvatars[person._id] ? placeholder : (person.avatar || placeholder)" mode="aspectFill" :aria-label="`${person.name}头像`" @error="failedAvatars[person._id] = true" /><view><text class="person-name">{{ person.name }}</text><text class="person-role">{{ person.role }}</text></view></button></view></scroll-view>
       </view>
       <view v-if="home.products.length" class="section products"><view class="heading"><view><text class="kicker">FEATURED WINDOWS</text><text class="section-title">精选门窗产品</text></view><text class="more" @click="openProducts">查看全部 ›</text></view><scroll-view scroll-x class="product-scroll"><view class="product-row"><button v-for="product in home.products" :key="product._id" class="product" @click="selectProduct(product._id)"><image :src="product.cover_image || placeholder" mode="aspectFill"/><text class="product-name">{{product.name}}</text><text class="product-summary">{{product.summary}}</text></button></view></scroll-view></view>
-      <view class="section sites"><view class="heading"><view><text class="kicker">RECENT PROJECTS</text><text class="section-title">近期施工与质保</text></view><text class="more" @click="openServices">查看全部 ›</text></view><view class="cards"><SiteCard v-for="item in home.services.slice(0, 3)" :key="item._id" :site="item" @select="selectService(item)" /></view></view>
+      <view class="section sites"><view class="heading"><view><text class="kicker">RECENT PROJECTS</text><text class="section-title">近期施工与质保</text></view><text class="more" @click="openServices">查看全部 ›</text></view><view class="cards"><ServiceCard v-for="item in home.services.slice(0, 3)" :key="item._id" :item="item" compact @select="selectService(item)" /></view></view>
     </template>
     <view class="legal-links">
       <text @click="openLegal('/pages/legal/service-agreement')">用户服务协议</text>

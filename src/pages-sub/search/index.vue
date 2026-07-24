@@ -3,7 +3,7 @@ import { computed, reactive, ref } from 'vue'
 import { onLoad, onReady } from '@dcloudio/uni-app'
 import { getSearchDiscovery, searchContent } from '../../api/content'
 import type { SearchContentType, SearchDiscovery, SearchGroup, SearchItem, SearchResult } from '../../types/domain'
-import { siteDetailUrl } from '../../utils/site-navigation'
+import { constructionDetailUrl, siteDetailUrl } from '../../utils/site-navigation'
 
 const STORE_ID='store_windoors_demo',placeholder='/static/demo/placeholder.png'
 const SEARCH_DISCOVERY_KEY='search-discovery-v3',SEARCH_DISCOVERY_TTL=30*60*1000
@@ -40,7 +40,7 @@ async function more(type:SearchContentType){
   try{const result=await searchContent({keyword:searchedKeyword.value,storeId:STORE_ID,type,page:groups[type].page+1,pageSize:5}) as {group:SearchGroup};groups[type]={...result.group,items:[...groups[type].items,...result.group.items]}}
   catch{uni.showToast({title:'加载更多失败',icon:'none'})}finally{loadingMore[type]=false}
 }
-function open(item:SearchItem){const urls={sites:siteDetailUrl(item.id),construction:`/pages-sub/sites/detail?id=${encodeURIComponent(item.id)}`,warranties:`/pages-sub/services/detail?id=${encodeURIComponent(item.id)}`};uni.navigateTo({url:urls[item.type]})}
+function open(item:SearchItem){const urls={sites:siteDetailUrl(item.id),construction:constructionDetailUrl(item.id),warranties:`/pages-sub/services/detail?id=${encodeURIComponent(item.id)}`};uni.navigateTo({url:urls[item.type]})}
 onLoad(query=>{keyword.value=String(query?.keyword||'').trim();loadDiscovery();if(keyword.value)submit()})
 onReady(()=>{setTimeout(()=>focus.value=true,220)})
 </script>

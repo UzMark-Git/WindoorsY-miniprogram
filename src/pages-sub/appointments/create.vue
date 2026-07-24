@@ -80,7 +80,7 @@ onLoad((query: Record<string, string | undefined>) => {
     <view class="intro">
       <text class="eyebrow">APPOINTMENT</text>
       <text class="title">预约专属服务</text>
-      <text class="copy">留下需求，门店顾问会尽快与您联系。</text>
+      <text class="copy">留下需求，门店顾问会尽快与你联系，确认方案与报价。</text>
     </view>
     <view class="form">
       <view class="form-field">
