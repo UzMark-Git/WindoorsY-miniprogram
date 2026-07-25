@@ -1,0 +1,622 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>尚品门窗体验馆 - 客户演示</title>
+  <style>
+    :root {
+      --green: #1f6656;
+      --deep: #0f352d;
+      --gold: #b7833f;
+      --paper: #f4f8f5;
+      --phone-w: min(92vw, 420px);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+      background:
+        linear-gradient(120deg, rgba(31, 102, 86, .95), rgba(20, 42, 38, .98)),
+        url("assets/1784983061453.png") center / cover;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      color: #fff;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        linear-gradient(90deg, rgba(255,255,255,.09) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(255,255,255,.05) 1px, transparent 1px);
+      background-size: 58px 58px;
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,.55), transparent 78%);
+      pointer-events: none;
+    }
+
+    .stage {
+      position: relative;
+      width: 100%;
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: minmax(230px, 330px) auto minmax(230px, 310px);
+      gap: 32px;
+      align-items: center;
+      justify-content: center;
+      padding: 30px;
+    }
+
+    .panel {
+      border: 1px solid rgba(255, 255, 255, .16);
+      border-radius: 22px;
+      background: rgba(255, 255, 255, .1);
+      backdrop-filter: blur(20px);
+      box-shadow: 0 24px 80px rgba(0, 0, 0, .28);
+    }
+
+    .intro {
+      padding: 26px;
+      align-self: center;
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      color: #e4bd82;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 4px;
+    }
+
+    h1 {
+      margin: 0 0 14px;
+      font-size: 34px;
+      line-height: 1.12;
+      letter-spacing: 0;
+    }
+
+    .intro p {
+      margin: 0;
+      color: rgba(255, 255, 255, .74);
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    .flow {
+      display: grid;
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    .flow button,
+    .tool-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      border: 1px solid rgba(255, 255, 255, .14);
+      border-radius: 14px;
+      padding: 12px 13px;
+      background: rgba(255, 255, 255, .08);
+      color: rgba(255, 255, 255, .82);
+      font: inherit;
+      cursor: pointer;
+      transition: transform .18s ease, background .18s ease, border-color .18s ease;
+    }
+
+    .flow button:hover,
+    .tool-btn:hover {
+      transform: translateY(-1px);
+      background: rgba(255, 255, 255, .14);
+      border-color: rgba(228, 189, 130, .42);
+    }
+
+    .flow button.active {
+      background: rgba(228, 189, 130, .18);
+      border-color: rgba(228, 189, 130, .62);
+      color: #fff;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .42);
+      box-shadow: 0 0 0 4px rgba(255, 255, 255, .06);
+    }
+
+    .active .dot { background: #e4bd82; }
+
+    .phone-wrap {
+      position: relative;
+      padding: 12px;
+      border-radius: 44px;
+      background: linear-gradient(160deg, rgba(255,255,255,.36), rgba(255,255,255,.08));
+      box-shadow: 0 30px 90px rgba(0,0,0,.38);
+    }
+
+    .phone {
+      position: relative;
+      width: var(--phone-w);
+      aspect-ratio: 654 / 1342;
+      max-height: 92vh;
+      border-radius: 34px;
+      overflow: hidden;
+      background: var(--paper);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.8);
+    }
+
+    .screen {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: #eef3ef;
+    }
+
+    .shot {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      user-select: none;
+      pointer-events: none;
+      transform: scale(1);
+      opacity: 1;
+      transition: opacity .22s ease, transform .28s ease, filter .28s ease;
+    }
+
+    .shot.switching {
+      opacity: .25;
+      transform: scale(.985) translateY(8px);
+      filter: blur(2px);
+    }
+
+    .caption {
+      position: absolute;
+      top: 15px;
+      left: 50%;
+      z-index: 5;
+      transform: translateX(-50%);
+      border-radius: 999px;
+      padding: 8px 13px;
+      background: rgba(255, 255, 255, .9);
+      color: #173f36;
+      font-size: 12px;
+      font-weight: 800;
+      box-shadow: 0 8px 22px rgba(0, 0, 0, .13);
+    }
+
+    .hotspot {
+      position: absolute;
+      border: 0;
+      border-radius: 12px;
+      background: rgba(31, 102, 86, 0);
+      cursor: pointer;
+      padding: 0;
+      transition: background .18s ease, box-shadow .18s ease;
+    }
+
+    .show-zones .hotspot {
+      background: rgba(228, 189, 130, .16);
+      box-shadow: inset 0 0 0 1px rgba(183, 131, 63, .48);
+    }
+
+    .hotspot:hover {
+      background: rgba(228, 189, 130, .12);
+      box-shadow: inset 0 0 0 1px rgba(228, 189, 130, .38);
+    }
+
+    .hotspot.pulse::after {
+      content: "";
+      position: absolute;
+      left: var(--tap-x, 50%);
+      top: var(--tap-y, 50%);
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: rgba(228, 189, 130, .55);
+      transform: translate(-50%, -50%) scale(1);
+      animation: ripple .42s ease-out forwards;
+    }
+
+    @keyframes ripple {
+      to {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(5);
+      }
+    }
+
+    .toast {
+      position: absolute;
+      left: 50%;
+      bottom: 88px;
+      z-index: 10;
+      transform: translateX(-50%) translateY(14px);
+      min-width: 230px;
+      max-width: 78%;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: rgba(17, 57, 49, .96);
+      color: #fff;
+      font-size: 14px;
+      line-height: 1.45;
+      text-align: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .18s ease, transform .18s ease;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, .24);
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .tools {
+      padding: 20px;
+      align-self: center;
+    }
+
+    .tools h2 {
+      margin: 0 0 14px;
+      font-size: 18px;
+      letter-spacing: 0;
+    }
+
+    .status {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 18px;
+      color: rgba(255, 255, 255, .78);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .stat {
+      padding: 12px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.08);
+    }
+
+    .stat b {
+      display: block;
+      color: #fff;
+      font-size: 15px;
+      margin-bottom: 2px;
+    }
+
+    .tool-stack {
+      display: grid;
+      gap: 10px;
+    }
+
+    @media (max-width: 1020px) {
+      .stage {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        gap: 16px;
+        padding: 18px;
+      }
+
+      .intro,
+      .tools {
+        width: min(94vw, 420px);
+      }
+
+      .intro {
+        order: 2;
+      }
+
+      .tools {
+        order: 3;
+      }
+
+      .phone-wrap {
+        order: 1;
+      }
+
+      h1 { font-size: 26px; }
+    }
+
+    @media (max-width: 560px) {
+      .intro,
+      .tools {
+        display: none;
+      }
+
+      .stage {
+        min-height: 100svh;
+        padding: 10px;
+      }
+
+      .phone-wrap {
+        padding: 6px;
+        border-radius: 38px;
+      }
+
+      .phone {
+        width: min(96vw, 420px);
+        max-height: 97svh;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="stage">
+    <section class="panel intro" aria-label="演示说明">
+      <p class="eyebrow">WINDOORS DEMO</p>
+      <h1>尚品门窗体验馆</h1>
+      <p>用于客户快速确认页面风格、内容结构和核心流程。保留小程序真实截图，只加强演示观感和点击反馈。</p>
+      <div class="flow" id="flow"></div>
+    </section>
+
+    <section class="phone-wrap" aria-label="手机预览">
+      <div class="phone" id="phone">
+        <div class="screen">
+          <div class="caption" id="caption">首页</div>
+          <img class="shot" id="shot" src="assets/1784983061453.png" alt="小程序页面截图" />
+          <div id="hotspots"></div>
+          <div class="toast" id="toast"></div>
+        </div>
+      </div>
+    </section>
+
+    <aside class="panel tools">
+      <h2>演示控制</h2>
+      <div class="status">
+        <div class="stat">
+          <b id="currentName">首页</b>
+          <span id="currentHint">点击搜索、底部导航或服务卡片体验流程。</span>
+        </div>
+        <div class="stat">
+          <b>推荐讲解顺序</b>
+          <span>首页介绍门店，产品和案例做展示，服务承接施工进度与质保。</span>
+        </div>
+      </div>
+      <div class="tool-stack">
+        <button class="tool-btn" type="button" id="toggleZones"><span class="dot"></span>显示可点击区域</button>
+        <button class="tool-btn" type="button" id="resetDemo"><span class="dot"></span>重置到首页</button>
+      </div>
+    </aside>
+  </main>
+
+  <script>
+    const pages = {
+      home: {
+        title: "首页",
+        hint: "点击搜索、底部导航或服务卡片体验流程。",
+        img: "assets/1784983061453.png",
+        spots: [
+          ["搜索", "search", 8, 37, 84, 7],
+          ["产品", "products", 24, 89, 13, 8],
+          ["案例", "cases", 43, 89, 13, 8],
+          ["服务", "service", 62, 89, 13, 8],
+          ["我的", "mine", 81, 89, 13, 8],
+          ["服务详情", "serviceDetail", 5, 6, 90, 31],
+          ["产品列表", "products", 6, 69, 88, 19]
+        ]
+      },
+      products: {
+        title: "产品",
+        hint: "展示门窗产品分类和产品卡片，详情可后续接入产品介绍。",
+        img: "assets/1784983097440.png",
+        spots: [
+          ["首页", "home", 8, 89, 12, 8],
+          ["案例", "cases", 43, 89, 13, 8],
+          ["服务", "service", 62, 89, 13, 8],
+          ["我的", "mine", 81, 89, 13, 8],
+          ["查看详情", "demo", 10, 61, 33, 8],
+          ["查看详情", "demo", 53, 61, 33, 8]
+        ]
+      },
+      cases: {
+        title: "案例",
+        hint: "用于放楼盘案例、面积、区域和报价留资入口。",
+        img: "assets/1784983105140.png",
+        spots: [
+          ["首页", "home", 8, 89, 12, 8],
+          ["产品", "products", 24, 89, 13, 8],
+          ["服务", "service", 62, 89, 13, 8],
+          ["我的", "mine", 81, 89, 13, 8],
+          ["案例详情", "demo", 7, 35, 40, 22],
+          ["案例详情", "demo", 52, 35, 40, 22]
+        ]
+      },
+      service: {
+        title: "服务",
+        hint: "服务页展示施工项目、质保状态，点击卡片进入详情。",
+        img: "assets/1784983113465.png",
+        spots: [
+          ["首页", "home", 8, 89, 12, 8],
+          ["产品", "products", 24, 89, 13, 8],
+          ["案例", "cases", 43, 89, 13, 8],
+          ["我的", "mine", 81, 89, 13, 8],
+          ["施工详情", "serviceDetail", 8, 13, 84, 26],
+          ["施工详情", "serviceDetail", 8, 40, 84, 26],
+          ["质保详情", "warranty", 8, 67, 84, 20]
+        ]
+      },
+      mine: {
+        title: "我的",
+        hint: "我的页用于登录、收藏管理，后续可扩展角色入口。",
+        img: "assets/1784983122586.png",
+        spots: [
+          ["首页", "home", 8, 89, 12, 8],
+          ["产品", "products", 24, 89, 13, 8],
+          ["案例", "cases", 43, 89, 13, 8],
+          ["服务", "service", 62, 89, 13, 8],
+          ["微信登录", "login", 9, 44, 82, 7],
+          ["立即登录", "login", 35, 72, 31, 7]
+        ]
+      },
+      search: {
+        title: "全局搜索",
+        hint: "搜索覆盖案例、施工和质保内容，方便客户快速找项目。",
+        img: "assets/1784983086599.png",
+        spots: [
+          ["返回", "back", 0, 7, 12, 8],
+          ["搜索", "demo", 79, 14, 15, 6],
+          ["案例", "cases", 8, 34, 28, 8],
+          ["施工", "service", 38, 34, 28, 8],
+          ["质保", "warranty", 68, 34, 28, 8]
+        ]
+      },
+      serviceDetail: {
+        title: "施工详情",
+        hint: "展示项目基本信息、施工阶段和动态记录。",
+        img: "assets/1784983152105.png",
+        spots: [
+          ["返回", "back", 0, 7, 12, 8],
+          ["预约", "appoint", 68, 88, 30, 8],
+          ["转发", "share", 6, 88, 11, 8],
+          ["收藏", "favorite", 20, 88, 12, 8],
+          ["朋友圈", "share", 37, 88, 14, 8],
+          ["海报", "poster", 54, 88, 12, 8],
+          ["施工动态", "serviceDetailProgress", 5, 71, 90, 16]
+        ]
+      },
+      serviceDetailProgress: {
+        title: "施工动态",
+        hint: "动态流展示上门测量、方案确认、安装验收等交付过程。",
+        img: "assets/1784983169814.png",
+        spots: [
+          ["返回", "serviceDetail", 0, 7, 12, 8],
+          ["预约", "appoint", 68, 88, 30, 8],
+          ["收藏", "favorite", 20, 88, 12, 8]
+        ]
+      },
+      warranty: {
+        title: "质保详情",
+        hint: "质保页展示凭证、期限和售后咨询入口。",
+        img: "assets/1784983204497.png",
+        spots: [
+          ["返回", "service", 0, 7, 12, 8],
+          ["电话咨询", "call", 68, 88, 30, 8],
+          ["电话咨询", "call", 8, 75, 84, 7],
+          ["项目记录", "serviceDetailProgress", 5, 82, 90, 10],
+          ["收藏", "favorite", 20, 88, 12, 8]
+        ]
+      }
+    };
+
+    const flowItems = [
+      ["home", "首页总览"],
+      ["products", "门窗产品"],
+      ["cases", "案例展示"],
+      ["service", "服务进度"],
+      ["warranty", "质保查看"],
+      ["mine", "我的入口"]
+    ];
+
+    const messages = {
+      demo: "演示版：这里后续可接详情页或搜索结果。",
+      login: "演示版：这里后续接入微信登录和角色权限。",
+      appoint: "演示版：这里后续接入预约表单或客服跟进。",
+      call: "演示版：这里后续可直接拨打客服电话。",
+      share: "演示版：小程序内可接入转发分享。",
+      favorite: "已模拟收藏，正式版会同步到账号。",
+      poster: "演示版：这里后续生成项目海报。"
+    };
+
+    const historyStack = ["home"];
+    const phone = document.getElementById("phone");
+    const shot = document.getElementById("shot");
+    const hotspots = document.getElementById("hotspots");
+    const toast = document.getElementById("toast");
+    const caption = document.getElementById("caption");
+    const flow = document.getElementById("flow");
+    const currentName = document.getElementById("currentName");
+    const currentHint = document.getElementById("currentHint");
+    const toggleZones = document.getElementById("toggleZones");
+    const resetDemo = document.getElementById("resetDemo");
+    let current = "home";
+    let toastTimer;
+
+    flowItems.forEach(([key, label]) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.dataset.page = key;
+      button.innerHTML = `<span class="dot"></span><span>${label}</span>`;
+      button.addEventListener("click", () => go(key));
+      flow.appendChild(button);
+    });
+
+    function showToast(text) {
+      toast.textContent = text;
+      toast.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove("show"), 1900);
+    }
+
+    function go(target) {
+      if (messages[target]) {
+        showToast(messages[target]);
+        return;
+      }
+      if (target === "back") {
+        historyStack.pop();
+        target = historyStack[historyStack.length - 1] || "home";
+      } else if (target !== current) {
+        historyStack.push(target);
+      }
+      render(target);
+    }
+
+    function render(key) {
+      const page = pages[key] || pages.home;
+      current = key;
+      shot.classList.add("switching");
+      window.setTimeout(() => {
+        shot.src = page.img;
+        caption.textContent = page.title;
+        currentName.textContent = page.title;
+        currentHint.textContent = page.hint;
+        hotspots.innerHTML = "";
+        page.spots.forEach(([label, target, x, y, w, h]) => {
+          const button = document.createElement("button");
+          button.className = "hotspot";
+          button.type = "button";
+          button.title = label;
+          button.setAttribute("aria-label", label);
+          button.style.left = x + "%";
+          button.style.top = y + "%";
+          button.style.width = w + "%";
+          button.style.height = h + "%";
+          button.addEventListener("pointerdown", event => {
+            const rect = button.getBoundingClientRect();
+            button.style.setProperty("--tap-x", `${event.clientX - rect.left}px`);
+            button.style.setProperty("--tap-y", `${event.clientY - rect.top}px`);
+            button.classList.remove("pulse");
+            void button.offsetWidth;
+            button.classList.add("pulse");
+          });
+          button.addEventListener("click", () => go(target));
+          hotspots.appendChild(button);
+        });
+        document.querySelectorAll(".flow button").forEach(button => {
+          button.classList.toggle("active", button.dataset.page === key);
+        });
+        shot.onload = () => shot.classList.remove("switching");
+        window.setTimeout(() => shot.classList.remove("switching"), 220);
+      }, 120);
+    }
+
+    toggleZones.addEventListener("click", () => {
+      phone.classList.toggle("show-zones");
+      showToast(phone.classList.contains("show-zones") ? "已显示可点击区域" : "已隐藏可点击区域");
+    });
+
+    resetDemo.addEventListener("click", () => {
+      historyStack.splice(0, historyStack.length, "home");
+      render("home");
+      showToast("已回到首页");
+    });
+
+    render("home");
+    window.setTimeout(() => showToast("点击底部导航、搜索框或卡片体验流程"), 450);
+  </script>
+</body>
+</html>
