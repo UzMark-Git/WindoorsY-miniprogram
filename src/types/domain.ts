@@ -86,7 +86,7 @@ export interface ProductSummary extends ContentRecord {
   sort_order: number
 }
 
-export interface ProductDetail extends ProductSummary { related_sites:SiteSummary[] }
+export interface ProductDetail extends ProductSummary { related_sites:ServiceSummary[] }
 export interface ProductListResult { items: ProductSummary[]; page: number; pageSize: number }
 
 export interface SiteListResult {
