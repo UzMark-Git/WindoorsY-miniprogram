@@ -4,11 +4,11 @@ import { onLoad, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app'
 import { getStaffProfile } from '../../api/content'
 import ContentState from '../../components/content-state.vue'
 import DetailActionBar from '../../components/detail-action-bar.vue'
-import SiteCard from '../../components/site-card.vue'
+import ServiceCard from '../../components/service-card.vue'
 import type { StaffDetail } from '../../types/domain'
 import { classifyDetailError } from '../../utils/detail-state'
 import { shareMessage, timelineMessage } from '../../utils/content-sharing'
-import { siteDetailUrl } from '../../utils/site-navigation'
+import { constructionDetailUrl } from '../../utils/site-navigation'
 
 const placeholder='/static/demo/placeholder.png'
 const staffId=ref(''),profile=ref<StaffDetail>(),avatarSrc=ref(placeholder)
@@ -21,7 +21,7 @@ async function load(){
   catch(error){const failure=classifyDetailError(error);status.value=failure.status;message.value=failure.retryable?(failure.status==='offline'?'网络已断开，请检查后重试':'人员详情加载失败'):'该人员内容已下架或不存在'}
 }
 function appoint(){if(profile.value)uni.navigateTo({url:`/pages-sub/appointments/create?source_type=staff&source_id=${encodeURIComponent(profile.value._id)}&store_id=${encodeURIComponent(profile.value.store_id)}`})}
-function openSite(id:string){uni.navigateTo({url:siteDetailUrl(id)})}
+function openSite(id:string){const item=profile.value?.related_sites.find(site=>site._id===id);uni.navigateTo({url:item?.service_type==='warranty'?`/pages-sub/services/detail?id=${encodeURIComponent(id)}`:constructionDetailUrl(id)})}
 onLoad((query:Record<string,string|undefined>)=>{staffId.value=query.id||'';load()})
 onShareAppMessage(()=>profile.value?shareMessage('staff',profile.value._id,`门窗服务顾问：${profile.value.name}`,profile.value.avatar):{})
 onShareTimeline(()=>profile.value?timelineMessage(`门窗服务顾问：${profile.value.name}`,profile.value.avatar):{})
@@ -42,9 +42,9 @@ onShareTimeline(()=>profile.value?timelineMessage(`门窗服务顾问：${profil
         <view v-if="profile.service_regions?.length" class="group"><text class="label">服务区域</text><view class="region-list"><text v-for="region in profile.service_regions" :key="region.code">{{region.city}} · {{region.district}}</text></view></view>
       </view>
       <view class="cases">
-        <view class="section-heading"><view><text class="title">近期参与案例</text><text class="case-count">{{profile.related_sites.length?'展示最近公开参与的项目':'真实项目记录将在这里展示'}}</text></view></view>
-        <scroll-view v-if="profile.related_sites.length" scroll-x class="case-scroll"><view class="case-row"><view v-for="site in profile.related_sites" :key="site._id" class="case-item"><SiteCard :site="site" @select="openSite"/></view></view></scroll-view>
-        <view v-else class="empty-cases"><text>暂无公开的近期参与案例</text><text>项目经门店审核发布后会展示在这里</text></view>
+        <view class="section-heading"><view><text class="title">近期服务的工地</text><text class="case-count">{{profile.related_sites.length?'展示正在施工中或质保中的相关工地':'相关工地服务记录将在这里展示'}}</text></view></view>
+        <scroll-view v-if="profile.related_sites.length" scroll-x class="case-scroll"><view class="case-row"><view v-for="site in profile.related_sites.slice(0,3)" :key="site._id" class="case-item"><ServiceCard :item="site" compact @select="openSite"/></view></view></scroll-view>
+        <view v-else class="empty-cases"><text>暂无公开的近期服务工地</text><text>工地进入施工或质保阶段后会展示在这里</text></view>
       </view>
       <DetailActionBar type="staff" :content-id="profile._id" :title="profile.name" :image="profile.avatar" :return-url="`/pages-sub/staff/detail?id=${encodeURIComponent(profile._id)}`" @appoint="appoint"/>
     </template>

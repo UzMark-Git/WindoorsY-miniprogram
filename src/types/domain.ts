@@ -47,7 +47,7 @@ export interface StaffProfile extends ContentRecord {
 }
 
 export interface ServiceRegion { code:string;province:string;city:string;district:string }
-export interface StaffDetail extends StaffProfile { related_sites:SiteSummary[] }
+export interface StaffDetail extends StaffProfile { related_sites:ServiceSummary[] }
 
 export type SiteStage = 'measuring' | 'designing' | 'installing' | 'completed'
 export type SiteDisplayGroup = 'case' | 'service'
