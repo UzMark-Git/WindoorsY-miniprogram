@@ -170,6 +170,54 @@
       transition: width .32s ease;
     }
 
+    .qr-card {
+      display: grid;
+      width: min(470px, 100%);
+      margin-top: 28px;
+      padding: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(214,170,104,.34);
+      border-radius: 16px;
+      background: rgba(255,255,255,.07);
+      color: #fff;
+      cursor: pointer;
+      text-align: left;
+      transition: transform .2s ease, border-color .2s ease, background .2s ease;
+    }
+
+    .qr-card:hover {
+      border-color: rgba(214,170,104,.7);
+      background: rgba(255,255,255,.11);
+      transform: translateY(-2px);
+    }
+
+    .qr-card-copy {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 2px 4px 10px;
+    }
+
+    .qr-card-copy strong { font-size: 13px; }
+
+    .qr-card-copy span {
+      color: var(--gold);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1px;
+    }
+
+    .qr-card img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 10px;
+      background: #fff;
+    }
+
+    .qr-mobile-button { display: none; }
+
     .phone-stage {
       position: relative;
       align-self: center;
@@ -396,6 +444,84 @@
       font-size: 11px;
     }
 
+    .qr-dialog {
+      width: min(960px, calc(100vw - 36px));
+      max-height: calc(100vh - 36px);
+      padding: 0;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 22px;
+      background: #f6f7f5;
+      color: #173f35;
+      box-shadow: 0 32px 100px rgba(0,0,0,.52);
+    }
+
+    .qr-dialog::backdrop {
+      background: rgba(3,18,14,.78);
+      backdrop-filter: blur(12px);
+    }
+
+    .qr-dialog-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 18px 20px 14px;
+    }
+
+    .qr-dialog-header h2 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .qr-dialog-header p {
+      margin: 4px 0 0;
+      color: #6a756f;
+      font-size: 12px;
+    }
+
+    .qr-close {
+      display: grid;
+      flex: 0 0 auto;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      padding: 0;
+      border: 1px solid #dce3df;
+      border-radius: 50%;
+      background: #fff;
+      color: #173f35;
+      cursor: pointer;
+      font-size: 22px;
+      line-height: 1;
+    }
+
+    .qr-dialog-media {
+      padding: 0 20px 20px;
+    }
+
+    .qr-dialog-media img {
+      display: block;
+      width: 100%;
+      max-height: calc(100vh - 145px);
+      object-fit: contain;
+      border-radius: 14px;
+      background: #fff;
+    }
+
+    .qr-error {
+      display: none;
+      min-height: 180px;
+      place-items: center;
+      border-radius: 14px;
+      background: #f7e7e3;
+      color: #8b3e32;
+      font-weight: 700;
+    }
+
+    .qr-error.show { display: grid; }
+    body.qr-open { overflow: hidden; }
+
     @media (max-width: 1020px) {
       :root { --phone-w: min(38vh, 360px); }
       .stage { grid-template-columns: minmax(250px, 1fr) minmax(310px, 390px); gap: 24px 36px; }
@@ -416,6 +542,7 @@
       }
       .story-panel { width: 100%; order: 2; }
       .brand, .eyebrow, h1, .narration, .progress { display: none; }
+      .qr-card { display: none; }
       .chapters { justify-content: center; gap: 6px; margin: 0; }
       .chapter { min-height: 34px; padding-inline: 10px; font-size: 11px; }
       .phone-stage { order: 1; }
@@ -434,6 +561,19 @@
       #zonesButton, #resetButton { font-size: 0; }
       #zonesButton::after { content: "热点"; font-size: 12px; }
       #resetButton::after { content: "重置"; font-size: 12px; }
+      .qr-mobile-button {
+        display: inline-flex;
+        align-items: center;
+      }
+      .qr-dialog {
+        width: calc(100vw - 20px);
+        max-height: calc(100svh - 20px);
+        border-radius: 18px;
+      }
+      .qr-dialog-header { padding: 14px 14px 10px; }
+      .qr-dialog-header h2 { font-size: 17px; }
+      .qr-dialog-media { padding: 0 10px 10px; }
+      .qr-dialog-media img { max-height: calc(100svh - 112px); }
     }
   </style>
 </head>
@@ -450,6 +590,13 @@
         <div class="progress-track"><div class="progress-bar" id="progressBar"></div></div>
         <span id="pageTotal">21</span>
       </div>
+      <button class="qr-card qr-trigger" type="button" aria-label="打开微信小程序二维码">
+        <span class="qr-card-copy">
+          <strong>微信扫码体验真实小程序</strong>
+          <span>SCAN TO OPEN ↗</span>
+        </span>
+        <img src="assets/weixin.png" alt="微信搜一搜门窗老伙计+小程序码" />
+      </button>
     </section>
 
     <section class="phone-stage" aria-label="小程序手机演示">
@@ -475,11 +622,26 @@
         <span>点击手机内卡片与导航，也可以使用键盘方向键</span>
       </div>
       <div class="tool-group">
+        <button class="control qr-mobile-button qr-trigger" type="button">微信扫码体验</button>
         <button class="control" type="button" id="zonesButton">显示点击区域</button>
         <button class="control" type="button" id="resetButton">重新开始</button>
       </div>
     </nav>
   </main>
+
+  <dialog class="qr-dialog" id="qrDialog" aria-labelledby="qrDialogTitle">
+    <div class="qr-dialog-header">
+      <div>
+        <h2 id="qrDialogTitle">微信扫码体验门窗老伙计+</h2>
+        <p>使用微信扫描小程序码，或在微信中搜索“门窗老伙计+”</p>
+      </div>
+      <button class="qr-close" type="button" id="qrCloseButton" aria-label="关闭二维码">×</button>
+    </div>
+    <div class="qr-dialog-media">
+      <img id="qrDialogImage" src="assets/weixin.png" alt="微信搜一搜门窗老伙计+小程序码" />
+      <div class="qr-error" id="qrError" role="alert">二维码图片加载失败</div>
+    </div>
+  </dialog>
 
   <script>
     const chapters = [
@@ -806,6 +968,10 @@
     const nextButton = document.getElementById("nextButton");
     const zonesButton = document.getElementById("zonesButton");
     const resetButton = document.getElementById("resetButton");
+    const qrDialog = document.getElementById("qrDialog");
+    const qrCloseButton = document.getElementById("qrCloseButton");
+    const qrDialogImage = document.getElementById("qrDialogImage");
+    const qrError = document.getElementById("qrError");
 
     function pad(value) {
       return String(value).padStart(2, "0");
@@ -858,6 +1024,18 @@
     function selectChapter(chapterId) {
       const chapter = chapterMap[chapterId];
       if (chapter) go(chapter.entry, { resetHistory: true });
+    }
+
+    function openQrDialog() {
+      qrError.classList.remove("show");
+      qrDialogImage.hidden = false;
+      qrDialog.showModal();
+      document.body.classList.add("qr-open");
+    }
+
+    function closeQrDialog() {
+      if (qrDialog.open) qrDialog.close();
+      document.body.classList.remove("qr-open");
     }
 
     function createHotspot([label, target, x, y, width, height]) {
@@ -955,8 +1133,29 @@
       go("home", { resetHistory: true });
       showToast("已重新开始客户演示");
     });
+    document.querySelectorAll(".qr-trigger").forEach(button => {
+      button.addEventListener("click", openQrDialog);
+    });
+    qrCloseButton.addEventListener("click", closeQrDialog);
+    qrDialog.addEventListener("click", event => {
+      const rect = qrDialog.getBoundingClientRect();
+      const inside = event.clientX >= rect.left && event.clientX <= rect.right
+        && event.clientY >= rect.top && event.clientY <= rect.bottom;
+      if (!inside) closeQrDialog();
+    });
+    qrDialog.addEventListener("close", () => {
+      document.body.classList.remove("qr-open");
+    });
+    qrDialogImage.addEventListener("error", () => {
+      qrDialogImage.hidden = true;
+      qrError.classList.add("show");
+    });
 
     document.addEventListener("keydown", event => {
+      if (event.key === "Escape" && qrDialog.open) {
+        closeQrDialog();
+        return;
+      }
       if (event.key === "ArrowLeft") step(-1);
       if (event.key === "ArrowRight") step(1);
       if (event.key === "Escape") toast.classList.remove("show");
