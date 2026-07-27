@@ -96,7 +96,7 @@ export interface SiteListResult {
   pageSize: number
 }
 
-export type SearchContentType = 'sites'|'construction'|'warranties'
+export type SearchContentType = 'products'|'sites'|'construction'|'warranties'
 export interface SearchItem { id:string;type:SearchContentType;title:string;summary:string;image:string;meta:string }
 export interface SearchGroup { items:SearchItem[];page:number;pageSize:number;hasMore:boolean }
 export interface SearchResult { keyword:string;groups:Record<SearchContentType,SearchGroup> }
