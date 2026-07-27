@@ -28,15 +28,15 @@ const emit = defineEmits<{ warranty: []; store: [] }>()
 .warranty-card { width: 100%; min-width: 88rpx; min-height: 88rpx; margin: 0; border: 0; text-align: left; line-height: normal; }
 .store-strip { width: 100%; min-width: 88rpx; min-height: 88rpx; margin: 0; border: 0; text-align: left; line-height: normal; }
 .warranty-card::after, .store-strip::after { border: 0; }
-.warranty-card { padding: 34rpx 30rpx; border-radius: 20rpx; color: #fff; background: linear-gradient(135deg, #20483d, #16362e); }
+.warranty-card { padding: 34rpx 30rpx; border-radius: var(--home-radius); color: #fff; background: linear-gradient(135deg, var(--home-green), #102c25); }
 .warranty-kicker, .warranty-title, .warranty-copy, .warranty-link, .store-name, .store-hours { display: block; }
 .warranty-kicker { color: #ddc493; letter-spacing: 3rpx; font-size: 20rpx; font-weight: 600; }
 .warranty-title { margin-top: 14rpx; font-size: 34rpx; font-weight: 650; }
 .warranty-copy { margin-top: 12rpx; color: rgba(255, 255, 255, .78); font-size: 23rpx; line-height: 1.6; }
 .warranty-link { margin-top: 20rpx; color: #f1d9a7; font-size: 24rpx; }
-.store-strip { display: flex; align-items: center; justify-content: space-between; gap: 20rpx; padding: 24rpx 28rpx; border-radius: 18rpx; color: #203832; background: #fff; }
+.store-strip { display: flex; align-items: center; justify-content: space-between; gap: 20rpx; padding: 24rpx 28rpx; border-radius: var(--home-radius); color: var(--home-green); background: var(--home-surface); }
 .store-copy { min-width: 0; }
 .store-name { overflow: hidden; font-size: 28rpx; font-weight: 600; white-space: nowrap; text-overflow: ellipsis; }
-.store-hours { margin-top: 10rpx; color: #71817b; font-size: 22rpx; }
-.store-link { flex: 0 0 auto; color: #315f53; font-size: 24rpx; }
+.store-hours { margin-top: 10rpx; color: var(--home-muted); font-size: 22rpx; }
+.store-link { flex: 0 0 auto; color: var(--home-green); font-size: 24rpx; }
 </style>

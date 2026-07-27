@@ -29,8 +29,8 @@ const emit = defineEmits<{
   position: relative;
   z-index: 3;
   padding: 22rpx;
-  border-radius: 24rpx;
-  background: #fff;
+  border-radius: var(--home-radius);
+  background: var(--home-surface);
   box-shadow: 0 12rpx 38rpx rgba(20,55,46,.12);
 }
 
@@ -44,7 +44,7 @@ const emit = defineEmits<{
   padding: 0 20rpx;
   border: 0;
   border-radius: 16rpx;
-  color: #71817b;
+  color: var(--home-muted);
   background: #f1f5f3;
   text-align: left;
   font-size: 24rpx;
@@ -58,7 +58,7 @@ const emit = defineEmits<{
 }
 
 .search-icon {
-  color: #a57941;
+  color: var(--home-gold);
   font-size: 36rpx;
 }
 
@@ -81,7 +81,7 @@ const emit = defineEmits<{
   padding: 0 20rpx;
   border: 0;
   border-radius: 24rpx;
-  color: #547068;
+  color: var(--home-green);
   background: #f7faf8;
   font-size: 20rpx;
   line-height: normal;
@@ -106,7 +106,7 @@ const emit = defineEmits<{
   padding: 0;
   border: 0;
   border-radius: 16rpx;
-  color: #39574e;
+  color: var(--home-green);
   background: #f5f8f6;
   font-size: 21rpx;
   line-height: normal;
@@ -119,7 +119,7 @@ const emit = defineEmits<{
   width: 36rpx;
   height: 36rpx;
   border-radius: 12rpx;
-  color: #a57941;
+  color: var(--home-gold);
   background: #f7ecdc;
   font-size: 24rpx;
 }

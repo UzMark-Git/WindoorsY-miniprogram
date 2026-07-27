@@ -49,12 +49,12 @@ function progressText(item: ServiceSummary) {
 <style scoped>
 .project-module { min-width: 0; }
 .module-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 16rpx; margin-bottom: 28rpx; }
-.kicker { display: block; color: #a57941; letter-spacing: 4rpx; font-size: 20rpx; font-weight: 600; }
-.section-title { display: block; margin-top: 10rpx; color: #172d28; font-size: 38rpx; font-weight: 650; }
-.all-button { flex: 0 0 auto; min-width: 144rpx; min-height: 88rpx; margin: 0 -18rpx -18rpx 0; padding: 0 18rpx; border: 0; color: #315f53; font-size: 24rpx; line-height: 88rpx; text-align: right; background: transparent; }
+.kicker { display: block; color: var(--home-gold); letter-spacing: 4rpx; font-size: 20rpx; font-weight: 600; }
+.section-title { display: block; margin-top: 10rpx; color: var(--home-green); font-size: 38rpx; font-weight: 650; }
+.all-button { flex: 0 0 auto; min-width: 144rpx; min-height: 88rpx; margin: 0 -18rpx -18rpx 0; padding: 0 18rpx; border: 0; color: var(--home-green); font-size: 24rpx; line-height: 88rpx; text-align: right; background: transparent; }
 .all-button::after, .project-card::after { border: 0; }
 .project-swiper { height: 450rpx; overflow: hidden; border-radius: 20rpx; }
-.project-slide { position: relative; width: 100%; height: 414rpx; overflow: hidden; border-radius: 20rpx; background: #183e34; }
+.project-slide { position: relative; width: 100%; height: 414rpx; overflow: hidden; border-radius: var(--home-radius); background: var(--home-green); }
 .project-image, .project-veil { position: absolute; inset: 0; width: 100%; height: 100%; }
 .project-image { background: #2c5147; }
 .project-veil { pointer-events: none; background: linear-gradient(135deg, rgba(12, 49, 40, .92) 0%, rgba(18, 59, 49, .76) 38%, rgba(18, 59, 49, .16) 76%); backdrop-filter: blur(4rpx); }

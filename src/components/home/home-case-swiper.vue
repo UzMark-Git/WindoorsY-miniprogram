@@ -46,16 +46,16 @@ function caseMeta(item: SiteSummary) {
 <style scoped>
 .case-module { min-width: 0; }
 .module-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 16rpx; margin-bottom: 28rpx; }
-.kicker { display: block; color: #a57941; letter-spacing: 4rpx; font-size: 20rpx; font-weight: 600; }
-.section-title { display: block; margin-top: 10rpx; color: #172d28; font-size: 38rpx; font-weight: 650; }
-.all-button { flex: 0 0 auto; min-width: 176rpx; min-height: 88rpx; margin: 0 -18rpx -18rpx 0; padding: 0 18rpx; border: 0; color: #315f53; font-size: 24rpx; line-height: 88rpx; text-align: right; background: transparent; }
+.kicker { display: block; color: var(--home-gold); letter-spacing: 4rpx; font-size: 20rpx; font-weight: 600; }
+.section-title { display: block; margin-top: 10rpx; color: var(--home-green); font-size: 38rpx; font-weight: 650; }
+.all-button { flex: 0 0 auto; min-width: 176rpx; min-height: 88rpx; margin: 0 -18rpx -18rpx 0; padding: 0 18rpx; border: 0; color: var(--home-green); font-size: 24rpx; line-height: 88rpx; text-align: right; background: transparent; }
 .all-button::after, .case-card::after { border: 0; }
 .case-swiper { height: 432rpx; }
 .case-row { display: flex; gap: 18rpx; min-width: 0; padding-bottom: 36rpx; }
-.case-card { flex: 1 1 0; min-width: 0; min-height: 384rpx; margin: 0; padding: 0; overflow: hidden; border: 0; border-radius: 18rpx; color: inherit; text-align: left; line-height: normal; background: #fff; }
+.case-card { flex: 1 1 0; min-width: 0; min-height: 384rpx; margin: 0; padding: 0; overflow: hidden; border: 0; border-radius: var(--home-radius); color: inherit; text-align: left; line-height: normal; background: var(--home-surface); }
 .case-image { display: block; width: 100%; height: 236rpx; background: #e5ece9; }
 .case-copy { padding: 18rpx 18rpx 20rpx; }
 .case-title, .case-meta { display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-.case-title { color: #203832; font-size: 28rpx; font-weight: 650; }
-.case-meta { margin-top: 10rpx; color: #74827d; font-size: 21rpx; }
+.case-title { color: var(--home-green); font-size: 28rpx; font-weight: 650; }
+.case-meta { margin-top: 10rpx; color: var(--home-muted); font-size: 21rpx; }
 </style>

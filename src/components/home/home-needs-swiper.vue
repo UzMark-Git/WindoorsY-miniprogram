@@ -55,8 +55,8 @@ const emit = defineEmits<{ select: [keyword: string] }>()
   margin: 0;
   padding: 20rpx;
   border: 0;
-  border-radius: 18rpx;
-  background: #fff;
+  border-radius: var(--home-radius);
+  background: var(--home-surface);
   text-align: left;
   line-height: normal;
   box-shadow: 0 6rpx 22rpx rgba(25,61,52,.06);
@@ -74,14 +74,14 @@ const emit = defineEmits<{ select: [keyword: string] }>()
 }
 
 .need-grid text:first-child {
-  color: #22443a;
+  color: var(--home-green);
   font-size: 27rpx;
   font-weight: 650;
 }
 
 .need-grid text:last-child {
   margin-top: 10rpx;
-  color: #9a7440;
+  color: var(--home-gold);
   font-size: 20rpx;
 }
 </style>

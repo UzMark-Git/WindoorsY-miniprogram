@@ -95,12 +95,12 @@ onMounted(load)
       </view>
       <HomeSearchPanel class="home-search-panel" @search="openSearch" @private-entry="openPrivateEntry" />
       <view class="section needs"><view class="heading"><view><text class="kicker">WINDOW SOLUTIONS</text><text class="section-title">你家想解决什么问题？</text></view></view><HomeNeedsSwiper @select="openSearch" /></view>
-      <view class="section">
+      <view v-if="home.cases.length" class="section cases"><HomeCaseSwiper :items="home.cases" :placeholder="placeholder" @select="selectCase" @all="openCases" /></view>
+      <view v-if="home.projects.length" class="section sites"><HomeProjectSwiper :items="home.projects" :placeholder="placeholder" @select="selectService" @all="openServices" /></view>
+      <view class="section staff">
         <view class="heading"><view><text class="kicker">SERVICE TEAM</text><text class="section-title">为你服务的人</text></view></view>
         <HomeStaffStrip :items="home.staff" :placeholder="placeholder" @select="selectStaff" />
       </view>
-      <view v-if="home.cases.length" class="section cases"><HomeCaseSwiper :items="home.cases" :placeholder="placeholder" @select="selectCase" @all="openCases" /></view>
-      <view v-if="home.projects.length" class="section sites"><HomeProjectSwiper :items="home.projects" :placeholder="placeholder" @select="selectService" @all="openServices" /></view>
       <view class="section service-footer-section"><HomeServiceFooter :store="home.store" :warranty="home.warranty" @warranty="openWarranty" @store="openStoreInfo" /></view>
     </template>
     <view class="legal-links">
@@ -112,7 +112,7 @@ onMounted(load)
 </template>
 
 <style scoped>
-.page { min-height: 100vh; padding-bottom: calc(70rpx + env(safe-area-inset-bottom)); background: #f4f6f4; }
+.page { --home-green: #173d34; --home-gold: #ae772d; --home-surface: #ffffff; --home-muted: #66766f; --home-radius: 28rpx; min-height: 100vh; padding-bottom: calc(70rpx + env(safe-area-inset-bottom)); background: #f4f6f4; }
 .hero { position: relative; height: 610rpx; overflow: hidden; }
 .hero-image { width: 100%; height: 100%; }
 .veil { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; background: linear-gradient(180deg,rgba(10,30,25,.08),rgba(10,30,25,.78)); }
@@ -121,10 +121,9 @@ onMounted(load)
 .hero-title { display: block; margin-top: 18rpx; font-size: 52rpx; font-weight: 650; }
 .hero-lead { display:block; margin-top:18rpx; color:rgba(255,255,255,.86); font-size:25rpx; }
 .home-search-panel{display:block;margin:-44rpx 30rpx 0}
-.section { padding: 62rpx 30rpx 0; }.heading { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom: 28rpx; }.kicker { color: #a57941; }.section-title { display:block; margin-top:10rpx; color:#172d28; font-size:38rpx; font-weight:650; }.more { color:#567069; font-size:24rpx; }
+.section { padding: 62rpx 30rpx 0; }.heading { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom: 28rpx; }.kicker { color: var(--home-gold); }.section-title { display:block; margin-top:10rpx; color:var(--home-green); font-size:38rpx; font-weight:650; }
 .needs{padding-top:54rpx}
-.product-scroll{width:100%;white-space:nowrap}.product-row{display:flex;gap:20rpx}.product{flex:0 0 310rpx;margin:0;padding:0 0 20rpx;overflow:hidden;border:0;border-radius:18rpx;text-align:left;line-height:normal;background:#fff}.product::after{border:0}.product image{width:100%;height:220rpx}.product-name,.product-summary{display:block;margin-left:20rpx;margin-right:20rpx}.product-name{margin-top:18rpx;color:#203832;font-size:27rpx;font-weight:650}.product-summary{margin-top:9rpx;overflow:hidden;color:#7d8985;font-size:21rpx;white-space:nowrap;text-overflow:ellipsis}
 .service-footer-section { padding-bottom: 14rpx; }
-.legal-links { display: flex; justify-content: center; gap: 14rpx; padding: 56rpx 30rpx 12rpx; color: #74827d; font-size: 22rpx; }
+.legal-links { display: flex; justify-content: center; gap: 14rpx; padding: 56rpx 30rpx 12rpx; color: var(--home-muted); font-size: 22rpx; }
 .dot { color: #a6afac; }
 </style>
