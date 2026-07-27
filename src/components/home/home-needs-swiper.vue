@@ -37,5 +37,51 @@ const emit = defineEmits<{ select: [keyword: string] }>()
 </template>
 
 <style scoped>
-.needs-swiper{height:326rpx}.need-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16rpx;padding:0 6rpx 44rpx}.need-grid button{min-width:0;height:120rpx;margin:0;padding:20rpx;border:0;border-radius:18rpx;background:#fff;text-align:left;line-height:normal;box-shadow:0 6rpx 22rpx rgba(25,61,52,.06)}.need-grid button::after{border:0}.need-grid text{display:block;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.need-grid text:first-child{color:#22443a;font-size:27rpx;font-weight:650}.need-grid text:last-child{margin-top:10rpx;color:#9a7440;font-size:20rpx}
+.needs-swiper {
+  height: 326rpx;
+}
+
+.need-grid {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 16rpx;
+  padding: 0 6rpx 44rpx;
+}
+
+.need-grid button {
+  min-width: 88rpx;
+  min-height: 88rpx;
+  height: 120rpx;
+  margin: 0;
+  padding: 20rpx;
+  border: 0;
+  border-radius: 18rpx;
+  background: #fff;
+  text-align: left;
+  line-height: normal;
+  box-shadow: 0 6rpx 22rpx rgba(25,61,52,.06);
+}
+
+.need-grid button::after {
+  border: 0;
+}
+
+.need-grid text {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.need-grid text:first-child {
+  color: #22443a;
+  font-size: 27rpx;
+  font-weight: 650;
+}
+
+.need-grid text:last-child {
+  margin-top: 10rpx;
+  color: #9a7440;
+  font-size: 20rpx;
+}
 </style>
