@@ -6,7 +6,7 @@ import type { SearchContentType, SearchDiscovery, SearchGroup, SearchItem, Searc
 import { constructionDetailUrl, siteDetailUrl } from '../../utils/site-navigation'
 
 const STORE_ID='store_windoors_demo',placeholder='/static/demo/placeholder.png'
-const SEARCH_DISCOVERY_KEY='search-discovery-v3',SEARCH_DISCOVERY_TTL=30*60*1000
+const SEARCH_DISCOVERY_KEY='search-discovery-v4',SEARCH_DISCOVERY_TTL=30*60*1000
 const types:SearchContentType[]=['products','sites','construction','warranties']
 const labels:Record<SearchContentType,string>={products:'产品',sites:'案例',construction:'施工',warranties:'质保'}
 const discoveryTypes:Array<{type:SearchContentType;label:string}>=[{type:'products',label:'产品'},{type:'sites',label:'案例'},{type:'construction',label:'施工'},{type:'warranties',label:'质保'}]
