@@ -1,9 +1,14 @@
 <script setup lang="ts">
-const suggestions = ['九龙湖封窗', '封窗注意事项', '我的施工进度']
+import { homeSuggestionActions, type HomeSuggestionAction } from './home-entry-actions'
 const emit = defineEmits<{
   search: [keyword?: string]
   privateEntry: [type: 'progress' | 'warranty']
 }>()
+
+function selectSuggestion(action: HomeSuggestionAction) {
+  if (action.type === 'private') emit('privateEntry', action.entry)
+  else emit('search', action.keyword)
+}
 </script>
 
 <template>
@@ -13,7 +18,7 @@ const emit = defineEmits<{
       <text>搜索小区、封窗知识、施工进度</text>
     </button>
     <view class="suggestions">
-      <button v-for="suggestion in suggestions" :key="suggestion" @click="emit('search', suggestion)">{{ suggestion }}</button>
+      <button v-for="suggestion in homeSuggestionActions" :key="suggestion.label" @click="selectSuggestion(suggestion)">{{ suggestion.label }}</button>
     </view>
     <view class="shortcuts">
       <button @click="emit('search', '小区')"><text>⌂</text><text>查小区</text></button>

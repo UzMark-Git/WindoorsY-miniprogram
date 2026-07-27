@@ -7,7 +7,7 @@ const emit = defineEmits<{ warranty: []; store: [] }>()
 
 <template>
   <view class="service-footer">
-    <button v-if="props.warranty" class="warranty-card" @click="emit('warranty')">
+    <button class="warranty-card" @click="emit('warranty')">
       <text class="warranty-kicker">10-YEAR WARRANTY</text>
       <text class="warranty-title">安装完成，不是服务结束</text>
       <text class="warranty-copy">独立质保凭证、服务范围与处理记录随时可查。</text>
@@ -16,9 +16,9 @@ const emit = defineEmits<{ warranty: []; store: [] }>()
     <button class="store-strip" @click="emit('store')">
       <view class="store-copy">
         <text class="store-name">{{ props.store.name }}实体门店</text>
-        <text class="store-hours">营业中 · 09:00–18:00</text>
+        <text class="store-hours">营业时间 09:00–18:00</text>
       </view>
-      <text class="store-link">导航 ›</text>
+      <text class="store-link">门店信息 ›</text>
     </button>
   </view>
 </template>

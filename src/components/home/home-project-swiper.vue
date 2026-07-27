@@ -19,7 +19,7 @@ function imageSource(item: ServiceSummary) {
 }
 
 function progressText(item: ServiceSummary) {
-  if (item.service_type === 'warranty') return item.warranty_status === 'expired' ? '质保记录已归档' : '十年质保服务中'
+  if (item.service_type === 'warranty') return item.warranty_status === 'expired' ? '质保服务已到期，可咨询门店' : '十年质保服务中'
   return `${stageLabel[item.stage]}，可查看现场进度`
 }
 </script>
@@ -27,7 +27,7 @@ function progressText(item: ServiceSummary) {
 <template>
   <view class="project-module">
     <view class="module-heading">
-      <view><text class="kicker">RECENT PROJECTS</text><text class="section-title">近期施工与质保</text></view>
+      <view><text class="kicker">RECENT PROJECTS</text><text class="section-title">施工全程可见</text></view>
       <button class="all-button" @click="emit('all')">查看全部</button>
     </view>
     <swiper class="project-swiper" :indicator-dots="projects.length > 1" :autoplay="false" :circular="false" indicator-color="rgba(255,255,255,.38)" indicator-active-color="#fff">

@@ -8,6 +8,7 @@ import HomeCaseSwiper from '../../components/home/home-case-swiper.vue'
 import HomeProjectSwiper from '../../components/home/home-project-swiper.vue'
 import HomeStaffStrip from '../../components/home/home-staff-strip.vue'
 import HomeServiceFooter from '../../components/home/home-service-footer.vue'
+import { warrantyHomeTarget } from '../../components/home/home-entry-actions'
 import type { HomeContent } from '../../types/domain'
 import { markHeroImageFailed, normalizeHeroImages, resolveHeroImage } from '../../utils/hero-carousel'
 import { navigateToLegalPage } from '../../utils/legal-navigation'
@@ -60,8 +61,9 @@ function selectService(item:HomeContent['projects'][number]) { uni.navigateTo({u
 function selectCase(id: string) { uni.navigateTo({ url: `/pages-sub/sites/detail?id=${encodeURIComponent(id)}` }) }
 function selectStaff(id: string) { uni.navigateTo({ url: `/pages-sub/staff/detail?id=${encodeURIComponent(id)}` }) }
 function openWarranty() {
-  if (home.value?.warranty?._id) {
-    uni.navigateTo({ url: `/pages-sub/services/detail?id=${encodeURIComponent(home.value.warranty._id)}` })
+  const target = warrantyHomeTarget(home.value?.warranty?._id)
+  if (target.kind === 'detail') {
+    uni.navigateTo({ url: `/pages-sub/services/detail?id=${encodeURIComponent(target.id)}` })
     return
   }
   uni.switchTab({ url: '/pages/services/index' })
@@ -104,9 +106,9 @@ onMounted(load)
       <view class="section service-footer-section"><HomeServiceFooter :store="home.store" :warranty="home.warranty" @warranty="openWarranty" @store="openStoreInfo" /></view>
     </template>
     <view class="legal-links">
-      <text @click="openLegal('/pages/legal/service-agreement')">用户服务协议</text>
+      <button @click="openLegal('/pages/legal/service-agreement')">用户服务协议</button>
       <text class="dot">·</text>
-      <text @click="openLegal('/pages/legal/privacy-policy')">隐私政策</text>
+      <button @click="openLegal('/pages/legal/privacy-policy')">隐私政策</button>
     </view>
   </view>
 </template>
@@ -124,6 +126,8 @@ onMounted(load)
 .section { padding: 62rpx 30rpx 0; }.heading { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom: 28rpx; }.kicker { color: var(--home-gold); }.section-title { display:block; margin-top:10rpx; color:var(--home-green); font-size:38rpx; font-weight:650; }
 .needs{padding-top:54rpx}
 .service-footer-section { padding-bottom: 14rpx; }
-.legal-links { display: flex; justify-content: center; gap: 14rpx; padding: 56rpx 30rpx 12rpx; color: var(--home-muted); font-size: 22rpx; }
+.legal-links { display: flex; align-items:center; justify-content: center; gap: 14rpx; padding: 56rpx 30rpx 12rpx; color: var(--home-muted); font-size: 22rpx; }
+.legal-links button { min-width:88rpx; min-height:88rpx; margin:0; padding:0 12rpx; border:0; color:inherit; background:transparent; font-size:22rpx; line-height:88rpx; }
+.legal-links button::after { border:0; }
 .dot { color: #a6afac; }
 </style>
