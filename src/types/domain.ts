@@ -66,10 +66,11 @@ export interface SiteUpdate extends ContentRecord {
 }
 
 export interface HomeContent {
-    store: StoreSummary
-    services: ServiceSummary[]
+  store: StoreSummary
+  cases: SiteSummary[]
+  projects: ServiceSummary[]
   staff: StaffProfile[]
-  products: ProductSummary[]
+  warranty?: WarrantySummary
 }
 
 export type ProductCategory = 'system_window' | 'bridge_aluminum' | 'sliding_door' | 'sunroom' | 'screen_accessory'
