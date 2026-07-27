@@ -1,24 +1,24 @@
-# WindoorsY 微信小程序
+# 门窗老伙计+ 微信小程序
 
-基于 uni-app、Vue 3 和 TypeScript 构建的门窗服务微信小程序，包含产品展示、施工案例、质保服务与预约咨询。
+门窗老伙计+（项目代号 WindoorsY）是一个门窗服务平台微信小程序，面向用户提供门窗产品、真实案例、施工进度、十年质保和预约咨询等内容展示与联系能力。
 
-`WeChat Mini Program` · `uni-app` · `Vue 3` · `TypeScript` · `门窗服务` · `家装服务` · `预约咨询`
-
-WindoorsY 是一个门窗服务平台微信小程序，面向用户提供门窗产品、服务案例、施工进度、质保服务和预约咨询等内容展示与联系能力。
+`WeChat Mini Program` · `uni-app` · `Vue 3` · `TypeScript` · `uniCloud` · `Nuxt`
 
 ## 功能范围
 
-- 首页、产品、服务、案例和个人中心
-- 产品、工地、服务人员和质保服务详情
+- 首页、产品、案例、服务和个人中心五项主导航
+- 门窗产品、真实案例、施工项目、服务人员和质保凭证详情
 - 产品、人员、案例和质保服务全局搜索
-- 微信登录与登录状态处理
+- 微信登录、登录状态处理和个人收藏
 - 预约咨询、预约详情和预约结果
-- 收藏、分享、小程序码和朋友圈分享
+- 好友转发、朋友圈、海报和小程序码
 - 用户协议、隐私政策和微信隐私保护指引
+
+首版只提供内容展示、电话联系、微信登录和预约咨询，不开放第三方商户入驻，不提供在线交易、支付或配送。
 
 ## 演示效果
 
-下面是当前演示页面的部分截图：
+下面是当前小程序的部分真实页面：
 
 | 首页 | 产品中心 |
 | --- | --- |
@@ -28,160 +28,230 @@ WindoorsY 是一个门窗服务平台微信小程序，面向用户提供门窗�
 | --- | --- |
 | ![客户案例详情](demo/assets/1785135546652.png) | ![工地施工流程管理](demo/assets/1785135659349.png) |
 
-完整的沉浸式静态演示页位于 [`demo/index.html`](demo/index.html)，可按“认识门店、选产品、看案例、跟进施工、十年质保”五个章节体验 21 个真实页面。
+完整的沉浸式静态演示页位于 [`demo/index.html`](demo/index.html)，按“认识门店、选产品、看案例、跟进施工、十年质保”五个章节串联 21 个真实页面。演示页支持截图内热点、前后切换、键盘操作和响应式布局，并提供微信扫码体验真实小程序的入口。
 
 在本地查看交互演示：
 
-1. 下载或克隆项目。
-2. 用浏览器打开 `apps/miniprogram/demo/index.html`。
-3. 如果浏览器限制本地 HTML 加载图片或脚本，可以在 `apps/miniprogram` 目录启动一个静态服务器后访问 `demo/index.html`：
+```powershell
+cd apps/miniprogram
+pnpm dlx serve .
+```
 
-   ```bash
-   pnpm dlx serve .
-   ```
+然后访问 `http://localhost:3000/demo/index.html`。也可以直接用浏览器打开 `apps/miniprogram/demo/index.html`。
 
-GitHub 仓库页面会直接显示上面的截图；HTML 演示页本身需要在浏览器中打开，不能由 GitHub README 直接嵌入执行。
+GitHub 和 Gitee 的仓库页面会直接显示上面的截图；交互演示需要在浏览器中单独打开。
 
-## 技术栈
+## 整体技术架构
 
-- [uni-app](https://uniapp.dcloud.net.cn/)
-- Vue 3
-- TypeScript
-- Vite
-- [uni-ui](https://uniapp.dcloud.net.cn/component/uniui/uni-ui.html)
-- [Wot Design Uni](https://wot-design-uni.cn/)
-- Pinia
-- 微信小程序平台
+项目采用 pnpm workspace 管理多个应用，共享类型位于 `packages/shared`。
+
+### 微信小程序前端
+
+- 目录：`apps/miniprogram/`
+- 技术：uni-app、Vue 3、TypeScript、Vite、Pinia
+- 组件：uni-app 基础组件、uni-ui、Wot Design Uni
+- 平台：微信小程序
+- 职责：面向客户展示门店、产品、案例、施工、质保和服务人员，并提供登录、收藏与预约咨询
+
+### 管理后台前端
+
+- 目录：`apps/admin/`
+- 技术：uni-app H5、Vue 3、Vue Router、uni-ui
+- 账号：uni-id / uni-id-pages
+- 职责：管理门店、产品、工地、人员、施工动态、质保、预约和官网公开内容
+
+### uniCloud 后端
+
+- 部署源：根目录 `uniCloud-aliyun/`
+- 平台：uniCloud 阿里云
+- 组成：云对象、云函数、数据库 Schema、权限规则和索引
+- 职责：登录鉴权、公开内容查询、后台内容管理、预约、收藏、分享和官网数据接口
+
+小程序和管理后台主要通过 uniCloud 云对象访问后端。根 `uniCloud-aliyun/` 是代码审查与正式部署使用的源目录，不要只修改应用内部的本地映射或 vendored 副本。
+
+### Nuxt 官网
+
+- 目录：`apps/website/`
+- 技术：Nuxt 4、Vue 3、TypeScript、服务端渲染
+- 数据：通过受控的 uniCloud HTTP 入口读取公开门店内容
+- 职责：展示门店、产品、案例、服务团队和联系方式，并提供 SEO 友好的公开页面
+
+### 共享代码
+
+- 目录：`packages/shared/`
+- 包名：`@windoors/shared`
+- 职责：共享官网与业务数据类型，减少各应用之间的数据结构偏差
 
 ## 项目结构
 
 ```text
+WindoorsY/
+├── apps/
+│   ├── miniprogram/       # 微信小程序
+│   ├── admin/              # 管理后台 H5
+│   └── website/            # Nuxt 官网
+├── packages/shared/        # 跨应用共享类型
+├── uniCloud-aliyun/        # 实际部署使用的云函数、云对象和数据库 Schema
+├── deployment/demo-data/   # 可选演示数据
+├── docs/                   # 设计、部署、隐私、测试和交接文档
+├── tests/                  # Vitest 单元测试与契约测试
+├── package.json
+└── pnpm-workspace.yaml
+```
+
+## 环境要求
+
+- Node.js 18 或更高版本
+- Corepack
+- pnpm 9.15.0
+- 微信开发者工具
+- HBuilderX（关联和部署 uniCloud 时使用）
+- 已有且可用的 uniCloud 阿里云服务空间
+
+## 完整项目如何运行
+
+### 1. 安装依赖
+
+在仓库根目录执行：
+
+```powershell
+corepack enable
+pnpm install
+```
+
+项目使用 workspace 依赖，建议始终从仓库根目录安装，不要在各应用中混用 npm 或生成额外的 `package-lock.json`。
+
+### 2. 准备 uniCloud 后端
+
+本项目不是只有前端即可完整运行。登录、内容列表、收藏和预约等功能依赖 uniCloud。
+
+1. 使用 HBuilderX 关联一个已有的 uniCloud 阿里云服务空间。
+2. 以根 `uniCloud-aliyun/` 为部署源，按需上传数据库 Schema、云对象和云函数。
+3. 确认门店、产品、工地、人员、施工动态、预约和质保等集合已经初始化。
+4. 配置微信登录所需参数时，只在微信平台或服务端保存 AppSecret，不要写入仓库、前端代码或聊天记录。
+
+不要重新创建正式服务空间，不要清空云数据库，也不要在已有正式数据的空间重复导入演示数据。具体部署顺序以 `docs/deployment/` 和 `docs/handoff/current-development-status.md` 为准。
+
+### 3. 运行微信小程序
+
+在仓库根目录启动开发构建：
+
+```powershell
+pnpm --filter miniprogram dev:mp-weixin
+```
+
+生产构建：
+
+```powershell
+pnpm --filter miniprogram build:mp-weixin
+```
+
+构建后，使用微信开发者工具导入小程序输出目录，并确认 AppID 与 `apps/miniprogram/project.config.json`、`src/manifest.json` 一致。
+
+### 4. 运行管理后台
+
+开发模式：
+
+```powershell
+pnpm --filter admin dev
+```
+
+生产构建：
+
+```powershell
+pnpm --filter admin build
+```
+
+后台以 H5 方式运行，需要正确关联 uniCloud 服务空间并具备受控的管理员账号。真实本地环境配置应保存在被 Git 忽略的 `.env.local` 中。
+
+### 5. 运行 Nuxt 官网
+
+首次运行时复制安全环境模板：
+
+```powershell
+Copy-Item apps/website/.env.example apps/website/.env
+```
+
+在本地 `.env` 中填写受控的 uniCloud HTTP 内容接口和公开门店 ID：
+
+```dotenv
+NUXT_CONTENT_API_URL=https://your-unicloud-http-endpoint.example.com
+NUXT_PUBLIC_STORE_ID=store_windoors_demo
+```
+
+启动开发服务器：
+
+```powershell
+pnpm --filter website dev
+```
+
+生产构建和本地预览：
+
+```powershell
+pnpm --filter website build
+pnpm --filter website preview
+```
+
+真实密钥只能使用 Nuxt 服务端运行时变量，不得写入 `NUXT_PUBLIC_*`，也不得提交 `.env`。
+
+### 6. 运行测试
+
+在仓库根目录执行：
+
+```powershell
+pnpm test
+```
+
+官网也可以单独运行测试：
+
+```powershell
+pnpm --filter website test
+```
+
+当前开发进度、最近验证结果和已知测试状态统一记录在 `docs/handoff/current-development-status.md`。
+
+## 小程序目录说明
+
+```text
 apps/miniprogram/
+├── demo/               # 纯静态交互演示
 ├── src/
-│   ├── api/             # 后端接口调用
-│   ├── components/      # 公共业务组件
-│   ├── config/          # 前端配置与协议文案
-│   ├── pages/           # 主导航页面
-│   ├── pages-sub/       # 产品、工地、预约等子页面
-│   ├── static/          # 图片和图标资源
-│   ├── types/           # TypeScript 类型
-│   └── uni_modules/     # uni-app 组件依赖
+│   ├── api/            # 后端接口调用
+│   ├── components/     # 公共业务组件
+│   ├── config/         # 前端配置与协议文案
+│   ├── pages/          # 主导航页面
+│   ├── pages-sub/      # 产品、工地、预约等子页面
+│   ├── static/         # 图片和图标资源
+│   ├── types/          # TypeScript 类型
+│   └── uni_modules/    # uni-app 组件依赖
 ├── package.json
 ├── project.config.json
 ├── vite.config.ts
 └── README.md
 ```
 
-## 环境要求
-
-- Node.js 18 或更高版本
-- pnpm 9.15.0
-- 微信开发者工具
-- 可访问项目后端服务的 uniCloud 环境
-
-项目使用 pnpm workspace 中的共享依赖，建议从仓库根目录安装依赖：
-
-```bash
-corepack enable
-pnpm install
-```
-
-也可以进入当前目录后安装：
-
-```bash
-cd apps/miniprogram
-pnpm install
-```
-
-## 开发与构建
-
-在项目根目录运行：
-
-```bash
-pnpm --filter miniprogram dev:mp-weixin
-```
-
-构建微信小程序：
-
-```bash
-pnpm --filter miniprogram build:mp-weixin
-```
-
-构建产物默认位于项目的 `dist/` 目录。使用微信开发者工具打开对应的微信小程序构建目录进行预览和调试。
-
-## 运行前准备
-
-运行小程序需要同时具备以下条件：
-
-1. 安装 Node.js 18 或更高版本、pnpm 9.15.0 和微信开发者工具。
-2. 准备一个可用的 uniCloud 服务空间，并部署项目所需的云对象、云函数和数据库 Schema。
-3. 确认前端接口配置指向你的服务环境。接口入口主要位于 `src/api/`，云对象调用和登录流程位于相关页面及 `uni_modules/uni-id-pages/`。
-4. 使用自己的微信小程序 AppID 配置 `src/manifest.json` 和 `project.config.json`。AppSecret 只应配置在微信平台或服务端，不要写入前端代码。
-
-本项目依赖后端返回门店、产品、工地、人员、质保和预约等数据。只有前端代码而没有对应后端服务时，可以完成编译，但登录、列表和提交预约等功能无法正常使用。
-
-## 安装依赖
-
-如果这是完整 monorepo 的 `apps/miniprogram` 子目录，建议在仓库根目录安装：
-
-```bash
-corepack enable
-pnpm install
-```
-
-如果只下载了本目录及其依赖，也可以在当前目录执行：
-
-```bash
-cd apps/miniprogram
-pnpm install
-```
-
-## 开发运行
-
-在项目根目录运行微信小程序开发构建：
-
-```bash
-pnpm --filter miniprogram dev:mp-weixin
-```
-
-或者进入本目录后运行：
-
-```bash
-pnpm dev:mp-weixin
-```
-
-命令执行后，uni-app 会生成微信小程序开发目录。打开微信开发者工具，选择“导入项目”，导入生成的微信小程序目录，并使用与 `project.config.json` 一致的 AppID 进行预览。
-
-## 构建发布
-
-执行生产构建：
-
-```bash
-pnpm --filter miniprogram build:mp-weixin
-```
-
-或在当前目录执行：
-
-```bash
-pnpm build:mp-weixin
-```
-
-构建完成后，在微信开发者工具中导入构建输出目录，然后完成预览、上传和提交审核流程。
-
 ## 常见问题
 
 ### 页面显示为空或接口请求失败
 
-检查 uniCloud 服务空间是否已部署，并确认云对象名称、数据库 Schema 和前端接口配置一致。
+检查 uniCloud 服务空间是否已关联和部署，并确认云对象名称、数据库 Schema、权限规则与前端调用一致。
 
 ### 微信登录失败
 
-检查 `src/manifest.json` 和 `project.config.json` 中的 AppID 是否为当前微信小程序 AppID，并确认服务端已经配置微信登录所需参数。
+检查 `src/manifest.json` 和 `project.config.json` 中的 AppID 是否一致，并确认服务端已经配置微信登录所需参数。
 
 ### 找不到构建命令
 
-确认当前目录是 `apps/miniprogram`，或者在 monorepo 根目录使用 `pnpm --filter miniprogram ...` 命令。首次运行前先执行 `pnpm install`。
+确认已经在仓库根目录执行 `pnpm install`，并使用 `pnpm --filter miniprogram ...`、`pnpm --filter admin ...` 或 `pnpm --filter website ...`。
 
-### 修改页面后没有生效
+### 修改小程序页面后没有生效
 
-开发时使用 `dev:mp-weixin`，不要直接导入旧的 `dist/` 目录。重新构建后，再在微信开发者工具中刷新或重新导入项目。
+开发时使用 `dev:mp-weixin` 重新构建，不要继续导入旧的 `dist/` 目录。构建后在微信开发者工具中刷新或重新导入输出目录。
+
+### 官网没有真实内容
+
+检查 `apps/website/.env` 中的 `NUXT_CONTENT_API_URL` 和 `NUXT_PUBLIC_STORE_ID`。未配置接口或接口异常时，官网会使用安全的内置兜底内容。
+
+## 技术交流
+
+如需就本项目的架构设计、uni-app、uniCloud 或部署实践进行技术交流，可通过用户名 `@WindoorsY` 联系。请在交流时说明具体技术问题、运行环境与复现步骤。
