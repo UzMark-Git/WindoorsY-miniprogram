@@ -2,10 +2,10 @@
 import { onMounted, ref } from 'vue'
 import { getHome } from '../../api/content'
 import ContentState from '../../components/content-state.vue'
-import ServiceCard from '../../components/service-card.vue'
-import SiteCard from '../../components/site-card.vue'
 import HomeNeedsSwiper from '../../components/home/home-needs-swiper.vue'
 import HomeSearchPanel from '../../components/home/home-search-panel.vue'
+import HomeCaseSwiper from '../../components/home/home-case-swiper.vue'
+import HomeProjectSwiper from '../../components/home/home-project-swiper.vue'
 import type { HomeContent } from '../../types/domain'
 import { markHeroImageFailed, normalizeHeroImages, resolveHeroImage } from '../../utils/hero-carousel'
 import { navigateToLegalPage } from '../../utils/legal-navigation'
@@ -40,6 +40,7 @@ function failHero(index: number) {
 }
 
 function openLegal(url: string) { navigateToLegalPage(url, uni) }
+function openCases() { uni.switchTab({ url: '/pages/sites/index' }) }
 function openServices() { uni.switchTab({ url: '/pages/services/index' }) }
 function openSearch(keyword = '') {
   const query = keyword ? `?keyword=${encodeURIComponent(keyword)}` : ''
@@ -75,8 +76,8 @@ onMounted(load)
         <view class="heading"><view><text class="kicker">SERVICE TEAM</text><text class="section-title">为你服务的人</text></view></view>
         <scroll-view scroll-x class="staff-scroll"><view class="staff-row"><button v-for="person in home.staff" :key="person._id" class="person" :aria-label="`查看${person.name}的人员详情`" @click="selectStaff(person)"><image :src="failedAvatars[person._id] ? placeholder : (person.avatar || placeholder)" mode="aspectFill" :aria-label="`${person.name}头像`" @error="failedAvatars[person._id] = true" /><view><text class="person-name">{{ person.name }}</text><text class="person-role">{{ person.role }}</text></view></button></view></scroll-view>
       </view>
-      <view v-if="home.cases.length" class="section cases"><view class="heading"><view><text class="kicker">REAL CASES</text><text class="section-title">真实案例</text></view></view><view class="cards"><SiteCard v-for="item in home.cases.slice(0, 2)" :key="item._id" :site="item" compact @select="selectCase" /></view></view>
-      <view v-if="home.projects.length" class="section sites"><view class="heading"><view><text class="kicker">RECENT PROJECTS</text><text class="section-title">近期施工与质保</text></view><text class="more" @click="openServices">查看全部 ›</text></view><view class="cards"><ServiceCard v-for="item in home.projects.slice(0, 3)" :key="item._id" :item="item" compact @select="selectService(item)" /></view></view>
+      <view v-if="home.cases.length" class="section cases"><HomeCaseSwiper :items="home.cases" :placeholder="placeholder" @select="selectCase" @all="openCases" /></view>
+      <view v-if="home.projects.length" class="section sites"><HomeProjectSwiper :items="home.projects" :placeholder="placeholder" @select="selectService" @all="openServices" /></view>
     </template>
     <view class="legal-links">
       <text @click="openLegal('/pages/legal/service-agreement')">用户服务协议</text>
@@ -98,7 +99,7 @@ onMounted(load)
 .home-search-panel{display:block;margin:-44rpx 30rpx 0}
 .section { padding: 62rpx 30rpx 0; }.heading { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom: 28rpx; }.kicker { color: #a57941; }.section-title { display:block; margin-top:10rpx; color:#172d28; font-size:38rpx; font-weight:650; }.more { color:#567069; font-size:24rpx; }
 .needs{padding-top:54rpx}
-.staff-scroll { width: 100%; white-space: nowrap; }.staff-row { display:flex; gap:18rpx; }.person { flex: 0 0 370rpx; display:flex; align-items:center; gap:20rpx; margin:0; padding:22rpx; border:0; border-radius:18rpx; text-align:left; line-height:normal; background:#fff; }.person::after{border:0}.person image { width:92rpx; height:92rpx; border-radius:50%; background:#e6edeb; }.person-name,.person-role { display:block; }.person-name { color:#203832; font-size:28rpx; font-weight:600; }.person-role { margin-top:8rpx; color:#7d8985; font-size:22rpx; }.cards { display:flex; flex-direction:column; gap:28rpx; }
+.staff-scroll { width: 100%; white-space: nowrap; }.staff-row { display:flex; gap:18rpx; }.person { flex: 0 0 370rpx; display:flex; align-items:center; gap:20rpx; margin:0; padding:22rpx; border:0; border-radius:18rpx; text-align:left; line-height:normal; background:#fff; }.person::after{border:0}.person image { width:92rpx; height:92rpx; border-radius:50%; background:#e6edeb; }.person-name,.person-role { display:block; }.person-name { color:#203832; font-size:28rpx; font-weight:600; }.person-role { margin-top:8rpx; color:#7d8985; font-size:22rpx; }
 .product-scroll{width:100%;white-space:nowrap}.product-row{display:flex;gap:20rpx}.product{flex:0 0 310rpx;margin:0;padding:0 0 20rpx;overflow:hidden;border:0;border-radius:18rpx;text-align:left;line-height:normal;background:#fff}.product::after{border:0}.product image{width:100%;height:220rpx}.product-name,.product-summary{display:block;margin-left:20rpx;margin-right:20rpx}.product-name{margin-top:18rpx;color:#203832;font-size:27rpx;font-weight:650}.product-summary{margin-top:9rpx;overflow:hidden;color:#7d8985;font-size:21rpx;white-space:nowrap;text-overflow:ellipsis}
 .legal-links { display: flex; justify-content: center; gap: 14rpx; padding: 56rpx 30rpx 12rpx; color: #74827d; font-size: 22rpx; }
 .dot { color: #a6afac; }
