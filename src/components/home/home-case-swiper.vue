@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import type { SiteSummary } from '../../types/domain'
+import { casePresentation } from './home-case-presentation'
 
 const props = defineProps<{ items: SiteSummary[]; placeholder: string }>()
 const emit = defineEmits<{ select: [id: string]; all: [] }>()
@@ -18,10 +19,6 @@ function imageSource(item: SiteSummary) {
   return failedImages.value[item._id] ? props.placeholder : (item.cover_image || props.placeholder)
 }
 
-function caseMeta(item: SiteSummary) {
-  const location = item.area ? `${item.area}㎡` : item.district
-  return `${item.summary || '查看方案'} · ${location || '本地门窗方案'}`
-}
 </script>
 
 <template>
@@ -35,7 +32,7 @@ function caseMeta(item: SiteSummary) {
         <view class="case-row">
           <button v-for="item in page" :key="item._id" class="case-card" @click="emit('select', item._id)">
             <image class="case-image" :src="imageSource(item)" mode="aspectFill" @error="failedImages[item._id] = true" />
-            <view class="case-copy"><text class="case-title">{{ item.title }}</text><text class="case-meta">{{ caseMeta(item) }}</text></view>
+            <view class="case-copy"><text class="case-title">{{ item.title }}</text><view class="case-meta"><text class="case-solution">{{ casePresentation(item).solution }}</text><text class="case-area">{{ casePresentation(item).area }}</text></view></view>
           </button>
         </view>
       </swiper-item>
@@ -55,7 +52,9 @@ function caseMeta(item: SiteSummary) {
 .case-card { flex: 1 1 0; min-width: 0; min-height: 384rpx; margin: 0; padding: 0; overflow: hidden; border: 0; border-radius: var(--home-radius); color: inherit; text-align: left; line-height: normal; background: var(--home-surface); }
 .case-image { display: block; width: 100%; height: 236rpx; background: #e5ece9; }
 .case-copy { padding: 18rpx 18rpx 20rpx; }
-.case-title, .case-meta { display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.case-title, .case-solution, .case-area { display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .case-title { color: var(--home-green); font-size: 28rpx; font-weight: 650; }
-.case-meta { margin-top: 10rpx; color: var(--home-muted); font-size: 21rpx; }
+.case-meta { display: flex; gap: 10rpx; min-width: 0; margin-top: 10rpx; font-size: 21rpx; }
+.case-solution { flex: 1; min-width: 0; color: var(--home-green); font-weight: 650; }
+.case-area { flex: 0 1 auto; max-width: 38%; color: var(--home-muted); }
 </style>

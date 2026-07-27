@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import type { ServiceSummary, SiteStage } from '../../types/domain'
+import { projectBadge, projectProgress } from './home-project-presentation'
 
 const props = defineProps<{ items: ServiceSummary[]; placeholder: string }>()
 const emit = defineEmits<{ select: [item: ServiceSummary]; all: [] }>()
 const failedImages = ref<Record<string, boolean>>({})
 const projects = computed(() => props.items.slice(0, 5))
+const constructionBadge = '正在交付的项目'
 
 const stageLabel: Record<SiteStage, string> = {
   measuring: '正在测量',
@@ -19,8 +21,11 @@ function imageSource(item: ServiceSummary) {
 }
 
 function progressText(item: ServiceSummary) {
-  if (item.service_type === 'warranty') return item.warranty_status === 'expired' ? '质保服务已到期，可咨询门店' : '十年质保服务中'
-  return `${stageLabel[item.stage]}，可查看现场进度`
+  return projectProgress(item, stageLabel)
+}
+
+function badgeText(item: ServiceSummary) {
+  return item.service_type === 'warranty' ? projectBadge(item.service_type, item.warranty_status) : constructionBadge
 }
 </script>
 
@@ -35,7 +40,7 @@ function progressText(item: ServiceSummary) {
         <view class="project-slide">
           <image class="project-image" :src="imageSource(item)" mode="aspectFill" @error="failedImages[item._id] = true" />
           <view class="project-veil" />
-          <text class="delivery-badge">正在交付的项目</text>
+          <text class="delivery-badge">{{ badgeText(item) }}</text>
           <button class="project-card" @click="emit('select', item)">
             <text class="project-title">{{ item.title }} · {{ stageLabel[item.stage] }}</text>
             <text class="project-progress">{{ progressText(item) }}</text>
