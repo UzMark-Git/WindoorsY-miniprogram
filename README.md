@@ -2,7 +2,7 @@
 
 门窗老伙计+（项目代号 WindoorsY）是一个门窗服务平台微信小程序，面向用户提供门窗产品、真实案例、施工进度、十年质保和预约咨询等内容展示与联系能力。
 
-`WeChat Mini Program` · `uni-app` · `Vue 3` · `TypeScript` · `uniCloud` · `Nuxt`
+`WeChat Mini Program` · `uni-app` · `Vue 3` · `TypeScript` · `uniCloud`
 
 ## 功能范围
 
@@ -58,46 +58,22 @@ GitHub 和 Gitee 的仓库页面会直接显示上面的截图；交互演示需
 - 目录：`apps/admin/`
 - 技术：uni-app H5、Vue 3、Vue Router、uni-ui
 - 账号：uni-id / uni-id-pages
-- 职责：管理门店、产品、工地、人员、施工动态、质保、预约和官网公开内容
+- 职责：管理门店、产品、工地、人员、施工动态、质保和预约
 
 ### uniCloud 后端
 
 - 部署源：根目录 `uniCloud-aliyun/`
 - 平台：uniCloud 阿里云
 - 组成：云对象、云函数、数据库 Schema、权限规则和索引
-- 职责：登录鉴权、公开内容查询、后台内容管理、预约、收藏、分享和官网数据接口
+- 职责：登录鉴权、公开内容查询、后台内容管理、预约、收藏和分享
 
 小程序和管理后台主要通过 uniCloud 云对象访问后端。根 `uniCloud-aliyun/` 是代码审查与正式部署使用的源目录，不要只修改应用内部的本地映射或 vendored 副本。
-
-### Nuxt 官网
-
-- 目录：`apps/website/`
-- 技术：Nuxt 4、Vue 3、TypeScript、服务端渲染
-- 数据：通过受控的 uniCloud HTTP 入口读取公开门店内容
-- 职责：展示门店、产品、案例、服务团队和联系方式，并提供 SEO 友好的公开页面
 
 ### 共享代码
 
 - 目录：`packages/shared/`
 - 包名：`@windoors/shared`
-- 职责：共享官网与业务数据类型，减少各应用之间的数据结构偏差
-
-## 项目结构
-
-```text
-WindoorsY/
-├── apps/
-│   ├── miniprogram/       # 微信小程序
-│   ├── admin/              # 管理后台 H5
-│   └── website/            # Nuxt 官网
-├── packages/shared/        # 跨应用共享类型
-├── uniCloud-aliyun/        # 实际部署使用的云函数、云对象和数据库 Schema
-├── deployment/demo-data/   # 可选演示数据
-├── docs/                   # 设计、部署、隐私、测试和交接文档
-├── tests/                  # Vitest 单元测试与契约测试
-├── package.json
-└── pnpm-workspace.yaml
-```
+- 职责：共享业务数据类型，减少各应用之间的数据结构偏差
 
 ## 环境要求
 
@@ -108,7 +84,7 @@ WindoorsY/
 - HBuilderX（关联和部署 uniCloud 时使用）
 - 已有且可用的 uniCloud 阿里云服务空间
 
-## 完整项目如何运行
+## 小程序与管理后台如何运行
 
 ### 1. 安装依赖
 
@@ -164,52 +140,6 @@ pnpm --filter admin build
 
 后台以 H5 方式运行，需要正确关联 uniCloud 服务空间并具备受控的管理员账号。真实本地环境配置应保存在被 Git 忽略的 `.env.local` 中。
 
-### 5. 运行 Nuxt 官网
-
-首次运行时复制安全环境模板：
-
-```powershell
-Copy-Item apps/website/.env.example apps/website/.env
-```
-
-在本地 `.env` 中填写受控的 uniCloud HTTP 内容接口和公开门店 ID：
-
-```dotenv
-NUXT_CONTENT_API_URL=https://your-unicloud-http-endpoint.example.com
-NUXT_PUBLIC_STORE_ID=store_windoors_demo
-```
-
-启动开发服务器：
-
-```powershell
-pnpm --filter website dev
-```
-
-生产构建和本地预览：
-
-```powershell
-pnpm --filter website build
-pnpm --filter website preview
-```
-
-真实密钥只能使用 Nuxt 服务端运行时变量，不得写入 `NUXT_PUBLIC_*`，也不得提交 `.env`。
-
-### 6. 运行测试
-
-在仓库根目录执行：
-
-```powershell
-pnpm test
-```
-
-官网也可以单独运行测试：
-
-```powershell
-pnpm --filter website test
-```
-
-当前开发进度、最近验证结果和已知测试状态统一记录在 `docs/handoff/current-development-status.md`。
-
 ## 小程序目录说明
 
 ```text
@@ -242,15 +172,11 @@ apps/miniprogram/
 
 ### 找不到构建命令
 
-确认已经在仓库根目录执行 `pnpm install`，并使用 `pnpm --filter miniprogram ...`、`pnpm --filter admin ...` 或 `pnpm --filter website ...`。
+确认已经在仓库根目录执行 `pnpm install`，并使用 `pnpm --filter miniprogram ...` 或 `pnpm --filter admin ...`。
 
 ### 修改小程序页面后没有生效
 
 开发时使用 `dev:mp-weixin` 重新构建，不要继续导入旧的 `dist/` 目录。构建后在微信开发者工具中刷新或重新导入输出目录。
-
-### 官网没有真实内容
-
-检查 `apps/website/.env` 中的 `NUXT_CONTENT_API_URL` 和 `NUXT_PUBLIC_STORE_ID`。未配置接口或接口异常时，官网会使用安全的内置兜底内容。
 
 ## 技术交流
 
