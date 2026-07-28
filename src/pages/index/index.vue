@@ -2,6 +2,7 @@
 import { onMounted, ref } from 'vue'
 import { getHome } from '../../api/content'
 import ContentState from '../../components/content-state.vue'
+import DemoModeBadge from '../../components/demo-mode-badge.vue'
 import HomeNeedsSwiper from '../../components/home/home-needs-swiper.vue'
 import HomeSearchPanel from '../../components/home/home-search-panel.vue'
 import HomeCaseSwiper from '../../components/home/home-case-swiper.vue'
@@ -88,6 +89,7 @@ onMounted(load)
 
 <template>
   <view class="page">
+    <DemoModeBadge />
     <ContentState v-if="status !== 'ready'" :status="status === 'ready' ? 'loading' : status" :message="message" @retry="load" />
     <template v-else-if="home">
       <view class="hero">

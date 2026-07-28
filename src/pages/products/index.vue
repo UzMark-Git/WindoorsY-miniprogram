@@ -3,6 +3,7 @@ import { onShow } from '@dcloudio/uni-app'
 import { ref } from 'vue'
 import { listProducts } from '../../api/content'
 import ContentState from '../../components/content-state.vue'
+import DemoModeBadge from '../../components/demo-mode-badge.vue'
 import PrimaryPageIntro from '../../components/primary-page-intro.vue'
 import type { ProductCategory, ProductSummary } from '../../types/domain'
 
@@ -20,7 +21,7 @@ function openProduct(id:string){uni.navigateTo({url:`/pages-sub/products/detail?
 onShow(load)
 </script>
 
-<template><view class="page"><PrimaryPageIntro kicker="WINDOW COLLECTION" title="门窗产品" lead="按空间与使用需求，找到适合你的门窗方案" />
+<template><view class="page"><DemoModeBadge/><PrimaryPageIntro kicker="WINDOW COLLECTION" title="门窗产品" lead="按空间与使用需求，找到适合你的门窗方案" />
   <scroll-view scroll-x class="categories"><view class="category-row"><button v-for="(item,index) in categories" :key="item.label" :class="{active:active===index}" @click="selectCategory(index)">{{item.label}}</button></view></scroll-view>
   <ContentState v-if="status!=='ready'" :status="status" :message="status==='empty'?'暂无已发布产品':message" @retry="load"/>
   <view v-else class="grid"><button v-for="product in products" :key="product._id" class="card" @click="openProduct(product._id)"><image :src="product.cover_image" mode="aspectFill"/><view class="body"><text class="name">{{product.name}}</text><text class="summary">{{product.summary}}</text><view class="more">查看详情 <text>›</text></view></view></button></view>

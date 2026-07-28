@@ -2,6 +2,7 @@
 import { onMounted, ref } from 'vue'
 import { getSiteFilters, listSites } from '../../api/content'
 import ContentState from '../../components/content-state.vue'
+import DemoModeBadge from '../../components/demo-mode-badge.vue'
 import SiteCard from '../../components/site-card.vue'
 import type { SiteSummary } from '../../types/domain'
 import { createRequestGate } from '../../utils/request-gate'
@@ -59,6 +60,7 @@ onMounted(async () => {
 
 <template>
   <view class="page">
+    <DemoModeBadge />
     <view class="intro"><text class="kicker">CASE LIBRARY</text><text class="title">案例</text><text class="lead">封窗案例、楼盘资料与方案参考，报价需留下信息后获取</text></view>
     <view class="filters"><picker :range="['全部区域', ...districts]" :value="districtIndex" @change="changeDistrict"><view class="filter">{{ districtIndex ? districts[districtIndex - 1] : '全部区域' }} <text>⌄</text></view></picker></view>
     <ContentState v-if="status !== 'ready'" :status="status === 'ready' ? 'loading' : status" :message="status === 'empty' ? '暂无符合条件的案例' : message" @retry="load(true)" />
