@@ -18,13 +18,13 @@ function selectSuggestion(action: HomeSuggestionAction) {
       <text>搜索小区、封窗知识、施工进度</text>
     </button>
     <view class="suggestions">
-      <button v-for="suggestion in homeSuggestionActions" :key="suggestion.label" @click="selectSuggestion(suggestion)">{{ suggestion.label }}</button>
+      <button v-for="suggestion in homeSuggestionActions" :key="suggestion.label" class="suggestion-chip" @click="selectSuggestion(suggestion)">{{ suggestion.label }}</button>
     </view>
     <view class="shortcuts">
-      <button @click="emit('search', '小区')"><text>⌂</text><text>查小区</text></button>
-      <button @click="emit('search', '封窗知识')"><text>▤</text><text>封窗知识</text></button>
-      <button @click="emit('privateEntry', 'progress')"><text>◷</text><text>我的进度</text></button>
-      <button @click="emit('privateEntry', 'warranty')"><text>✓</text><text>我的质保</text></button>
+      <button class="shortcut-button" @click="emit('search', '小区')"><text class="shortcut-icon">⌂</text><text>查小区</text></button>
+      <button class="shortcut-button" @click="emit('search', '封窗知识')"><text class="shortcut-icon">▤</text><text>封窗知识</text></button>
+      <button class="shortcut-button" @click="emit('privateEntry', 'progress')"><text class="shortcut-icon">◷</text><text>我的进度</text></button>
+      <button class="shortcut-button" @click="emit('privateEntry', 'warranty')"><text class="shortcut-icon">✓</text><text>我的质保</text></button>
     </view>
   </view>
 </template>
@@ -57,8 +57,8 @@ function selectSuggestion(action: HomeSuggestionAction) {
 }
 
 .search-box::after,
-.suggestions button::after,
-.shortcuts button::after {
+.suggestion-chip::after,
+.shortcut-button::after {
   border: 0;
 }
 
@@ -75,7 +75,7 @@ function selectSuggestion(action: HomeSuggestionAction) {
   white-space: nowrap;
 }
 
-.suggestions button {
+.suggestion-chip {
   display: flex;
   flex: none;
   align-items: center;
@@ -99,7 +99,7 @@ function selectSuggestion(action: HomeSuggestionAction) {
   margin-top: 24rpx;
 }
 
-.shortcuts button {
+.shortcut-button {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -117,7 +117,7 @@ function selectSuggestion(action: HomeSuggestionAction) {
   line-height: normal;
 }
 
-.shortcuts button text:first-child {
+.shortcut-icon {
   display: flex;
   align-items: center;
   justify-content: center;

@@ -27,9 +27,9 @@ const emit = defineEmits<{ select: [keyword: string] }>()
   <swiper class="needs-swiper" indicator-dots :autoplay="false" :circular="false">
     <swiper-item v-for="page in needPages" :key="page[0].title">
       <view class="need-grid">
-        <button v-for="item in page" :key="item.title" @click="emit('select', item.keyword)">
-          <text>{{ item.title }}</text>
-          <text>{{ item.subtitle }} ›</text>
+        <button v-for="item in page" :key="item.title" class="need-card" @click="emit('select', item.keyword)">
+          <text class="need-title">{{ item.title }}</text>
+          <text class="need-subtitle">{{ item.subtitle }} ›</text>
         </button>
       </view>
     </swiper-item>
@@ -48,7 +48,7 @@ const emit = defineEmits<{ select: [keyword: string] }>()
   padding: 0 6rpx 44rpx;
 }
 
-.need-grid button {
+.need-card {
   min-width: 88rpx;
   min-height: 88rpx;
   height: 120rpx;
@@ -62,24 +62,25 @@ const emit = defineEmits<{ select: [keyword: string] }>()
   box-shadow: 0 6rpx 22rpx rgba(25,61,52,.06);
 }
 
-.need-grid button::after {
+.need-card::after {
   border: 0;
 }
 
-.need-grid text {
+.need-title,
+.need-subtitle {
   display: block;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
 
-.need-grid text:first-child {
+.need-title {
   color: var(--home-green);
   font-size: 27rpx;
   font-weight: 650;
 }
 
-.need-grid text:last-child {
+.need-subtitle {
   margin-top: 10rpx;
   color: var(--home-gold);
   font-size: 20rpx;

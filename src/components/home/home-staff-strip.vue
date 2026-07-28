@@ -21,7 +21,7 @@ function avatarSource(person: StaffProfile) {
         :aria-label="`查看${person.name}的人员详情`"
         @click="emit('select', person._id)"
       >
-        <image :src="avatarSource(person)" mode="aspectFill" :aria-label="`${person.name}头像`" @error="failedAvatars[person._id] = true" />
+        <image class="staff-avatar" :src="avatarSource(person)" mode="aspectFill" :aria-label="`${person.name}头像`" @error="failedAvatars[person._id] = true" />
         <view class="staff-copy">
           <text class="staff-name">{{ person.name }}</text>
           <text class="staff-role">{{ person.role }}</text>
@@ -36,7 +36,7 @@ function avatarSource(person: StaffProfile) {
 .staff-row { display: flex; gap: 18rpx; }
 .staff-card { flex: 0 0 40%; display: flex; align-items: center; gap: 18rpx; min-width: 88rpx; min-height: 88rpx; margin: 0; padding: 18rpx; border: 0; border-radius: var(--home-radius); color: var(--home-green); text-align: left; line-height: normal; white-space: normal; background: var(--home-surface); }
 .staff-card::after { border: 0; }
-.staff-card image { flex: 0 0 auto; width: 84rpx; height: 84rpx; border-radius: 50%; background: #e6edeb; }
+.staff-avatar { flex: 0 0 auto; width: 84rpx; height: 84rpx; border-radius: 50%; background: #e6edeb; }
 .staff-copy { min-width: 0; }
 .staff-name, .staff-role { display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .staff-name { font-size: 27rpx; font-weight: 600; }
