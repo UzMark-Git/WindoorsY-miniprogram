@@ -7,8 +7,9 @@ import SiteCard from '../../components/site-card.vue'
 import type { SiteSummary } from '../../types/domain'
 import { createRequestGate } from '../../utils/request-gate'
 import { siteDetailUrl } from '../../utils/site-navigation'
+import { hasMoreListPages, mergeListPage, PRIMARY_LIST_PAGE_SIZE } from '../../utils/list-pagination'
 
-const PAGE_SIZE = 10
+const PAGE_SIZE = PRIMARY_LIST_PAGE_SIZE
 const STORE_ID = 'store_windoors_demo'
 const districts = ref<string[]>([])
 const districtIndex = ref(0), page = ref(1)
@@ -27,8 +28,8 @@ async function load(reset = false) {
   try {
     const result = await listSites({ storeId: STORE_ID, page: page.value, pageSize: PAGE_SIZE, district: districtIndex.value ? districts.value[districtIndex.value - 1] : undefined })
     if (!gate.isCurrent(request)) return
-    items.value = reset ? result.items : [...items.value, ...result.items]
-    hasMore.value = result.items.length === PAGE_SIZE
+    items.value = mergeListPage(items.value, result.items, reset)
+    hasMore.value = hasMoreListPages(result.items.length, PAGE_SIZE)
     status.value = items.value.length ? 'ready' : 'empty'
   } catch (error) {
     if (!gate.isCurrent(request)) return

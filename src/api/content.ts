@@ -68,6 +68,37 @@ export function normalizeProductQuery(input: ProductQuery): NormalizedProductQue
   return { ...(storeId ? { storeId } : {}), ...(input.category ? { category: input.category } : {}), page: Math.max(1, Math.trunc(page)), pageSize: Math.min(20, Math.max(1, Math.trunc(pageSize))) }
 }
 
+function normalizePagination(pageValue?: number, pageSizeValue?: number) {
+  const page = typeof pageValue === 'number' && Number.isFinite(pageValue) ? pageValue : 1
+  const pageSize =
+    typeof pageSizeValue === 'number' && Number.isFinite(pageSizeValue) ? pageSizeValue : 10
+  return {
+    page: Math.max(1, Math.trunc(page)),
+    pageSize: Math.min(20, Math.max(1, Math.trunc(pageSize))),
+  }
+}
+
+export function normalizeWarrantyQuery(input: WarrantyQuery): NormalizedWarrantyQuery {
+  const storeId = input.storeId?.trim()
+  return {
+    ...normalizePagination(input.page, input.pageSize),
+    ...(storeId ? { storeId } : {}),
+  }
+}
+
+export function normalizeServiceQuery(input: ServiceQuery): NormalizedServiceQuery {
+  const storeId = input.storeId?.trim()
+  const district = input.district?.trim()
+  return {
+    ...normalizePagination(input.page, input.pageSize),
+    ...(storeId ? { storeId } : {}),
+    ...(district ? { district } : {}),
+    ...(input.type ? { type: input.type } : {}),
+    ...(input.stage ? { stage: input.stage } : {}),
+    ...(input.warranty_status ? { warranty_status: input.warranty_status } : {}),
+  }
+}
+
 export function normalizeSearchQuery(input: SearchQuery): NormalizedSearchQuery {
   const keyword=String(input.keyword||'').trim(),storeId=String(input.storeId||'').trim()
   if(keyword.length<2)throw new Error('请至少输入2个字符')
@@ -87,8 +118,8 @@ export const getSiteDetail = (siteId: string) => provider().getSiteDetail(siteId
 export const getStaffProfile = (staffId: string) => provider().getStaffProfile(staffId)
 export const listProducts = (query: ProductQuery = {}) => provider().listProducts(normalizeProductQuery(query))
 export const getProductDetail = (productId: string) => provider().getProductDetail(productId)
-export const listWarranties = (query:WarrantyQuery={}) => provider().listWarranties({page:Math.max(1,Math.trunc(query.page||1)),pageSize:Math.min(20,Math.max(1,Math.trunc(query.pageSize||10))),...(query.storeId?.trim()?{storeId:query.storeId.trim()}:{})})
-export const listServices = (query:ServiceQuery={}) => provider().listServices({page:Math.max(1,Math.trunc(query.page||1)),pageSize:Math.min(20,Math.max(1,Math.trunc(query.pageSize||10))),...(query.storeId?.trim()?{storeId:query.storeId.trim()}:{}),...(query.district?.trim()?{district:query.district.trim()}:{}),...(query.type?{type:query.type}:{}),...(query.stage?{stage:query.stage}:{}),...(query.warranty_status?{warranty_status:query.warranty_status}:{})})
+export const listWarranties = (query:WarrantyQuery={}) => provider().listWarranties(normalizeWarrantyQuery(query))
+export const listServices = (query:ServiceQuery={}) => provider().listServices(normalizeServiceQuery(query))
 export const getServiceFilters = (storeId?:string) => provider().getServiceFilters(storeId?.trim()||undefined)
 export const getWarrantyDetail = (siteId:string) => provider().getWarrantyDetail(siteId)
 export const getWebsiteHome = (storeId:string) => provider().getWebsiteHome(storeId)

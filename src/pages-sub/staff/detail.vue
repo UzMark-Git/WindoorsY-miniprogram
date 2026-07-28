@@ -9,6 +9,7 @@ import type { StaffDetail } from '../../types/domain'
 import { classifyDetailError } from '../../utils/detail-state'
 import { shareMessage, timelineMessage } from '../../utils/content-sharing'
 import { constructionDetailUrl } from '../../utils/site-navigation'
+import { showDemoUnavailable } from '../../config/demo-isolation'
 
 const placeholder='/static/demo/placeholder.png'
 const staffId=ref(''),profile=ref<StaffDetail>(),avatarSrc=ref(placeholder)
@@ -20,7 +21,7 @@ async function load(){
   try{profile.value=await getStaffProfile(staffId.value);avatarSrc.value=profile.value.avatar||placeholder;status.value='ready'}
   catch(error){const failure=classifyDetailError(error);status.value=failure.status;message.value=failure.retryable?(failure.status==='offline'?'网络已断开，请检查后重试':'人员详情加载失败'):'该人员内容已下架或不存在'}
 }
-function appoint(){if(profile.value)uni.navigateTo({url:`/pages-sub/appointments/create?source_type=staff&source_id=${encodeURIComponent(profile.value._id)}&store_id=${encodeURIComponent(profile.value.store_id)}`})}
+function appoint(){if(showDemoUnavailable(uni,'预约咨询'))return;if(profile.value)uni.navigateTo({url:`/pages-sub/appointments/create?source_type=staff&source_id=${encodeURIComponent(profile.value._id)}&store_id=${encodeURIComponent(profile.value.store_id)}`})}
 function openSite(id:string){const item=profile.value?.related_sites.find(site=>site._id===id);uni.navigateTo({url:item?.service_type==='warranty'?`/pages-sub/services/detail?id=${encodeURIComponent(id)}`:constructionDetailUrl(id)})}
 onLoad((query:Record<string,string|undefined>)=>{staffId.value=query.id||'';load()})
 onShareAppMessage(()=>profile.value?shareMessage('staff',profile.value._id,`门窗服务顾问：${profile.value.name}`,profile.value.avatar):{})

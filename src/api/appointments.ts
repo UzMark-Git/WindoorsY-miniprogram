@@ -1,4 +1,5 @@
 import type { AppointmentFields } from '../utils/appointment'
+import { assertCloudRuntime } from '../config/demo-isolation'
 
 export type AppointmentSourceType = 'store' | 'site' | 'staff' | 'product'
 export type CreateAppointmentInput = AppointmentFields & { source_type: AppointmentSourceType; source_id: string; store_id: string }
@@ -9,7 +10,10 @@ export type MineAppointmentDetail=MineAppointment&{name:string;phone:string;city
 type AppointmentCloudObject = { create(input: CreateAppointmentInput): Promise<CreateAppointmentResult>;listMine(input:{page:number;pageSize:number}):Promise<{items:MineAppointment[];page:number;pageSize:number}>;getMineDetail(input:{id:string}):Promise<MineAppointmentDetail> }
 declare const uniCloud: { importObject(name: string, options?: { customUI?: boolean }): AppointmentCloudObject }
 
-const cloud = () => uniCloud.importObject('appointment-co', { customUI: true })
+const cloud = () => {
+  assertCloudRuntime('预约与账号数据')
+  return uniCloud.importObject('appointment-co', { customUI: true })
+}
 export const createAppointment = (input: CreateAppointmentInput) => cloud().create(input)
 export const listMineAppointments=(page=1,pageSize=10)=>cloud().listMine({page,pageSize})
 export const getMineAppointment=(id:string)=>cloud().getMineDetail({id})

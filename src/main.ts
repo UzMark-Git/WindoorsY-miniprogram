@@ -1,7 +1,7 @@
 import { createSSRApp } from 'vue'
 import { createPinia } from 'pinia'
 import App from './App.vue'
-import uniIdPageInit from './uni_modules/uni-id-pages/init.js'
+import { initializeIdentityRuntime } from './config/runtime-bootstrap'
 
 export function createApp() {
   const app = createSSRApp(App)
@@ -9,4 +9,4 @@ export function createApp() {
   return { app }
 }
 
-uniIdPageInit()
+void initializeIdentityRuntime()

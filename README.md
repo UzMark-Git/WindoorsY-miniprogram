@@ -57,6 +57,12 @@ D:\WindoorsY\.worktrees\pages-ui-demo\apps\miniprogram
 然后依次选择“运行 → 运行到小程序模拟器 → 微信开发者工具”。本分支默认使用本地
 演示数据，无需关联 uniCloud 服务空间。
 
+自动化运行时隔离冒烟测试已通过：测试将 `uniCloud.importObject`、
+`uniCloud.database` 和 `uni.uploadFile` 设为一旦调用就抛错，并覆盖应用启动、
+五个一级页面、公开详情页以及私有/写入页面边界；演示构建也不注册 uni-id
+登录/注册页面，避免直链加载云端身份模块。微信开发者工具人工验证尚未执行，仍需
+按下方步骤检查页面视觉、交互和控制台。
+
 此分支只用于本地页面视觉验证，不是正式部署源。不得上传 uniCloud-aliyun，
 不得上传 Schema，不得上传云函数，也不要将本地 Mock 数据导入任何 uniCloud
 服务空间。

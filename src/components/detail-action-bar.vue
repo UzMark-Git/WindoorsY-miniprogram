@@ -3,25 +3,32 @@ import { getCurrentInstance, onMounted, ref } from 'vue'
 import type { FavoriteType } from '../api/favorites'
 import { getFavoriteState, toggleFavorite } from '../api/favorites'
 import { preparePoster } from '../api/sharing'
+import { isLocalDemoMode } from '../config/runtime'
+import { showDemoUnavailable } from '../config/demo-isolation'
 import { currentMiniProgramEnv, isAuthFailure, loginUrl } from '../utils/content-sharing'
 import { localImage, posterLines, shouldOfferSettings } from '../utils/poster'
 
 const props=withDefaults(defineProps<{type:FavoriteType;contentId:string;title:string;image:string;returnUrl:string;primaryLabel?:string}>(),{primaryLabel:'立即预约'})
 const emit=defineEmits<{appoint:[]}>()
+const demoMode=isLocalDemoMode()
 const favorited=ref(false),favoriteBusy=ref(false),guide=ref(false),posterOpen=ref(false),posterBusy=ref(false),posterError=ref(''),posterPath=ref('')
 const canvasId='share-poster-canvas',instance=getCurrentInstance()?.proxy
 
-async function refreshFavorite(){try{const state=await getFavoriteState(props.type,props.contentId);favorited.value=state.favorited}catch(e){}}
+function unavailable(feature:string){return showDemoUnavailable(uni,feature)}
+async function refreshFavorite(){if(demoMode)return;try{const state=await getFavoriteState(props.type,props.contentId);favorited.value=state.favorited}catch(e){}}
+function share(){unavailable('转发分享')}
 async function favorite(){
+  if(unavailable('收藏'))return
   if(favoriteBusy.value)return
   favoriteBusy.value=true
   try{favorited.value=(await toggleFavorite(props.type,props.contentId)).favorited;uni.showToast({title:favorited.value?'已收藏':'已取消',icon:'none'})}
   catch(error){if(isAuthFailure(error))uni.navigateTo({url:loginUrl(props.returnUrl)});else uni.showToast({title:(error as any)?.errMsg||'收藏失败',icon:'none'})}
   finally{favoriteBusy.value=false}
 }
-function timeline(){guide.value=true}
+function timeline(){if(unavailable('朋友圈分享'))return;guide.value=true}
 function closeGuide(){guide.value=false}
 async function drawPoster(){
+  if(unavailable('分享海报'))return
   posterOpen.value=true;posterBusy.value=true;posterError.value='';posterPath.value=''
   try{
     const data=await preparePoster(props.type,props.contentId,currentMiniProgramEnv())
@@ -42,15 +49,16 @@ async function drawPoster(){
     posterPath.value=file.tempFilePath
   }catch(error:any){posterError.value=error?.errMsg||error?.message||'海报生成失败，请重试'}finally{posterBusy.value=false}
 }
+function appoint(){if(unavailable('预约咨询'))return;emit('appoint')}
 async function savePoster(){
   if(!posterPath.value)return
   try{await uni.saveImageToPhotosAlbum({filePath:posterPath.value});uni.showToast({title:'已保存到相册'})}
   catch(error){if(shouldOfferSettings(error)){const result=await uni.showModal({title:'需要相册权限',content:'请在设置中允许保存图片，用于保存分享海报。',confirmText:'去设置'});if(result.confirm)uni.openSetting({})}else uni.showToast({title:'保存失败，请重试',icon:'none'})}
 }
-onMounted(()=>{refreshFavorite();uni.showShareMenu({menus:['shareAppMessage','shareTimeline'] as any})})
+onMounted(()=>{if(demoMode)return;refreshFavorite();uni.showShareMenu({menus:['shareAppMessage','shareTimeline'] as any})})
 </script>
 
-<template><view class="bar"><view class="tools"><button class="tool-button" open-type="share" hover-class="tool-button--pressed"><uni-icons type="forward" size="18"/><text>转发</text></button><button class="tool-button" :class="{'tool-button--active':favorited,'tool-button--busy':favoriteBusy}" :disabled="favoriteBusy" hover-class="tool-button--pressed" @click="favorite"><uni-icons :type="favorited?'star-filled':'star'" size="18"/><text>{{favorited?'已收藏':'收藏'}}</text></button><button class="tool-button" hover-class="tool-button--pressed" @click="timeline"><uni-icons type="pyq" size="18"/><text>朋友圈</text></button><button class="tool-button" hover-class="tool-button--pressed" @click="drawPoster"><uni-icons type="image" size="18"/><text>海报</text></button></view><button class="appoint" hover-class="appoint--pressed" @click="emit('appoint')">{{primaryLabel}}</button></view>
+<template><view class="bar"><view class="tools"><button class="tool-button" :open-type="demoMode ? undefined : 'share'" hover-class="tool-button--pressed" @click="share"><uni-icons type="forward" size="18"/><text>转发</text></button><button class="tool-button" :class="{'tool-button--active':favorited,'tool-button--busy':favoriteBusy}" :disabled="favoriteBusy" hover-class="tool-button--pressed" @click="favorite"><uni-icons :type="favorited?'star-filled':'star'" size="18"/><text>{{favorited?'已收藏':'收藏'}}</text></button><button class="tool-button" hover-class="tool-button--pressed" @click="timeline"><uni-icons type="pyq" size="18"/><text>朋友圈</text></button><button class="tool-button" hover-class="tool-button--pressed" @click="drawPoster"><uni-icons type="image" size="18"/><text>海报</text></button></view><button class="appoint" hover-class="appoint--pressed" @click="appoint">{{primaryLabel}}</button></view>
 <view v-if="guide" class="mask" @click="closeGuide"><view class="timeline-guide"><text class="arrow">↗</text><text>点击右上角“…”</text><text>选择“分享到朋友圈”</text><button @click.stop="closeGuide">知道了</button></view></view>
 <view v-if="posterOpen" class="mask poster-mask"><view class="poster-panel"><text class="poster-title">分享海报</text><view v-if="posterBusy" class="poster-state">正在生成品牌海报…</view><view v-else-if="posterError" class="poster-state error">{{posterError}}<button hover-class="dialog-button--pressed" @click="drawPoster">重新生成</button></view><image v-else-if="posterPath" class="poster-preview" :src="posterPath" mode="widthFix" show-menu-by-longpress/><view class="poster-actions"><button hover-class="dialog-button--pressed" @click="posterOpen=false">取消</button><button class="save" :disabled="!posterPath" hover-class="save--pressed" @click="savePoster">保存相册</button></view></view></view>
 <canvas :canvas-id="canvasId" :id="canvasId" class="poster-canvas"/>

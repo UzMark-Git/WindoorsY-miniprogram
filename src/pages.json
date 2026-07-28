@@ -7,12 +7,7 @@
     { "path": "pages/profile/index", "style": { "navigationBarTitleText": "我的" } },
     { "path": "pages/share/entry", "style": { "navigationBarTitleText": "分享内容" } },
     { "path": "pages/legal/service-agreement", "style": { "navigationBarTitleText": "用户服务协议" } },
-    { "path": "pages/legal/privacy-policy", "style": { "navigationBarTitleText": "隐私政策" } },
-    { "path": "uni_modules/uni-id-pages/pages/login/login", "style": { "navigationBarTitleText": "登录" } },
-    { "path": "uni_modules/uni-id-pages/pages/login/login-withoutpwd", "style": { "navigationBarTitleText": "微信登录" } },
-    { "path": "uni_modules/uni-id-pages/pages/login/login-withpwd", "style": { "navigationBarTitleText": "账号登录" } },
-    { "path": "uni_modules/uni-id-pages/pages/login/login-smscode", "style": { "navigationBarTitleText": "验证码登录" } },
-    { "path": "uni_modules/uni-id-pages/pages/register/register", "style": { "navigationBarTitleText": "注册" } }
+    { "path": "pages/legal/privacy-policy", "style": { "navigationBarTitleText": "隐私政策" } }
   ],
   "tabBar": {
     "color": "#7b8883",
@@ -41,10 +36,5 @@
       { "path": "appointments/detail", "style": { "navigationBarTitleText": "预约详情" } }
     ] }
   ],
-  "globalStyle": { "navigationBarTextStyle": "black", "navigationBarBackgroundColor": "#ffffff", "backgroundColor": "#f7f8fa" },
-  "uniIdRouter": {
-    "loginPage": "uni_modules/uni-id-pages/pages/login/login",
-    "needLogin": ["pages-sub/appointments/create"],
-    "resToLogin": true
-  }
+  "globalStyle": { "navigationBarTextStyle": "black", "navigationBarBackgroundColor": "#ffffff", "backgroundColor": "#f7f8fa" }
 }

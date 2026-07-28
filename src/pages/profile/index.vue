@@ -3,8 +3,8 @@ import { onShow } from '@dcloudio/uni-app'
 import { ref } from 'vue'
 import { listFavorites, type FavoriteCard, type FavoriteType } from '../../api/favorites'
 import { listMineAppointments,type MineAppointment } from '../../api/appointments'
+import { logoutAccount } from '../../api/account'
 import { getHome } from '../../api/content'
-import { mutations } from '../../uni_modules/uni-id-pages/common/store.js'
 import DemoModeBadge from '../../components/demo-mode-badge.vue'
 import PrimaryPageIntro from '../../components/primary-page-intro.vue'
 import { isLocalDemoMode } from '../../config/runtime'
@@ -40,7 +40,7 @@ function select(index:number){active.value=index;load()}
 function open(item:FavoriteCard){uni.navigateTo({url:detailPath(item.type,item._id)})}
 function openAppointment(id:string){uni.navigateTo({url:`/pages-sub/appointments/detail?id=${encodeURIComponent(id)}`})}
 function date(value:number){const d=new Date(value);return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
-async function logout(){await mutations.logout()}
+async function logout(){await logoutAccount()}
 function callStore(){if(storePhone.value)uni.makePhoneCall({phoneNumber:storePhone.value})}
 onShow(()=>{getHome('store_windoors_demo').then(home=>{storePhone.value=home.store.phone}).catch(()=>{});load()})
 </script>

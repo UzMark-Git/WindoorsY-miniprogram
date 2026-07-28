@@ -313,7 +313,7 @@ export const mockGetSearchDiscovery = async (value: string): Promise<SearchDisco
     searchTypes.map((type) => [type, clone(discoveryItems(type).slice(0, 4))]),
   ) as Record<SearchContentType, SearchItem[]>
   return {
-    keywords: ['九龙湖封窗', '封窗注意事项', '我的施工进度'],
+    keywords: ['九龙湖封窗', '封窗注意事项', '十年质保'],
     groups,
     contact_phone: home.store.phone,
   }

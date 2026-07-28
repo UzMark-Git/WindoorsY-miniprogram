@@ -3,9 +3,12 @@ import { onLoad } from '@dcloudio/uni-app'
 import { ref } from 'vue'
 import { resolveShareToken } from '../../api/sharing'
 import ContentState from '../../components/content-state.vue'
+import { getDemoPageBlock } from '../../config/demo-isolation'
 const status=ref<'loading'|'error'|'empty'>('loading'),message=ref('正在打开分享内容…'),currentToken=ref('')
 async function open(token:string){
   currentToken.value=token
+  const demoBlock=getDemoPageBlock('云端分享内容')
+  if(demoBlock){status.value='empty';message.value=demoBlock;return}
   if(!token){status.value='empty';message.value='分享链接无效';return}
   status.value='loading';message.value='正在打开分享内容…'
   try{const result=await resolveShareToken(token);uni.redirectTo({url:result.path})}

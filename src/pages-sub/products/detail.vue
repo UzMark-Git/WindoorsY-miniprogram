@@ -9,9 +9,10 @@ import type { ProductDetail } from '../../types/domain'
 import { classifyDetailError } from '../../utils/detail-state'
 import { shareMessage, timelineMessage } from '../../utils/content-sharing'
 import { constructionDetailUrl } from '../../utils/site-navigation'
+import { showDemoUnavailable } from '../../config/demo-isolation'
 const id=ref(''),product=ref<ProductDetail>(),status=ref<'loading'|'ready'|'empty'|'error'|'offline'>('loading'),message=ref('')
 async function load(){if(!id.value){status.value='empty';message.value='该产品不存在';return}status.value='loading';try{product.value=await getProductDetail(id.value);status.value='ready'}catch(error){const failure=classifyDetailError(error);status.value=failure.status;message.value=failure.retryable?'产品详情加载失败':'该产品已下架或不存在'}}
-function appoint(){if(product.value)uni.navigateTo({url:`/pages-sub/appointments/create?source_type=product&source_id=${encodeURIComponent(product.value._id)}&store_id=${encodeURIComponent(product.value.store_id)}`})}
+function appoint(){if(showDemoUnavailable(uni,'预约咨询'))return;if(product.value)uni.navigateTo({url:`/pages-sub/appointments/create?source_type=product&source_id=${encodeURIComponent(product.value._id)}&store_id=${encodeURIComponent(product.value.store_id)}`})}
 function openSite(siteId:string){const item=product.value?.related_sites.find(site=>site._id===siteId);uni.navigateTo({url:item?.service_type==='warranty'?`/pages-sub/services/detail?id=${encodeURIComponent(siteId)}`:constructionDetailUrl(siteId)})}
 onLoad((query:Record<string,string|undefined>)=>{id.value=query.id||'';load()})
 onShareAppMessage(()=>product.value?shareMessage('product',product.value._id,`推荐：${product.value.name}`,product.value.cover_image):{})
