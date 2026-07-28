@@ -49,7 +49,13 @@ const page = <T>(items: T[], current: number, size: number): T[] =>
 
 const clone = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T
 
-const assertStoreId = (value?: string): void => {
+const validateStoreId = (value?: string): void => {
+  if (value !== undefined && value.trim() !== storeId) {
+    throw new Error('门店参数无效')
+  }
+}
+
+const requireStoreId = (value: string): void => {
   if (value?.trim() !== storeId) {
     throw new Error('门店参数无效')
   }
@@ -64,14 +70,14 @@ const required = <T extends { _id: string }>(items: T[], id: string): T => {
 }
 
 export async function mockGetHome(value: string): Promise<HomeContent> {
-  assertStoreId(value)
+  requireStoreId(value)
   return clone(home)
 }
 
 export async function mockListProducts(
   query: NormalizedProductQuery,
 ): Promise<ProductListResult> {
-  assertStoreId(query.storeId)
+  validateStoreId(query.storeId)
   const filtered = products.filter((item) => !query.category || item.category === query.category)
   return {
     items: clone(page(filtered, query.page, query.pageSize)),
@@ -81,7 +87,7 @@ export async function mockListProducts(
 }
 
 export async function mockListSites(query: NormalizedSiteQuery): Promise<SiteListResult> {
-  assertStoreId(query.storeId)
+  validateStoreId(query.storeId)
   const filtered = sites.filter(
     (item) =>
       (!query.district || item.district === query.district) &&
@@ -97,7 +103,7 @@ export async function mockListSites(query: NormalizedSiteQuery): Promise<SiteLis
 export async function mockListServices(
   query: NormalizedServiceQuery,
 ): Promise<ServiceListResult> {
-  assertStoreId(query.storeId)
+  validateStoreId(query.storeId)
   const filtered = services.filter(
     (item) =>
       (!query.district || item.district === query.district) &&
@@ -115,7 +121,7 @@ export async function mockListServices(
 export async function mockListWarranties(
   query: NormalizedWarrantyQuery,
 ): Promise<WarrantyListResult> {
-  assertStoreId(query.storeId)
+  validateStoreId(query.storeId)
   return {
     items: clone(page(warranties, query.page, query.pageSize)),
     page: query.page,
@@ -137,7 +143,7 @@ export const mockGetWarrantyDetail = async (id: string): Promise<WarrantyDetail>
   required(warranties, id)
 
 export const mockGetSiteFilters = async (value?: string): Promise<SiteFilters> => {
-  assertStoreId(value)
+  validateStoreId(value)
   return {
     districts: [...new Set(sites.map((item) => item.district))],
     stages: ['measuring', 'designing', 'installing', 'completed'],
@@ -147,14 +153,14 @@ export const mockGetSiteFilters = async (value?: string): Promise<SiteFilters> =
 export const mockGetServiceFilters = async (
   value?: string,
 ): Promise<{ districts: string[] }> => {
-  assertStoreId(value)
+  validateStoreId(value)
   return {
     districts: [...new Set(services.map((item) => item.district))],
   }
 }
 
 export const mockGetWebsiteHome = async (value: string): Promise<WebsiteHome> => {
-  assertStoreId(value)
+  requireStoreId(value)
   return clone(websiteHome)
 }
 
@@ -243,7 +249,7 @@ const searchGroup = (
 export const mockSearchContent = async (
   query: NormalizedSearchQuery,
 ): Promise<SearchContentResult> => {
-  assertStoreId(query.storeId)
+  requireStoreId(query.storeId)
   const keyword = query.keyword.trim()
   if (query.type) {
     return {
@@ -302,15 +308,12 @@ const discoveryItems = (type: SearchContentType): SearchItem[] => {
 }
 
 export const mockGetSearchDiscovery = async (value: string): Promise<SearchDiscovery> => {
-  assertStoreId(value)
+  requireStoreId(value)
   const groups = Object.fromEntries(
     searchTypes.map((type) => [type, clone(discoveryItems(type).slice(0, 4))]),
   ) as Record<SearchContentType, SearchItem[]>
   return {
-    keywords: searchTypes
-      .flatMap((type) => groups[type])
-      .map((item) => item.title)
-      .slice(0, 6),
+    keywords: ['九龙湖封窗', '封窗注意事项', '我的施工进度'],
     groups,
     contact_phone: home.store.phone,
   }
