@@ -1,5 +1,7 @@
 import type { HomeContent, ProductCategory, ProductDetail, ProductListResult, SearchContentType, SearchDiscovery, SearchGroup, SearchResult, SiteDetail, SiteFilters, SiteListResult, SiteStage, StaffDetail, WarrantyDetail, WarrantyListResult, ServiceListResult, WarrantyStatus } from '../types/domain'
 import type { WebsiteHome } from '@windoors/shared'
+import { isLocalDemoMode } from '../config/runtime'
+import { mockContentRepository } from '../mock/content-repository'
 
 export type SiteQuery = {
   page?: number
@@ -76,18 +78,19 @@ export function normalizeSearchQuery(input: SearchQuery): NormalizedSearchQuery 
 }
 
 const content = () => uniCloud.importObject('content-co')
+const provider = (): ContentRepository => isLocalDemoMode() ? mockContentRepository : content()
 
-export const getHome = (storeId: string) => content().getHome(storeId)
-export const listSites = (query: SiteQuery = {}) => content().listSites(normalizeSiteQuery(query))
-export const getSiteFilters = (storeId?: string) => content().getSiteFilters(storeId?.trim() || undefined)
-export const getSiteDetail = (siteId: string) => content().getSiteDetail(siteId)
-export const getStaffProfile = (staffId: string) => content().getStaffProfile(staffId)
-export const listProducts = (query: ProductQuery = {}) => content().listProducts(normalizeProductQuery(query))
-export const getProductDetail = (productId: string) => content().getProductDetail(productId)
-export const listWarranties = (query:WarrantyQuery={}) => content().listWarranties({page:Math.max(1,Math.trunc(query.page||1)),pageSize:Math.min(20,Math.max(1,Math.trunc(query.pageSize||10))),...(query.storeId?.trim()?{storeId:query.storeId.trim()}:{})})
-export const listServices = (query:ServiceQuery={}) => content().listServices({page:Math.max(1,Math.trunc(query.page||1)),pageSize:Math.min(20,Math.max(1,Math.trunc(query.pageSize||10))),...(query.storeId?.trim()?{storeId:query.storeId.trim()}:{}),...(query.district?.trim()?{district:query.district.trim()}:{}),...(query.type?{type:query.type}:{}),...(query.stage?{stage:query.stage}:{}),...(query.warranty_status?{warranty_status:query.warranty_status}:{})})
-export const getServiceFilters = (storeId?:string) => content().getServiceFilters(storeId?.trim()||undefined)
-export const getWarrantyDetail = (siteId:string) => content().getWarrantyDetail(siteId)
-export const getWebsiteHome = (storeId:string) => content().getWebsiteHome(storeId)
-export const searchContent = (query:SearchQuery) => content().searchContent(normalizeSearchQuery(query))
-export const getSearchDiscovery = (storeId:string) => content().getSearchDiscovery(storeId.trim())
+export const getHome = (storeId: string) => provider().getHome(storeId)
+export const listSites = (query: SiteQuery = {}) => provider().listSites(normalizeSiteQuery(query))
+export const getSiteFilters = (storeId?: string) => provider().getSiteFilters(storeId?.trim() || undefined)
+export const getSiteDetail = (siteId: string) => provider().getSiteDetail(siteId)
+export const getStaffProfile = (staffId: string) => provider().getStaffProfile(staffId)
+export const listProducts = (query: ProductQuery = {}) => provider().listProducts(normalizeProductQuery(query))
+export const getProductDetail = (productId: string) => provider().getProductDetail(productId)
+export const listWarranties = (query:WarrantyQuery={}) => provider().listWarranties({page:Math.max(1,Math.trunc(query.page||1)),pageSize:Math.min(20,Math.max(1,Math.trunc(query.pageSize||10))),...(query.storeId?.trim()?{storeId:query.storeId.trim()}:{})})
+export const listServices = (query:ServiceQuery={}) => provider().listServices({page:Math.max(1,Math.trunc(query.page||1)),pageSize:Math.min(20,Math.max(1,Math.trunc(query.pageSize||10))),...(query.storeId?.trim()?{storeId:query.storeId.trim()}:{}),...(query.district?.trim()?{district:query.district.trim()}:{}),...(query.type?{type:query.type}:{}),...(query.stage?{stage:query.stage}:{}),...(query.warranty_status?{warranty_status:query.warranty_status}:{})})
+export const getServiceFilters = (storeId?:string) => provider().getServiceFilters(storeId?.trim()||undefined)
+export const getWarrantyDetail = (siteId:string) => provider().getWarrantyDetail(siteId)
+export const getWebsiteHome = (storeId:string) => provider().getWebsiteHome(storeId)
+export const searchContent = (query:SearchQuery) => provider().searchContent(normalizeSearchQuery(query))
+export const getSearchDiscovery = (storeId:string) => provider().getSearchDiscovery(storeId.trim())
