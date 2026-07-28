@@ -57,8 +57,9 @@ D:\WindoorsY\.worktrees\pages-ui-demo\apps\miniprogram
 然后依次选择“运行 → 运行到小程序模拟器 → 微信开发者工具”。本分支默认使用本地
 演示数据，无需关联 uniCloud 服务空间。
 
-此分支只用于本地页面视觉验证，不是正式部署源。不得上传 uniCloud-aliyun、
-Schema 或云函数，也不要将本地 Mock 数据导入任何 uniCloud 服务空间。
+此分支只用于本地页面视觉验证，不是正式部署源。不得上传 uniCloud-aliyun，
+不得上传 Schema，不得上传云函数，也不要将本地 Mock 数据导入任何 uniCloud
+服务空间。
 
 ## 整体技术架构
 
