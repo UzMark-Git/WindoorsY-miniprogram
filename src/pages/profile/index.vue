@@ -5,17 +5,33 @@ import { listFavorites, type FavoriteCard, type FavoriteType } from '../../api/f
 import { listMineAppointments,type MineAppointment } from '../../api/appointments'
 import { getHome } from '../../api/content'
 import { mutations } from '../../uni_modules/uni-id-pages/common/store.js'
+import DemoModeBadge from '../../components/demo-mode-badge.vue'
 import PrimaryPageIntro from '../../components/primary-page-intro.vue'
+import { isLocalDemoMode } from '../../config/runtime'
 import { detailPath, isAuthFailure } from '../../utils/content-sharing'
 import { navigateToLegalPage } from '../../utils/legal-navigation'
 
 const tabs:Array<{type:FavoriteType;label:string}>=[{type:'product',label:'产品'},{type:'site',label:'案例'},{type:'staff',label:'人员'}]
 const active=ref(0),authenticated=ref(false),loading=ref(false),error=ref(''),items=ref<FavoriteCard[]>([]),appointments=ref<MineAppointment[]>([]),storePhone=ref('')
 const statusLabels:Record<string,string>={pending:'待联系',contacted:'已联系',visited:'已到店',won:'已成交',closed:'已关闭'},sourceLabels:Record<string,string>={store:'门店',site:'案例',staff:'人员',product:'产品'}
-function login(){uni.navigateTo({url:'/uni_modules/uni-id-pages/pages/login/login?uniIdRedirectUrl='+encodeURIComponent('/pages/profile/index')})}
+function login(){
+  if (isLocalDemoMode()) {
+    uni.showToast({ title: '演示模式不连接账号数据', icon: 'none' })
+    return
+  }
+  uni.navigateTo({url:'/uni_modules/uni-id-pages/pages/login/login?uniIdRedirectUrl='+encodeURIComponent('/pages/profile/index')})
+}
 function openLegal(url:string){navigateToLegalPage(url,uni)}
 async function load(){
   loading.value=true;error.value=''
+  if (isLocalDemoMode()) {
+    authenticated.value = false
+    items.value = []
+    appointments.value = []
+    error.value = '演示模式不连接账号数据'
+    loading.value = false
+    return
+  }
   try{const [favorites,mine]=await Promise.all([listFavorites(tabs[active.value].type),listMineAppointments()]);authenticated.value=true;items.value=favorites.items;appointments.value=mine.items}
   catch(cause){if(isAuthFailure(cause)){authenticated.value=false;items.value=[];appointments.value=[]}else{error.value=(cause as any)?.errMsg||'个人内容加载失败'}}
   finally{loading.value=false}
@@ -29,7 +45,7 @@ function callStore(){if(storePhone.value)uni.makePhoneCall({phoneNumber:storePho
 onShow(()=>{getHome('store_windoors_demo').then(home=>{storePhone.value=home.store.phone}).catch(()=>{});load()})
 </script>
 
-<template><view class="page"><PrimaryPageIntro kicker="MY WINDOORS" title="我的" lead="管理收藏内容、预约记录与服务入口" />
+<template><view class="page"><DemoModeBadge/><PrimaryPageIntro kicker="MY WINDOORS" title="我的" lead="管理收藏内容、预约记录与服务入口" />
   <view class="account"><view class="avatar">我</view><view class="account-copy"><text>{{authenticated?'已登录':'登录后管理我的收藏'}}</text><text>{{authenticated?'收藏内容仅对当前账号可见':'收藏可在不同设备间同步'}}</text></view><button v-if="!authenticated" @click="login">微信登录</button></view>
   <view v-if="authenticated" class="appointments"><view class="section-heading"><text>我的预约</text><text>仅显示当前登录账号提交的预约</text></view><view v-if="!appointments.length" class="state">暂无预约记录</view><button v-for="item in appointments" :key="item._id" class="appointment-card" @click="openAppointment(item._id)"><view><text>{{sourceLabels[item.source_type]}}预约</text><text>{{date(item.created_at)}}</text></view><text class="appointment-status">{{statusLabels[item.status]}}</text><text class="arrow">›</text></button></view>
   <view class="favorites"><view class="section-heading"><text>我的收藏</text><text>收藏的产品、案例和服务人员</text></view><view class="tabs"><button v-for="(tab,index) in tabs" :key="tab.type" :class="{active:active===index}" @click="select(index)">{{tab.label}}</button></view>
