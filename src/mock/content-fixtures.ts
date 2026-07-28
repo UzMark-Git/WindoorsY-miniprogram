@@ -6,6 +6,7 @@ import type {
   StaffDetail,
   WarrantyDetail,
 } from '../types/domain'
+import type { WebsiteHome } from '@windoors/shared'
 
 const now = Date.UTC(2026, 6, 28)
 const base = {
@@ -73,7 +74,28 @@ export const sites: SiteDetail[] = stages.map((stage, index) => ({
   area: 18 + index * 3,
   store_name: '门窗老伙计',
   stage,
-  display_group: index < 3 ? 'case' : 'service',
+  display_group: 'case',
+  sort_order: index + 1,
+  staff_ids: [`staff-${(index % 5) + 1}`],
+  updates: [],
+}))
+
+const constructionStages = ['measuring', 'designing', 'installing', 'completed'] as const
+const constructionDistricts = ['红谷滩区', '东湖区', '红谷滩区', '青山湖区'] as const
+const constructionTitles = ['云境府施工记录', '湖滨花园施工记录', '九龙湖公寓施工记录', '艾溪湖别墅施工记录'] as const
+
+export const constructionSites: SiteDetail[] = constructionStages.map((stage, index) => ({
+  ...base,
+  _id: `construction-${index + 1}`,
+  title: constructionTitles[index],
+  location: `南昌市${constructionDistricts[index]}`,
+  cover_image: image,
+  summary: '独立施工项目进度与现场交付记录',
+  district: constructionDistricts[index],
+  area: 22 + index * 4,
+  store_name: '门窗老伙计',
+  stage,
+  display_group: 'service',
   sort_order: index + 1,
   staff_ids: [`staff-${(index % 5) + 1}`],
   updates: [],
@@ -126,11 +148,12 @@ export const warranties: WarrantyDetail[] = [
   },
 ]
 
-const constructionServices: ServiceSummary[] = sites.slice(0, 4).map(({ staff_ids, updates, ...site }) => ({
-  ...site,
-  display_group: 'service',
-  service_type: 'construction',
-}))
+const constructionServices: ServiceSummary[] = constructionSites.map(
+  ({ staff_ids, updates, ...site }) => ({
+    ...site,
+    service_type: 'construction',
+  }),
+)
 
 const warrantyServices: ServiceSummary[] = warranties.map((warranty, index) => ({
   _id: warranty._id,
@@ -171,4 +194,106 @@ export const home: HomeContent = {
   projects: services,
   staff,
   warranty: warranties[0],
+}
+
+export const websiteHome: WebsiteHome = {
+  store: {
+    _id: home.store._id,
+    store_id: home.store.store_id,
+    name: home.store.name,
+    logo: home.store.logo,
+    hero_images: [...home.store.hero_images],
+    address: home.store.address,
+    phone: home.store.phone,
+    description: '南昌本地门窗测量、设计、安装与十年质保服务。',
+  },
+  settings: {
+    hero: {
+      eyebrow: '就在南昌 · 欢迎来店坐坐',
+      title: '门窗这件事，找个靠谱的本地人。',
+      description: '测量、设计、安装、质保，我们一直都在。',
+      image,
+      primary_cta: '微信预约上门',
+      secondary_cta: '看看邻居家的案例',
+    },
+    story: {
+      title: '一家认真做门窗的南昌本地小店。',
+      body: '把材料、工艺和费用说明白，把选择做简单。',
+      owner_name: '门店负责人',
+      owner_role: '本地门窗服务',
+      quote: '门窗装完之后，长期服务才真正开始。',
+    },
+    advantages: [
+      { title: '本地实体店', description: '有问题找得到人' },
+      { title: '专人跟进安装', description: '从测量到交付不脱节' },
+      { title: '报价讲明白', description: '材料、工艺和费用逐项说明' },
+      { title: '十年质保', description: '验收建档，有凭证可查' },
+    ],
+    service_steps: [
+      { title: '先聊聊需求', description: '照片、户型、预算都可以说。' },
+      { title: '上门仔细测量', description: '看墙体、尺寸和使用习惯。' },
+      { title: '方案报价讲清楚', description: '材料、五金、工艺逐项说明。' },
+      { title: '安装验收建档', description: '过程记录，交付验收。' },
+    ],
+    featured_product_ids: products.map((item) => item._id),
+    featured_site_ids: sites.map((item) => item._id),
+    featured_staff_ids: staff.map((item) => item._id),
+    contact: {
+      business_hours: '09:00-18:00',
+      miniprogram_qr: image,
+      map_url: '',
+    },
+    seo: {
+      title: '门窗老伙计｜南昌本地门窗服务',
+      description: '南昌本地门窗测量、设计、安装与十年质保。',
+      keywords: ['南昌门窗', '系统窗', '门窗安装'],
+      og_image: image,
+    },
+    sections: {
+      story: true,
+      products: true,
+      projects: true,
+      service: true,
+      warranty: true,
+      staff: true,
+      contact: true,
+    },
+  },
+  products: products.map((item) => ({
+    _id: item._id,
+    name: item.name,
+    category: item.category,
+    cover_image: item.cover_image,
+    summary: item.summary,
+    highlights: [...item.highlights],
+    scenarios: item.scenarios ? [...item.scenarios] : undefined,
+  })),
+  sites: sites.map((item) => ({
+    _id: item._id,
+    title: item.title,
+    cover_image: item.cover_image,
+    summary: item.summary,
+    district: item.district,
+    area: item.area,
+    stage: item.stage,
+    store_name: item.store_name,
+  })),
+  staff: staff.map((item) => ({
+    _id: item._id,
+    name: item.name,
+    role: item.role,
+    avatar: item.avatar,
+    bio: item.bio,
+    specialties: [...item.specialties],
+  })),
+  warranties: warranties.map((item) => ({
+    _id: item._id,
+    title: item.title,
+    cover_image: item.cover_image,
+    district: item.district,
+    warranty_no: item.warranty_no,
+    warranty_status: item.warranty_status,
+    accepted_at: new Date(item.accepted_at).toISOString(),
+    warranty_expires_at: new Date(item.warranty_expires_at).toISOString(),
+  })),
 }

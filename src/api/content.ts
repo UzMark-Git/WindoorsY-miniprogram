@@ -18,8 +18,13 @@ export type ProductQuery = { page?: number; pageSize?: number; storeId?: string;
 export type NormalizedProductQuery = { page: number; pageSize: number; storeId?: string; category?: ProductCategory }
 export type SearchQuery = { keyword:string;storeId:string;type?:SearchContentType;page?:number;pageSize?:number }
 export type NormalizedSearchQuery = { keyword:string;storeId:string;type?:SearchContentType;page:number;pageSize:number }
+export type WarrantyQuery = { page?:number;pageSize?:number;storeId?:string }
+export type NormalizedWarrantyQuery = { page:number;pageSize:number;storeId?:string }
+export type ServiceQuery = { page?:number;pageSize?:number;storeId?:string;district?:string;type?:'construction'|'warranty';stage?:SiteStage;warranty_status?:WarrantyStatus }
+export type NormalizedServiceQuery = { page:number;pageSize:number;storeId?:string;district?:string;type?:'construction'|'warranty';stage?:SiteStage;warranty_status?:WarrantyStatus }
+export type SearchContentResult = SearchResult|{keyword:string;type:SearchContentType;group:SearchGroup}
 
-type ContentCloudObject = {
+export interface ContentRepository {
   getHome(storeId: string): Promise<HomeContent>
   listSites(query: NormalizedSiteQuery): Promise<SiteListResult>
   getSiteFilters(storeId?: string): Promise<SiteFilters>
@@ -27,17 +32,17 @@ type ContentCloudObject = {
   getStaffProfile(staffId: string): Promise<StaffDetail>
   listProducts(query: NormalizedProductQuery): Promise<ProductListResult>
   getProductDetail(productId: string): Promise<ProductDetail>
-  listWarranties(query:{page:number;pageSize:number;storeId?:string}):Promise<WarrantyListResult>
-  listServices(query:{page:number;pageSize:number;storeId?:string;district?:string;type?:'construction'|'warranty';stage?:SiteStage;warranty_status?:WarrantyStatus}):Promise<ServiceListResult>
+  listWarranties(query:NormalizedWarrantyQuery):Promise<WarrantyListResult>
+  listServices(query:NormalizedServiceQuery):Promise<ServiceListResult>
   getServiceFilters(storeId?:string):Promise<{districts:string[]}>
   getWarrantyDetail(siteId:string):Promise<WarrantyDetail>
   getWebsiteHome(storeId:string):Promise<WebsiteHome>
-  searchContent(query:NormalizedSearchQuery):Promise<SearchResult|{keyword:string;type:SearchContentType;group:SearchGroup}>
+  searchContent(query:NormalizedSearchQuery):Promise<SearchContentResult>
   getSearchDiscovery(storeId:string):Promise<SearchDiscovery>
 }
 
 declare const uniCloud: {
-  importObject(name: string): ContentCloudObject
+  importObject(name: string): ContentRepository
 }
 
 export function normalizeSiteQuery(input: SiteQuery): NormalizedSiteQuery {
@@ -79,8 +84,8 @@ export const getSiteDetail = (siteId: string) => content().getSiteDetail(siteId)
 export const getStaffProfile = (staffId: string) => content().getStaffProfile(staffId)
 export const listProducts = (query: ProductQuery = {}) => content().listProducts(normalizeProductQuery(query))
 export const getProductDetail = (productId: string) => content().getProductDetail(productId)
-export const listWarranties = (query:{page?:number;pageSize?:number;storeId?:string}={}) => content().listWarranties({page:Math.max(1,Math.trunc(query.page||1)),pageSize:Math.min(20,Math.max(1,Math.trunc(query.pageSize||10))),...(query.storeId?.trim()?{storeId:query.storeId.trim()}:{})})
-export const listServices = (query:{page?:number;pageSize?:number;storeId?:string;district?:string;type?:'construction'|'warranty';stage?:SiteStage;warranty_status?:WarrantyStatus}={}) => content().listServices({page:Math.max(1,Math.trunc(query.page||1)),pageSize:Math.min(20,Math.max(1,Math.trunc(query.pageSize||10))),...(query.storeId?.trim()?{storeId:query.storeId.trim()}:{}),...(query.district?.trim()?{district:query.district.trim()}:{}),...(query.type?{type:query.type}:{}),...(query.stage?{stage:query.stage}:{}),...(query.warranty_status?{warranty_status:query.warranty_status}:{})})
+export const listWarranties = (query:WarrantyQuery={}) => content().listWarranties({page:Math.max(1,Math.trunc(query.page||1)),pageSize:Math.min(20,Math.max(1,Math.trunc(query.pageSize||10))),...(query.storeId?.trim()?{storeId:query.storeId.trim()}:{})})
+export const listServices = (query:ServiceQuery={}) => content().listServices({page:Math.max(1,Math.trunc(query.page||1)),pageSize:Math.min(20,Math.max(1,Math.trunc(query.pageSize||10))),...(query.storeId?.trim()?{storeId:query.storeId.trim()}:{}),...(query.district?.trim()?{district:query.district.trim()}:{}),...(query.type?{type:query.type}:{}),...(query.stage?{stage:query.stage}:{}),...(query.warranty_status?{warranty_status:query.warranty_status}:{})})
 export const getServiceFilters = (storeId?:string) => content().getServiceFilters(storeId?.trim()||undefined)
 export const getWarrantyDetail = (siteId:string) => content().getWarrantyDetail(siteId)
 export const getWebsiteHome = (storeId:string) => content().getWebsiteHome(storeId)
