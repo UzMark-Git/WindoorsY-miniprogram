@@ -41,6 +41,25 @@ pnpm dlx serve .
 
 GitHub 和 Gitee 的仓库页面会直接显示上面的截图；交互演示需要在浏览器中单独打开。
 
+## HBuilderX 本地 Mock 演示
+
+`codex/pages-ui-demo` 是隔离的页面视觉测试分支，默认从
+`src/mock/content-fixtures.ts` 和 `src/mock/content-repository.ts` 读取本地演示数据。
+首页、产品、案例、服务和“我的”五个一级页面会显示“演示数据”标识，其中“我的”
+不会触发登录、收藏或预约等私有云读取。
+
+在 HBuilderX 中导入以下小程序项目目录：
+
+```text
+D:\WindoorsY\.worktrees\pages-ui-demo\apps\miniprogram
+```
+
+然后依次选择“运行 → 运行到小程序模拟器 → 微信开发者工具”。本分支默认使用本地
+演示数据，无需关联 uniCloud 服务空间。
+
+此分支只用于本地页面视觉验证，不是正式部署源。不得上传 uniCloud-aliyun、
+Schema 或云函数，也不要将本地 Mock 数据导入任何 uniCloud 服务空间。
+
 ## 整体技术架构
 
 项目采用 pnpm workspace 管理多个应用，共享类型位于 `packages/shared`。
