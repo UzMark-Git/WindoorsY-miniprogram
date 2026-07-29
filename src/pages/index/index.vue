@@ -116,7 +116,7 @@ onMounted(load)
 </template>
 
 <style scoped>
-.page { --home-green: #173d34; --home-gold: #ae772d; --home-surface: #ffffff; --home-muted: #66766f; --home-radius: 28rpx; min-height: 100vh; padding-bottom: calc(23rpx + env(safe-area-inset-bottom)); background: #f4f6f4; }
+.page { --home-green: #173d34; --home-gold: #ae772d; --home-surface: #ffffff; --home-muted: #66766f; --home-radius: 28rpx; min-height: 100vh; padding-bottom: 23rpx; background: #f4f6f4; }
 .hero { position: relative; height: 610rpx; overflow: hidden; }
 .hero-image { width: 100%; height: 100%; }
 .veil { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; background: linear-gradient(180deg,rgba(10,30,25,.08),rgba(10,30,25,.78)); }
