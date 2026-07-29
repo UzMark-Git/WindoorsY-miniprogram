@@ -27,6 +27,13 @@ function progressText(item: ServiceSummary) {
 function badgeText(item: ServiceSummary) {
   return item.service_type === 'warranty' ? projectBadge(item.service_type, item.warranty_status) : constructionBadge
 }
+
+function projectCardTone(item: ServiceSummary) {
+  const highlighted = item.service_type === 'warranty'
+    ? item.warranty_status === 'active'
+    : item.stage === 'completed'
+  return highlighted ? 'project-card--green' : 'project-card--gold'
+}
 </script>
 
 <template>
@@ -36,11 +43,11 @@ function badgeText(item: ServiceSummary) {
       <button class="all-button" @click="emit('all')">查看全部</button>
     </view>
     <swiper class="project-swiper" :indicator-dots="projects.length > 1" :autoplay="false" :circular="false" indicator-color="rgba(25,60,51,.2)" indicator-active-color="#183e34">
-      <swiper-item v-for="(item, index) in projects" :key="item._id">
+      <swiper-item v-for="item in projects" :key="item._id">
         <view class="project-slide">
           <image class="project-image" :src="imageSource(item)" mode="aspectFill" @error="failedImages[item._id] = true" />
           <text class="delivery-badge">{{ badgeText(item) }}</text>
-          <button :class="['project-card', index % 2 ? 'project-card--gold' : 'project-card--green']" @click="emit('select', item)">
+          <button :class="['project-card', projectCardTone(item)]" @click="emit('select', item)">
             <text class="project-title">{{ item.title }} · {{ stageLabel[item.stage] }}</text>
             <text class="project-progress">{{ progressText(item) }}</text>
           </button>
