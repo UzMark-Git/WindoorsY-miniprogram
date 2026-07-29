@@ -39,7 +39,6 @@ function badgeText(item: ServiceSummary) {
       <swiper-item v-for="item in projects" :key="item._id">
         <view class="project-slide">
           <image class="project-image" :src="imageSource(item)" mode="aspectFill" @error="failedImages[item._id] = true" />
-          <view class="project-veil" />
           <text class="delivery-badge">{{ badgeText(item) }}</text>
           <button class="project-card" @click="emit('select', item)">
             <text class="project-title">{{ item.title }} · {{ stageLabel[item.stage] }}</text>
@@ -60,9 +59,7 @@ function badgeText(item: ServiceSummary) {
 .all-button::after, .project-card::after { border: 0; }
 .project-swiper { height: 450rpx; overflow: hidden; border-radius: 20rpx; }
 .project-slide { position: relative; width: 100%; height: 414rpx; overflow: hidden; border-radius: var(--home-radius); background: var(--home-green); }
-.project-image, .project-veil { position: absolute; inset: 0; width: 100%; height: 100%; }
-.project-image { background: #2c5147; }
-.project-veil { pointer-events: none; background: linear-gradient(135deg, rgba(12, 49, 40, .92) 0%, rgba(18, 59, 49, .76) 38%, rgba(18, 59, 49, .16) 76%); backdrop-filter: blur(4rpx); }
+.project-image { position: absolute; inset: 0; width: 100%; height: 100%; background: #2c5147; }
 .delivery-badge { position: absolute; top: 24rpx; right: 24rpx; max-width: 260rpx; padding: 10rpx 16rpx; overflow: hidden; border-radius: 99rpx; color: #f8f3ea; font-size: 21rpx; white-space: nowrap; text-overflow: ellipsis; background: rgba(255, 255, 255, .16); }
 .project-card { position: absolute; right: 24rpx; bottom: 24rpx; left: 24rpx; min-height: 130rpx; margin: 0; padding: 24rpx; border: 0; border-radius: 16rpx; color: #fff; text-align: left; line-height: normal; background: rgba(9, 35, 29, .64); }
 .project-title, .project-progress { display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
