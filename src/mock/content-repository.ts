@@ -137,7 +137,13 @@ export const mockGetProductDetail = async (id: string): Promise<ProductDetail> =
 export const mockGetSiteDetail = async (id: string): Promise<SiteDetail> =>
   required([...sites, ...constructionSites], id)
 
-export const mockGetStaffProfile = async (id: string): Promise<StaffDetail> => required(staff, id)
+export const mockGetStaffProfile = async (id: string): Promise<StaffDetail> => {
+  const profile = required(staff, id)
+  return {
+    ...profile,
+    related_sites: id === 'staff-3' ? clone(services) : profile.related_sites,
+  }
+}
 
 export const mockGetWarrantyDetail = async (id: string): Promise<WarrantyDetail> =>
   required(warranties, id)

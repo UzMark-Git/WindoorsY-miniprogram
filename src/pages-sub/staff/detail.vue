@@ -44,7 +44,7 @@ onShareTimeline(()=>profile.value?timelineMessage(`门窗服务顾问：${profil
       </view>
       <view class="cases">
         <view class="section-heading"><view><text class="title">近期服务的工地</text><text class="case-count">{{profile.related_sites.length?'展示正在施工中或质保中的相关工地':'相关工地服务记录将在这里展示'}}</text></view></view>
-        <scroll-view v-if="profile.related_sites.length" scroll-x class="case-scroll"><view class="case-row"><view v-for="site in profile.related_sites.slice(0,3)" :key="site._id" class="case-item"><ServiceCard :item="site" compact @select="openSite"/></view></view></scroll-view>
+        <scroll-view v-if="profile.related_sites.length" scroll-x class="case-scroll"><view class="case-row"><view v-for="site in profile.related_sites" :key="site._id" class="case-item"><ServiceCard :item="site" compact @select="openSite"/></view></view></scroll-view>
         <view v-else class="empty-cases"><text>暂无公开的近期服务工地</text><text>工地进入施工或质保阶段后会展示在这里</text></view>
       </view>
       <DetailActionBar type="staff" :content-id="profile._id" :title="profile.name" :image="profile.avatar" :return-url="`/pages-sub/staff/detail?id=${encodeURIComponent(profile._id)}`" @appoint="appoint"/>
