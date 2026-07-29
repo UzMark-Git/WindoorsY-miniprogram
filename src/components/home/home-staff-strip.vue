@@ -35,6 +35,8 @@ function avatarSource(person: StaffProfile) {
 .staff-scroll { width: 100%; white-space: nowrap; }
 .staff-row { display: flex; gap: 18rpx; }
 .staff-card { flex: 0 0 40%; display: flex; align-items: center; gap: 18rpx; min-width: 88rpx; min-height: 88rpx; margin: 0; padding: 18rpx; border: 0; border-radius: var(--home-radius); color: var(--home-green); text-align: left; line-height: normal; white-space: normal; background: var(--home-surface); }
+.staff-card:nth-child(odd) { background: #e7f1ed; }
+.staff-card:nth-child(even) { background: #fbf0df; }
 .staff-card::after { border: 0; }
 .staff-avatar { flex: 0 0 auto; width: 84rpx; height: 84rpx; border-radius: 50%; background: #e6edeb; }
 .staff-copy { min-width: 0; }
