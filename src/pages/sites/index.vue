@@ -95,7 +95,7 @@ onMounted(async () => {
     </view>
     <ContentState v-if="status !== 'ready'" :status="status === 'ready' ? 'loading' : status" :message="status === 'empty' ? '暂无符合条件的案例' : message" @retry="load(true)" />
     <button v-if="status === 'empty' && appliedKeyword" class="clear-conditions" @click="clearSearch">清除搜索条件</button>
-    <view v-else class="list"><SiteCard v-for="site in items" :key="site._id" compact :site="site" @select="selectSite" /><button v-if="hasMore" class="load-more" :disabled="loadingMore" @click="nextPage">{{ loadingMore ? '加载中…' : '加载更多' }}</button><text v-else class="end">— 已展示全部案例 —</text></view>
+    <view v-if="status === 'ready'" class="list"><SiteCard v-for="site in items" :key="site._id" compact :site="site" @select="selectSite" /><button v-if="hasMore" class="load-more" :disabled="loadingMore" @click="nextPage">{{ loadingMore ? '加载中…' : '加载更多' }}</button><text v-else class="end">— 已展示全部案例 —</text></view>
   </view>
 </template>
 
