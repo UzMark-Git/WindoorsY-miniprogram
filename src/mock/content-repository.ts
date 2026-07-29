@@ -150,17 +150,8 @@ export const mockGetProductDetail = async (id: string): Promise<ProductDetail> =
   related_sites: clone(services.slice(0, 2)),
 })
 
-export const mockGetSiteDetail = async (id: string): Promise<SiteDetail> => {
-  const detail = required([...sites, ...constructionSites], id)
-  const productIds = detail.product_ids || []
-  return clone({
-    ...detail,
-    related_products: productIds.flatMap((productId) => {
-      const product = products.find((item) => item._id === productId)
-      return product ? [product] : []
-    }),
-  })
-}
+export const mockGetSiteDetail = async (id: string): Promise<SiteDetail> =>
+  required([...sites, ...constructionSites], id)
 
 export const mockGetStaffProfile = async (id: string): Promise<StaffDetail> => {
   const profile = required(staff, id)

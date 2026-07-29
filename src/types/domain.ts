@@ -35,8 +35,6 @@ export interface SiteSummary extends ContentRecord {
 export interface SiteDetail extends SiteSummary {
   staff_ids: string[]
   updates: SiteUpdate[]
-  product_ids?: string[]
-  related_products?: ProductSummary[]
 }
 
 export interface StaffProfile extends ContentRecord {
