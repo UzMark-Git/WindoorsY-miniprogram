@@ -55,6 +55,6 @@ function imageSource(item: SiteSummary) {
 .case-title, .case-solution, .case-area { display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .case-title { color: var(--home-green); font-size: 28rpx; font-weight: 650; }
 .case-meta { display: flex; gap: 10rpx; min-width: 0; margin-top: 10rpx; font-size: 21rpx; }
-.case-solution { flex: 1; min-width: 0; color: var(--home-green); font-weight: 650; }
+.case-solution { flex: 1; min-width: 0; color: var(--home-muted); font-weight: 650; }
 .case-area { flex: 0 1 auto; max-width: 38%; color: var(--home-muted); }
 </style>
