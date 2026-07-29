@@ -4,12 +4,14 @@ import { onLoad, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app'
 import { getSiteDetail, getStaffProfile } from '../../api/content'
 import ContentState from '../../components/content-state.vue'
 import DetailActionBar from '../../components/detail-action-bar.vue'
+import FloatingWechatService from '../../components/floating-wechat-service.vue'
 import MediaGallery from '../../components/media-gallery.vue'
 import SiteProgress from '../../components/site-progress.vue'
 import type { SiteDetail, SiteStage, StaffProfile } from '../../types/domain'
 import { classifyDetailError } from '../../utils/detail-state'
 import { shareMessage, timelineMessage } from '../../utils/content-sharing'
 import { getSiteUpdateEditorOptions } from '../../api/site-update-editor'
+import { isCloudRuntimeEnabled, showDemoUnavailable } from '../../config/demo-isolation'
 
 const stageOrder: SiteStage[] = ['measuring', 'designing', 'installing', 'completed']
 const stageLabels = ['测量复尺', '方案设计', '安装施工', '竣工验收']
@@ -23,7 +25,11 @@ async function load() {
   status.value = 'loading'
   try {
     site.value = await getSiteDetail(siteId.value)
-    getSiteUpdateEditorOptions().then(()=>{canManageUpdates.value=true}).catch(()=>{canManageUpdates.value=false})
+    if (isCloudRuntimeEnabled()) {
+      getSiteUpdateEditorOptions().then(()=>{canManageUpdates.value=true}).catch(()=>{canManageUpdates.value=false})
+    } else {
+      canManageUpdates.value = false
+    }
     const staffIds = [...new Set([...site.value.staff_ids, ...site.value.updates.flatMap(item => item.staff_ids || [])])]
     const results = await Promise.allSettled(staffIds.map(getStaffProfile))
     staff.value = results.flatMap(result => result.status === 'fulfilled' ? [result.value] : [])
@@ -35,9 +41,9 @@ async function load() {
   }
 }
 function openStaff(id: string) { uni.navigateTo({ url: `/pages-sub/staff/detail?id=${encodeURIComponent(id)}` }) }
-function appoint() { if (site.value) uni.navigateTo({ url: `/pages-sub/appointments/create?source_type=site&source_id=${encodeURIComponent(site.value._id)}&store_id=${encodeURIComponent(site.value.store_id)}` }) }
+function appoint() { if (showDemoUnavailable(uni,'预约咨询')) return; if (site.value) uni.navigateTo({ url: `/pages-sub/appointments/create?source_type=site&source_id=${encodeURIComponent(site.value._id)}&store_id=${encodeURIComponent(site.value.store_id)}` }) }
 function preview(src: string) { if (site.value) uni.previewImage({ current: src, urls: site.value.updates.flatMap(item => item.media).filter(Boolean) }) }
-function createUpdate(){uni.navigateTo({url:`/pages-sub/sites/update-create?site_id=${encodeURIComponent(siteId.value)}`})}
+function createUpdate(){if(showDemoUnavailable(uni,'施工动态管理'))return;uni.navigateTo({url:`/pages-sub/sites/update-create?site_id=${encodeURIComponent(siteId.value)}`})}
 function updateDate(value?: number) { const date = new Date(value || Date.now()); return `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日` }
 function updateStaff(ids: string[] = []) { return ids.map(id => staff.value.find(person => person._id === id)?.name).filter(Boolean).join('、') }
 onLoad((query: Record<string,string|undefined>) => { siteId.value = query.id || ''; load() })
@@ -57,6 +63,7 @@ onShareTimeline(() => site.value ? timelineMessage(`门窗案例：${site.value.
     <view class="panel"><text class="section-title">服务人员</text><button v-for="person in staff" :key="person._id" class="person-control" :aria-label="`查看${person.name}的人员详情`" @click="openStaff(person._id)"><image :src="person.avatar || placeholder" mode="aspectFill" :aria-label="`${person.name}头像`"/><view><text class="person-name">{{ person.name }}</text><text class="muted">{{ person.role }}</text></view><text class="arrow">›</text></button><text v-if="!staff.length" class="muted">暂无人员信息</text></view>
   </template>
   <DetailActionBar v-if="status==='ready'&&site" type="site" :content-id="site._id" :title="site.title" :image="site.cover_image" :return-url="`/pages-sub/sites/detail?id=${encodeURIComponent(site._id)}`" primary-label="立即获取报价" @appoint="appoint"/>
+  <FloatingWechatService placement="actionbar" />
 </view></template>
 
 <style scoped>

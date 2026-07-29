@@ -27,7 +27,8 @@ export interface SiteSummary extends ContentRecord {
   area: number
   store_name: string
   stage: SiteStage
-    display_group?: SiteDisplayGroup
+  display_group?: SiteDisplayGroup
+  case_category?: CaseCategory
   sort_order: number
 }
 
@@ -51,6 +52,7 @@ export interface StaffDetail extends StaffProfile { related_sites:ServiceSummary
 
 export type SiteStage = 'measuring' | 'designing' | 'installing' | 'completed'
 export type SiteDisplayGroup = 'case' | 'service'
+export type CaseCategory = 'soundproof' | 'balcony' | 'renovation' | 'commercial'
 
 export interface SiteUpdate extends ContentRecord {
   site_id: string
@@ -66,10 +68,11 @@ export interface SiteUpdate extends ContentRecord {
 }
 
 export interface HomeContent {
-    store: StoreSummary
-    services: ServiceSummary[]
+  store: StoreSummary
+  cases: SiteSummary[]
+  projects: ServiceSummary[]
   staff: StaffProfile[]
-  products: ProductSummary[]
+  warranty?: WarrantySummary
 }
 
 export type ProductCategory = 'system_window' | 'bridge_aluminum' | 'sliding_door' | 'sunroom' | 'screen_accessory'
@@ -95,11 +98,11 @@ export interface SiteListResult {
   pageSize: number
 }
 
-export type SearchContentType = 'sites'|'construction'|'warranties'
+export type SearchContentType = 'products'|'sites'|'construction'|'warranties'
 export interface SearchItem { id:string;type:SearchContentType;title:string;summary:string;image:string;meta:string }
 export interface SearchGroup { items:SearchItem[];page:number;pageSize:number;hasMore:boolean }
 export interface SearchResult { keyword:string;groups:Record<SearchContentType,SearchGroup> }
-export interface SearchDiscovery { keywords:string[];groups:Record<SearchContentType,SearchItem[]> }
+export interface SearchDiscovery { keywords:string[];groups:Record<SearchContentType,SearchItem[]>;contact_phone?:string }
 
 export interface SiteFilters {
   districts: string[]

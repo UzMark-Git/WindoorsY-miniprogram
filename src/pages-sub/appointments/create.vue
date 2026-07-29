@@ -2,6 +2,7 @@
 import { reactive, ref } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
 import { createAppointment, type AppointmentSourceType } from '../../api/appointments'
+import { isLocalDemoMode } from '../../config/runtime'
 import { validateAppointment, type AppointmentErrors, type AppointmentFields } from '../../utils/appointment'
 import UniDataPicker from '@dcloudio/uni-ui/lib/uni-data-picker/uni-data-picker.vue'
 import {
@@ -12,6 +13,7 @@ import {
   selectedAppointmentRegion,
 } from '../../utils/appointment-region'
 
+const demoMode = isLocalDemoMode()
 const form = reactive<AppointmentFields>({
   name: '',
   phone: '',
@@ -54,7 +56,7 @@ function regionPopupOpened() {
   setTimeout(() => expandAppointmentRegionPicker(regionPicker.value), APPOINTMENT_REGION_READY_DELAY)
 }
 async function submit() {
-  if (submitting.value) return
+  if (demoMode || submitting.value) return
   Object.keys(errors).forEach(key => delete errors[key as keyof AppointmentErrors])
   Object.assign(errors, validateAppointment(form))
   if (Object.keys(errors).length) return
@@ -83,6 +85,7 @@ onLoad((query: Record<string, string | undefined>) => {
       <text class="copy">留下需求，门店顾问会尽快与你联系，确认方案与报价。</text>
     </view>
     <view class="form">
+      <view v-if="demoMode" class="demo-notice">演示模式仅展示预约表单，不会提交或连接云端服务</view>
       <view class="form-field">
         <text class="field-label">姓名</text>
         <input v-model="form.name" class="form-input" type="text" maxlength="20" placeholder="请输入姓名" />
@@ -96,7 +99,9 @@ onLoad((query: Record<string, string | undefined>) => {
       <view class="form-field">
         <text class="field-label">所在城市</text>
         <view class="region-picker-field">
+          <view v-if="demoMode" class="demo-region">{{form.city}}（演示数据）</view>
           <UniDataPicker
+            v-else
             ref="regionPicker"
             v-model="regionPickerValue"
             collection="opendb-city-china"
@@ -118,11 +123,11 @@ onLoad((query: Record<string, string | undefined>) => {
         <textarea v-model="form.need" class="form-textarea" maxlength="300" placeholder="例如：封阳台、门窗换新" />
         <text v-if="errors.need" class="error">{{errors.need}}</text>
       </view>
-      <button class="submit" :disabled="submitting" @click="submit">{{submitting?'提交中…':'提交预约'}}</button>
+      <button class="submit" :disabled="demoMode || submitting" @click="submit">{{demoMode ? '演示模式不可提交' : submitting ? '提交中…' : '提交预约'}}</button>
     </view>
   </view>
 </template>
 
 <style scoped>
-.page{min-height:100vh;padding:40rpx 28rpx;background:#f2f5f3}.intro{padding:34rpx 14rpx}.eyebrow{display:block;color:#a4773f;font-size:20rpx;letter-spacing:4rpx}.title{display:block;margin-top:14rpx;color:#183b32;font-size:42rpx;font-weight:650}.copy{display:block;margin-top:14rpx;color:#74827e;font-size:25rpx}.form{padding:34rpx;border-radius:22rpx;background:#fff}.form-field{display:block;margin-bottom:28rpx;color:#294a42;font-size:25rpx}.field-label{display:block}.form-input,.form-textarea{position:relative;z-index:1;box-sizing:border-box;width:100%;margin-top:12rpx;padding:0 22rpx;border-radius:12rpx;background:#f5f7f6;color:#294a42;font-size:27rpx;pointer-events:auto}.form-input{height:88rpx;min-height:88rpx;line-height:88rpx}.form-textarea{height:210rpx;padding-top:22rpx;line-height:1.6}.region-picker-field{margin-top:12rpx}.region-picker-field :deep(.input-value){box-sizing:border-box;height:88rpx;border:0;border-radius:12rpx;background:#f5f7f6;color:#294a42;font-size:27rpx}.region-picker-field :deep(.selected-area){padding:0 22rpx}.region-picker-field :deep(.placeholder){color:#8a9591;font-size:27rpx}.error{display:block;margin-top:8rpx;color:#bd3f32;font-size:22rpx}.submit{margin-top:12rpx;border:0;border-radius:42rpx;color:#fff;background:#24564a;font-size:28rpx}.submit[disabled]{opacity:.55}.submit::after{border:0}
+.page{min-height:100vh;padding:40rpx 28rpx;background:#f2f5f3}.intro{padding:34rpx 14rpx}.eyebrow{display:block;color:#a4773f;font-size:20rpx;letter-spacing:4rpx}.title{display:block;margin-top:14rpx;color:#183b32;font-size:42rpx;font-weight:650}.copy{display:block;margin-top:14rpx;color:#74827e;font-size:25rpx}.form{padding:34rpx;border-radius:22rpx;background:#fff}.demo-notice{margin-bottom:28rpx;padding:20rpx 22rpx;border-radius:12rpx;color:#7a633f;background:#f7f0e5;font-size:23rpx;line-height:1.6}.form-field{display:block;margin-bottom:28rpx;color:#294a42;font-size:25rpx}.field-label{display:block}.form-input,.form-textarea{position:relative;z-index:1;box-sizing:border-box;width:100%;margin-top:12rpx;padding:0 22rpx;border-radius:12rpx;background:#f5f7f6;color:#294a42;font-size:27rpx;pointer-events:auto}.form-input{height:88rpx;min-height:88rpx;line-height:88rpx}.form-textarea{height:210rpx;padding-top:22rpx;line-height:1.6}.region-picker-field{margin-top:12rpx}.region-picker-field :deep(.input-value){box-sizing:border-box;height:88rpx;border:0;border-radius:12rpx;background:#f5f7f6;color:#294a42;font-size:27rpx}.region-picker-field :deep(.selected-area){padding:0 22rpx}.region-picker-field :deep(.placeholder){color:#8a9591;font-size:27rpx}.demo-region{box-sizing:border-box;height:88rpx;padding:0 22rpx;border-radius:12rpx;line-height:88rpx;background:#f5f7f6;color:#687873;font-size:25rpx}.error{display:block;margin-top:8rpx;color:#bd3f32;font-size:22rpx}.submit{margin-top:12rpx;border:0;border-radius:42rpx;color:#fff;background:#24564a;font-size:28rpx}.submit[disabled]{opacity:.55}.submit::after{border:0}
 </style>
