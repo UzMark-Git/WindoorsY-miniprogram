@@ -12,10 +12,10 @@ const emit = defineEmits<{
       <text>搜索小区、封窗知识、施工进度</text>
     </button>
     <view class="shortcuts">
-      <button class="shortcut-button" @click="emit('search', '小区')"><text class="shortcut-icon"><text class="shortcut-glyph">⌂</text></text><text class="shortcut-label">查小区</text></button>
-      <button class="shortcut-button" @click="emit('search', '封窗知识')"><text class="shortcut-icon"><text class="shortcut-glyph">▤</text></text><text class="shortcut-label">封窗知识</text></button>
-      <button class="shortcut-button" @click="emit('privateEntry', 'progress')"><text class="shortcut-icon"><text class="shortcut-glyph">◷</text></text><text class="shortcut-label">我的进度</text></button>
-      <button class="shortcut-button" @click="emit('privateEntry', 'warranty')"><text class="shortcut-icon"><text class="shortcut-glyph shortcut-glyph--check">✓</text></text><text class="shortcut-label">我的质保</text></button>
+      <button class="shortcut-button" @click="emit('search', '小区')"><text class="shortcut-icon"><text class="shortcut-glyph">区</text></text><text class="shortcut-label">查小区</text></button>
+      <button class="shortcut-button" @click="emit('search', '封窗知识')"><text class="shortcut-icon"><text class="shortcut-glyph">知</text></text><text class="shortcut-label">封窗知识</text></button>
+      <button class="shortcut-button" @click="emit('privateEntry', 'progress')"><text class="shortcut-icon"><text class="shortcut-glyph">工</text></text><text class="shortcut-label">我的进度</text></button>
+      <button class="shortcut-button" @click="emit('privateEntry', 'warranty')"><text class="shortcut-icon"><text class="shortcut-glyph">保</text></text><text class="shortcut-label">我的质保</text></button>
     </view>
   </view>
 </template>
@@ -92,16 +92,18 @@ const emit = defineEmits<{
   border-radius: 24rpx;
   color: var(--home-gold);
   background: #f7ecdc;
-  font-size: 30rpx;
+  font-size: 40rpx;
   line-height: 1;
 }
 
 .shortcut-glyph {
+  font-weight: 500;
   line-height: 1;
 }
 
-.shortcut-glyph--check {
-  transform: translateY(4rpx);
+.shortcut-button:nth-child(odd) .shortcut-icon {
+  color: var(--home-green);
+  background: #e7f1ed;
 }
 
 .shortcut-label {
