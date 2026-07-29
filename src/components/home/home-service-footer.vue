@@ -28,7 +28,7 @@ const emit = defineEmits<{ warranty: []; store: [] }>()
 .warranty-card { width: 100%; min-width: 88rpx; min-height: 88rpx; margin: 0; border: 0; text-align: left; line-height: normal; }
 .store-strip { width: 100%; min-width: 88rpx; min-height: 88rpx; margin: 0; border: 0; text-align: left; line-height: normal; }
 .warranty-card::after, .store-strip::after { border: 0; }
-.warranty-card { padding: 34rpx 30rpx; border-radius: var(--home-radius); color: #fff; background: linear-gradient(135deg, var(--home-green), #102c25); }
+.warranty-card { padding: 34rpx 30rpx; border-radius: var(--home-radius); color: #fff; background: linear-gradient(135deg, var(--home-green), #102c25); box-shadow: 0 12rpx 34rpx rgba(20,55,46,.16); }
 .warranty-kicker, .warranty-title, .warranty-copy, .warranty-link, .store-name, .store-hours { display: block; }
 .warranty-kicker { color: #ddc493; letter-spacing: 3rpx; font-size: 20rpx; font-weight: 600; }
 .warranty-title { margin-top: 14rpx; font-size: 34rpx; font-weight: 650; }
