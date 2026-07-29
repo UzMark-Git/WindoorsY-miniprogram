@@ -154,6 +154,27 @@ export const warranties: WarrantyDetail[] = [
     updates: [],
     store_phone: '0791-88888888',
   },
+  {
+    ...base,
+    _id: 'warranty-2',
+    title: '青山湖旧窗改造',
+    cover_image: caseImages[2],
+    summary: '已过质保项目状态与历史服务记录演示',
+    district: '青山湖区',
+    area: 24,
+    store_name: '门窗老伙计',
+    stage: 'completed',
+    acceptance_status: 'passed',
+    accepted_at: Date.UTC(2015, 4, 12),
+    warranty_years: 10,
+    warranty_expires_at: Date.UTC(2025, 4, 12),
+    warranty_no: 'WD-20150512-002',
+    warranty_visible: true,
+    warranty_description: '该项目十年质保期已结束，可继续联系门店咨询维护服务。',
+    warranty_status: 'expired',
+    updates: [],
+    store_phone: '0791-88888888',
+  },
 ]
 
 const constructionServices: ServiceSummary[] = constructionSites.map(
@@ -199,7 +220,7 @@ export const home: HomeContent = {
     phone: '0791-88888888',
   },
   cases: sites,
-  projects: services,
+  projects: [...constructionServices.slice(0, 3), ...warrantyServices],
   staff,
   warranty: warranties[0],
 }
