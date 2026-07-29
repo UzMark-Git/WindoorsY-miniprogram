@@ -48,6 +48,13 @@ const page = <T>(items: T[], current: number, size: number): T[] =>
   items.slice((current - 1) * size, current * size)
 
 const clone = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T
+const includesKeyword = (
+  keyword: string | undefined,
+  values: Array<string | undefined>,
+): boolean => {
+  const target = keyword?.trim().toLocaleLowerCase()
+  return !target || values.some((value) => value?.toLocaleLowerCase().includes(target))
+}
 
 const validateStoreId = (value?: string): void => {
   if (value !== undefined && value.trim() !== storeId) {
@@ -91,7 +98,9 @@ export async function mockListSites(query: NormalizedSiteQuery): Promise<SiteLis
   const filtered = sites.filter(
     (item) =>
       (!query.district || item.district === query.district) &&
-      (!query.stage || item.stage === query.stage),
+      (!query.stage || item.stage === query.stage) &&
+      (!query.category || item.case_category === query.category) &&
+      includesKeyword(query.keyword, [item.title, item.location, item.district, item.summary]),
   )
   return {
     items: clone(page(filtered, query.page, query.pageSize)),
@@ -109,7 +118,14 @@ export async function mockListServices(
       (!query.district || item.district === query.district) &&
       (!query.type || item.service_type === query.type) &&
       (!query.stage || item.stage === query.stage) &&
-      (!query.warranty_status || item.warranty_status === query.warranty_status),
+      (!query.warranty_status || item.warranty_status === query.warranty_status) &&
+      includesKeyword(query.keyword, [
+        item.title,
+        item.location,
+        item.district,
+        item.summary,
+        item.warranty_no,
+      ]),
   )
   return {
     items: clone(page(filtered, query.page, query.pageSize)),

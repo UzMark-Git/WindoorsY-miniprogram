@@ -27,7 +27,8 @@ export interface SiteSummary extends ContentRecord {
   area: number
   store_name: string
   stage: SiteStage
-    display_group?: SiteDisplayGroup
+  display_group?: SiteDisplayGroup
+  case_category?: CaseCategory
   sort_order: number
 }
 
@@ -51,6 +52,7 @@ export interface StaffDetail extends StaffProfile { related_sites:ServiceSummary
 
 export type SiteStage = 'measuring' | 'designing' | 'installing' | 'completed'
 export type SiteDisplayGroup = 'case' | 'service'
+export type CaseCategory = 'soundproof' | 'balcony' | 'renovation' | 'commercial'
 
 export interface SiteUpdate extends ContentRecord {
   site_id: string

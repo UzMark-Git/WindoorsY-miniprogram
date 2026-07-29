@@ -1,4 +1,4 @@
-import type { HomeContent, ProductCategory, ProductDetail, ProductListResult, SearchContentType, SearchDiscovery, SearchGroup, SearchResult, SiteDetail, SiteFilters, SiteListResult, SiteStage, StaffDetail, WarrantyDetail, WarrantyListResult, ServiceListResult, WarrantyStatus } from '../types/domain'
+import type { CaseCategory, HomeContent, ProductCategory, ProductDetail, ProductListResult, SearchContentType, SearchDiscovery, SearchGroup, SearchResult, SiteDetail, SiteFilters, SiteListResult, SiteStage, StaffDetail, WarrantyDetail, WarrantyListResult, ServiceListResult, WarrantyStatus } from '../types/domain'
 import type { WebsiteHome } from '@windoors/shared'
 import { isLocalDemoMode } from '../config/runtime'
 import { mockContentRepository } from '../mock/content-repository'
@@ -9,6 +9,8 @@ export type SiteQuery = {
   storeId?: string
   district?: string
   stage?: SiteStage
+  keyword?: string
+  category?: CaseCategory
 }
 
 export type NormalizedSiteQuery = Omit<SiteQuery, 'page' | 'pageSize'> & {
@@ -22,8 +24,8 @@ export type SearchQuery = { keyword:string;storeId:string;type?:SearchContentTyp
 export type NormalizedSearchQuery = { keyword:string;storeId:string;type?:SearchContentType;page:number;pageSize:number }
 export type WarrantyQuery = { page?:number;pageSize?:number;storeId?:string }
 export type NormalizedWarrantyQuery = { page:number;pageSize:number;storeId?:string }
-export type ServiceQuery = { page?:number;pageSize?:number;storeId?:string;district?:string;type?:'construction'|'warranty';stage?:SiteStage;warranty_status?:WarrantyStatus }
-export type NormalizedServiceQuery = { page:number;pageSize:number;storeId?:string;district?:string;type?:'construction'|'warranty';stage?:SiteStage;warranty_status?:WarrantyStatus }
+export type ServiceQuery = { page?:number;pageSize?:number;storeId?:string;district?:string;type?:'construction'|'warranty';stage?:SiteStage;warranty_status?:WarrantyStatus;keyword?:string }
+export type NormalizedServiceQuery = { page:number;pageSize:number;storeId?:string;district?:string;type?:'construction'|'warranty';stage?:SiteStage;warranty_status?:WarrantyStatus;keyword?:string }
 export type SearchContentResult = SearchResult|{keyword:string;type:SearchContentType;group:SearchGroup}
 
 export interface ContentRepository {
@@ -52,10 +54,13 @@ export function normalizeSiteQuery(input: SiteQuery): NormalizedSiteQuery {
   const pageSize = typeof input.pageSize === 'number' && Number.isFinite(input.pageSize) ? input.pageSize : 10
   const storeId = input.storeId?.trim()
   const district = input.district?.trim()
+  const keyword = input.keyword?.trim()
   return {
     ...(storeId ? { storeId } : {}),
     ...(district ? { district } : {}),
     ...(input.stage ? { stage: input.stage } : {}),
+    ...(keyword ? { keyword } : {}),
+    ...(input.category ? { category: input.category } : {}),
     page: Math.max(1, Math.trunc(page)),
     pageSize: Math.min(20, Math.max(1, Math.trunc(pageSize))),
   }
@@ -89,6 +94,7 @@ export function normalizeWarrantyQuery(input: WarrantyQuery): NormalizedWarranty
 export function normalizeServiceQuery(input: ServiceQuery): NormalizedServiceQuery {
   const storeId = input.storeId?.trim()
   const district = input.district?.trim()
+  const keyword = input.keyword?.trim()
   return {
     ...normalizePagination(input.page, input.pageSize),
     ...(storeId ? { storeId } : {}),
@@ -96,6 +102,7 @@ export function normalizeServiceQuery(input: ServiceQuery): NormalizedServiceQue
     ...(input.type ? { type: input.type } : {}),
     ...(input.stage ? { stage: input.stage } : {}),
     ...(input.warranty_status ? { warranty_status: input.warranty_status } : {}),
+    ...(keyword ? { keyword } : {}),
   }
 }
 
