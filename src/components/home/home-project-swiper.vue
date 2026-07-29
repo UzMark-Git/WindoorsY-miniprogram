@@ -29,6 +29,9 @@ function badgeText(item: ServiceSummary) {
 }
 
 function projectCardTone(item: ServiceSummary) {
+  if (item.service_type === 'warranty' && item.warranty_status === 'expired') {
+    return 'project-card--gray'
+  }
   const highlighted = item.service_type === 'warranty'
     ? item.warranty_status === 'active'
     : item.stage === 'completed'
@@ -71,6 +74,7 @@ function projectCardTone(item: ServiceSummary) {
 .project-card { position: absolute; right: 24rpx; bottom: 24rpx; left: 24rpx; min-height: 130rpx; margin: 0; padding: 24rpx; border: 0; border-radius: 16rpx; color: var(--home-green); text-align: left; line-height: normal; }
 .project-card--green { background: rgba(231, 241, 237, .94); }
 .project-card--gold { background: rgba(251, 240, 223, .94); }
+.project-card--gray { background: rgba(232, 235, 233, .96); }
 .project-title, .project-progress { display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .project-title { font-size: 30rpx; font-weight: 650; }
 .project-progress { margin-top: 10rpx; color: var(--home-muted); font-size: 22rpx; }
