@@ -35,7 +35,7 @@ function badgeText(item: ServiceSummary) {
       <view><text class="kicker">RECENT PROJECTS</text><text class="section-title">施工全程可见</text></view>
       <button class="all-button" @click="emit('all')">查看全部</button>
     </view>
-    <swiper class="project-swiper" :indicator-dots="projects.length > 1" :autoplay="false" :circular="false" indicator-color="rgba(255,255,255,.38)" indicator-active-color="#fff">
+    <swiper class="project-swiper" :indicator-dots="projects.length > 1" :autoplay="false" :circular="false" indicator-color="rgba(25,60,51,.2)" indicator-active-color="#183e34">
       <swiper-item v-for="item in projects" :key="item._id">
         <view class="project-slide">
           <image class="project-image" :src="imageSource(item)" mode="aspectFill" @error="failedImages[item._id] = true" />
@@ -57,7 +57,7 @@ function badgeText(item: ServiceSummary) {
 .section-title { display: block; margin-top: 10rpx; color: var(--home-green); font-size: 38rpx; font-weight: 650; }
 .all-button { flex: 0 0 auto; min-width: 144rpx; min-height: 88rpx; margin: 0 -18rpx -18rpx 0; padding: 0 18rpx; border: 0; color: var(--home-green); font-size: 24rpx; line-height: 88rpx; text-align: right; background: transparent; }
 .all-button::after, .project-card::after { border: 0; }
-.project-swiper { height: 450rpx; overflow: hidden; border-radius: 20rpx; }
+.project-swiper { height: 462rpx; overflow: hidden; border-radius: 20rpx; }
 .project-slide { position: relative; width: 100%; height: 414rpx; overflow: hidden; border-radius: var(--home-radius); background: var(--home-green); }
 .project-image { position: absolute; inset: 0; width: 100%; height: 100%; background: #2c5147; }
 .delivery-badge { position: absolute; top: 24rpx; right: 24rpx; max-width: 260rpx; padding: 10rpx 16rpx; overflow: hidden; border-radius: 99rpx; color: #f8f3ea; font-size: 21rpx; white-space: nowrap; text-overflow: ellipsis; background: rgba(255, 255, 255, .16); }
