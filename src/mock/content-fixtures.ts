@@ -67,9 +67,9 @@ export const products: ProductSummary[] = [
   },
 ]
 
-const stages = ['measuring', 'designing', 'installing', 'completed', 'completed'] as const
-const districts = ['红谷滩区', '东湖区', '红谷滩区', '青山湖区', '红谷滩区'] as const
-const siteTitles = ['万科华侨城', '九龙湖花园', '绿地中央公园', '文创产业园', '滨江首府'] as const
+const stages = ['measuring', 'designing', 'installing', 'completed', 'completed', 'completed'] as const
+const districts = ['红谷滩区', '东湖区', '红谷滩区', '青山湖区', '红谷滩区', '青云谱区'] as const
+const siteTitles = ['万科华侨城', '九龙湖花园', '绿地中央公园', '文创产业园', '滨江首府', '朝阳新城'] as const
 
 export const sites: SiteDetail[] = stages.map((stage, index) => ({
   ...base,
