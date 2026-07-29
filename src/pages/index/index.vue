@@ -116,7 +116,7 @@ onMounted(load)
 </template>
 
 <style scoped>
-.page { --home-green: #173d34; --home-gold: #ae772d; --home-surface: #ffffff; --home-muted: #66766f; --home-radius: 28rpx; min-height: 100vh; padding-bottom: calc(70rpx + env(safe-area-inset-bottom)); background: #f4f6f4; }
+.page { --home-green: #173d34; --home-gold: #ae772d; --home-surface: #ffffff; --home-muted: #66766f; --home-radius: 28rpx; min-height: 100vh; padding-bottom: calc(23rpx + env(safe-area-inset-bottom)); background: #f4f6f4; }
 .hero { position: relative; height: 610rpx; overflow: hidden; }
 .hero-image { width: 100%; height: 100%; }
 .veil { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; background: linear-gradient(180deg,rgba(10,30,25,.08),rgba(10,30,25,.78)); }
@@ -128,8 +128,8 @@ onMounted(load)
 .section { padding: 62rpx 30rpx 0; }.heading { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom: 28rpx; }.kicker { color: var(--home-gold); }.section-title { display:block; margin-top:10rpx; color:var(--home-green); font-size:38rpx; font-weight:650; }
 .needs{padding-top:54rpx}
 .cases,.sites,.staff,.service-footer-section{padding-top:23rpx}
-.service-footer-section { padding-bottom: 14rpx; }
-.legal-links { display: flex; align-items:center; justify-content: center; gap: 14rpx; padding: 56rpx 30rpx 12rpx; color: var(--home-muted); font-size: 22rpx; }
+.service-footer-section { padding-bottom: 0; }
+.legal-links { display: flex; align-items:center; justify-content: center; gap: 14rpx; padding: 23rpx 30rpx 0; color: var(--home-muted); font-size: 22rpx; }
 .legal-links button { min-width:88rpx; min-height:88rpx; margin:0; padding:0 12rpx; border:0; color:inherit; background:transparent; font-size:22rpx; line-height:88rpx; }
 .legal-links button::after { border:0; }
 .dot { color: #a6afac; }
