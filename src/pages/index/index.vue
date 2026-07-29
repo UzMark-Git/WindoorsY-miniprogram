@@ -122,7 +122,6 @@ onMounted(load)
 .veil { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; background: linear-gradient(180deg,rgba(10,30,25,.08),rgba(10,30,25,.78)); }
 .hero-copy { position: absolute; left: 40rpx; right: 40rpx; bottom: 62rpx; z-index: 2; color: white; }
 .eyebrow,.kicker { display: block; letter-spacing: 4rpx; font-size: 20rpx; font-weight: 600; }
-.eyebrow { color: var(--home-gold); }
 .hero-title { display: block; margin-top: 18rpx; font-size: 52rpx; font-weight: 650; }
 .hero-lead { display:block; margin-top:18rpx; color:rgba(255,255,255,.86); font-size:25rpx; }
 .home-search-panel{display:block;margin:-44rpx 30rpx 0}
