@@ -47,7 +47,7 @@ function imageSource(item: SiteSummary) {
 .section-title { display: block; margin-top: 10rpx; color: var(--home-green); font-size: 38rpx; font-weight: 650; }
 .all-button { flex: 0 0 auto; min-width: 176rpx; min-height: 88rpx; margin: 0 -18rpx -18rpx 0; padding: 0 18rpx; border: 0; color: var(--home-green); font-size: 24rpx; line-height: 88rpx; text-align: right; background: transparent; }
 .all-button::after, .case-card::after { border: 0; }
-.case-swiper { height: 420rpx; }
+.case-swiper { height: 432rpx; }
 .case-row { display: flex; gap: 18rpx; min-width: 0; padding-bottom: 36rpx; }
 .case-card { flex: 1 1 0; min-width: 0; min-height: 384rpx; margin: 0; padding: 0; overflow: hidden; border: 0; border-radius: var(--home-radius); color: inherit; text-align: left; line-height: normal; background: var(--home-surface); }
 .case-image { display: block; width: 100%; height: 236rpx; background: #e5ece9; }
