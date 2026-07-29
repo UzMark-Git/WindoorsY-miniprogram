@@ -1,14 +1,8 @@
 <script setup lang="ts">
-import { homeSuggestionActions, type HomeSuggestionAction } from './home-entry-actions'
 const emit = defineEmits<{
   search: [keyword?: string]
   privateEntry: [type: 'progress' | 'warranty']
 }>()
-
-function selectSuggestion(action: HomeSuggestionAction) {
-  if (action.type === 'private') emit('privateEntry', action.entry)
-  else emit('search', action.keyword)
-}
 </script>
 
 <template>
@@ -17,14 +11,11 @@ function selectSuggestion(action: HomeSuggestionAction) {
       <text class="search-icon">⌕</text>
       <text>搜索小区、封窗知识、施工进度</text>
     </button>
-    <view class="suggestions">
-      <button v-for="suggestion in homeSuggestionActions" :key="suggestion.label" class="suggestion-chip" @click="selectSuggestion(suggestion)">{{ suggestion.label }}</button>
-    </view>
     <view class="shortcuts">
-      <button class="shortcut-button" @click="emit('search', '小区')"><text class="shortcut-icon">⌂</text><text>查小区</text></button>
-      <button class="shortcut-button" @click="emit('search', '封窗知识')"><text class="shortcut-icon">▤</text><text>封窗知识</text></button>
-      <button class="shortcut-button" @click="emit('privateEntry', 'progress')"><text class="shortcut-icon">◷</text><text>我的进度</text></button>
-      <button class="shortcut-button" @click="emit('privateEntry', 'warranty')"><text class="shortcut-icon">✓</text><text>我的质保</text></button>
+      <button class="shortcut-button" @click="emit('search', '小区')"><text class="shortcut-icon"><text class="shortcut-glyph">⌂</text></text><text class="shortcut-label">查小区</text></button>
+      <button class="shortcut-button" @click="emit('search', '封窗知识')"><text class="shortcut-icon"><text class="shortcut-glyph">▤</text></text><text class="shortcut-label">封窗知识</text></button>
+      <button class="shortcut-button" @click="emit('privateEntry', 'progress')"><text class="shortcut-icon"><text class="shortcut-glyph">◷</text></text><text class="shortcut-label">我的进度</text></button>
+      <button class="shortcut-button" @click="emit('privateEntry', 'warranty')"><text class="shortcut-icon"><text class="shortcut-glyph shortcut-glyph--check">✓</text></text><text class="shortcut-label">我的质保</text></button>
     </view>
   </view>
 </template>
@@ -57,7 +48,6 @@ function selectSuggestion(action: HomeSuggestionAction) {
 }
 
 .search-box::after,
-.suggestion-chip::after,
 .shortcut-button::after {
   border: 0;
 }
@@ -67,36 +57,11 @@ function selectSuggestion(action: HomeSuggestionAction) {
   font-size: 36rpx;
 }
 
-.suggestions {
-  display: flex;
-  gap: 12rpx;
-  overflow: hidden;
-  margin-top: 18rpx;
-  white-space: nowrap;
-}
-
-.suggestion-chip {
-  display: flex;
-  flex: none;
-  align-items: center;
-  justify-content: center;
-  min-width: 88rpx;
-  min-height: 88rpx;
-  margin: 0;
-  padding: 0 20rpx;
-  border: 0;
-  border-radius: 24rpx;
-  color: var(--home-green);
-  background: #f7faf8;
-  font-size: 20rpx;
-  line-height: normal;
-}
-
 .shortcuts {
   display: grid;
   grid-template-columns: repeat(4,minmax(0,1fr));
   gap: 12rpx;
-  margin-top: 24rpx;
+  margin-top: 20rpx;
 }
 
 .shortcut-button {
@@ -104,11 +69,12 @@ function selectSuggestion(action: HomeSuggestionAction) {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 9rpx;
+  gap: 4rpx;
   min-width: 88rpx;
-  min-height: 88rpx;
+  min-height: 132rpx;
   margin: 0;
-  padding: 0;
+  padding: 10rpx 0;
+  box-sizing: border-box;
   border: 0;
   border-radius: 16rpx;
   color: var(--home-green);
@@ -121,11 +87,24 @@ function selectSuggestion(action: HomeSuggestionAction) {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36rpx;
-  height: 36rpx;
-  border-radius: 12rpx;
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 24rpx;
   color: var(--home-gold);
   background: #f7ecdc;
-  font-size: 24rpx;
+  font-size: 30rpx;
+  line-height: 1;
+}
+
+.shortcut-glyph {
+  line-height: 1;
+}
+
+.shortcut-glyph--check {
+  transform: translateY(4rpx);
+}
+
+.shortcut-label {
+  line-height: 28rpx;
 }
 </style>
