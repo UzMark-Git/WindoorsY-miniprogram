@@ -38,14 +38,14 @@ const emit = defineEmits<{ select: [keyword: string] }>()
 
 <style scoped>
 .needs-swiper {
-  height: 326rpx;
+  height: 292rpx;
 }
 
 .need-grid {
   display: grid;
   grid-template-columns: repeat(2,minmax(0,1fr));
   gap: 16rpx;
-  padding: 0 6rpx 44rpx;
+  padding: 0 6rpx 12rpx;
 }
 
 .need-card {
