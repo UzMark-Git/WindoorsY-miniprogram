@@ -24,7 +24,7 @@ const emit = defineEmits<{ select: [keyword: string] }>()
 </script>
 
 <template>
-  <swiper class="needs-swiper" indicator-dots :autoplay="false" :circular="false" next-margin="132rpx">
+  <swiper class="needs-swiper" indicator-dots :autoplay="false" :circular="false">
     <swiper-item v-for="page in needPages" :key="page[0].title">
       <view class="need-grid">
         <button v-for="item in page" :key="item.title" class="need-card" @click="emit('select', item.keyword)">
