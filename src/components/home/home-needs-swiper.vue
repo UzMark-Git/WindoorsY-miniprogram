@@ -56,14 +56,19 @@ const emit = defineEmits<{ select: [keyword: string] }>()
   padding: 20rpx;
   border: 0;
   border-radius: var(--home-radius);
-  background: var(--home-surface);
+  background: #e7f1ed;
   text-align: left;
   line-height: normal;
-  box-shadow: 0 6rpx 22rpx rgba(25,61,52,.06);
+  box-shadow: none;
 }
 
 .need-card::after {
   border: 0;
+}
+
+.need-card:nth-child(2),
+.need-card:nth-child(3) {
+  background: #fbf0df;
 }
 
 .need-title,

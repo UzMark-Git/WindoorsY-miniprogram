@@ -130,10 +130,7 @@ onMounted(load)
 .hero-title { display: block; margin-top: 18rpx; font-size: 52rpx; font-weight: 650; }
 .hero-lead { display:block; margin-top:18rpx; color:rgba(255,255,255,.86); font-size:25rpx; }
 .home-search-panel{display:block;margin:-44rpx 30rpx 0}
-.section { padding: 62rpx 30rpx 0; }.heading { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom: 28rpx; }.kicker { color: var(--home-gold); }.section-title { display:block; margin-top:10rpx; color:var(--home-green); font-size:38rpx; font-weight:650; }
-.needs{padding-top:54rpx}
-.cases,.sites,.staff,.service-footer-section{padding-top:23rpx}
-.service-footer-section { padding-bottom: 0; }
+.section { margin: 23rpx 30rpx 0; padding: 34rpx 30rpx 24rpx; border-radius: var(--home-radius); background: var(--home-surface); }.heading { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom: 28rpx; }.kicker { color: var(--home-gold); }.section-title { display:block; margin-top:10rpx; color:var(--home-green); font-size:38rpx; font-weight:650; }
 .legal-links { display: flex; align-items:center; justify-content: center; gap: 14rpx; padding: 23rpx 30rpx 0; color: var(--home-muted); font-size: 22rpx; }
 .legal-links button { min-width:88rpx; min-height:88rpx; margin:0; padding:0 12rpx; border:0; color:inherit; background:transparent; font-size:22rpx; line-height:88rpx; }
 .legal-links button::after { border:0; }
