@@ -102,9 +102,9 @@ onMounted(load)
         <view class="hero-copy"><text class="eyebrow">南昌本地门窗服务</text><text class="hero-title">门窗老伙计</text><text class="hero-lead">产品、案例、施工记录与十年质保都在这里</text></view>
       </view>
       <HomeSearchPanel class="home-search-panel" @search="openSearch" @private-entry="openPrivateEntry" />
-      <view class="section needs"><view class="heading"><view><text class="kicker">WINDOW SOLUTIONS</text><text class="section-title">你家想解决什么问题？</text></view></view><HomeNeedsSwiper @select="openSearch" /></view>
-      <view v-if="home.cases.length" class="section cases"><HomeCaseSwiper :items="home.cases" :placeholder="placeholder" @select="selectCase" @all="openCases" /></view>
-      <view v-if="home.projects.length" class="section sites"><HomeProjectSwiper :items="home.projects" :placeholder="placeholder" @select="selectService" @all="openServices" /></view>
+      <view class="section section--paginated needs"><view class="heading"><view><text class="kicker">WINDOW SOLUTIONS</text><text class="section-title">你家想解决什么问题？</text></view></view><HomeNeedsSwiper @select="openSearch" /></view>
+      <view v-if="home.cases.length" class="section section--paginated cases"><HomeCaseSwiper :items="home.cases" :placeholder="placeholder" @select="selectCase" @all="openCases" /></view>
+      <view v-if="home.projects.length" class="section section--paginated sites"><HomeProjectSwiper :items="home.projects" :placeholder="placeholder" @select="selectService" @all="openServices" /></view>
       <view class="section staff">
         <view class="heading"><view><text class="kicker">SERVICE TEAM</text><text class="section-title">为你服务的人</text></view></view>
         <HomeStaffStrip :items="home.staff" :placeholder="placeholder" @select="selectStaff" />
@@ -131,6 +131,7 @@ onMounted(load)
 .hero-lead { display:block; margin-top:18rpx; color:rgba(255,255,255,.86); font-size:25rpx; }
 .home-search-panel{display:block;margin:-44rpx 30rpx 0}
 .section { margin: 23rpx 30rpx 0; padding: 34rpx 30rpx 24rpx; border-radius: var(--home-radius); background: var(--home-surface); }.heading { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom: 28rpx; }.kicker { color: var(--home-gold); }.section-title { display:block; margin-top:10rpx; color:var(--home-green); font-size:38rpx; font-weight:650; }
+.section--paginated { padding-bottom: 7rpx; }
 .legal-links { display: flex; align-items:center; justify-content: center; gap: 14rpx; padding: 23rpx 30rpx 0; color: var(--home-muted); font-size: 22rpx; }
 .legal-links button { min-width:88rpx; min-height:88rpx; margin:0; padding:0 12rpx; border:0; color:inherit; background:transparent; font-size:22rpx; line-height:88rpx; }
 .legal-links button::after { border:0; }
