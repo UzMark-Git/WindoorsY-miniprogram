@@ -108,6 +108,7 @@ export const constructionSites: SiteDetail[] = constructionStages.map((stage, in
   display_group: 'service',
   sort_order: index + 1,
   staff_ids: [`staff-${(index % 5) + 1}`],
+  product_ids: index === 0 ? ['product-1', 'product-2'] : [`product-${(index % products.length) + 1}`],
   updates: [],
 }))
 
