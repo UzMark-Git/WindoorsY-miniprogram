@@ -36,11 +36,11 @@ function badgeText(item: ServiceSummary) {
       <button class="all-button" @click="emit('all')">查看全部</button>
     </view>
     <swiper class="project-swiper" :indicator-dots="projects.length > 1" :autoplay="false" :circular="false" indicator-color="rgba(25,60,51,.2)" indicator-active-color="#183e34">
-      <swiper-item v-for="item in projects" :key="item._id">
+      <swiper-item v-for="(item, index) in projects" :key="item._id">
         <view class="project-slide">
           <image class="project-image" :src="imageSource(item)" mode="aspectFill" @error="failedImages[item._id] = true" />
           <text class="delivery-badge">{{ badgeText(item) }}</text>
-          <button class="project-card" @click="emit('select', item)">
+          <button :class="['project-card', index % 2 ? 'project-card--gold' : 'project-card--green']" @click="emit('select', item)">
             <text class="project-title">{{ item.title }} · {{ stageLabel[item.stage] }}</text>
             <text class="project-progress">{{ progressText(item) }}</text>
           </button>
@@ -61,8 +61,10 @@ function badgeText(item: ServiceSummary) {
 .project-slide { position: relative; width: 100%; height: 414rpx; overflow: hidden; border-radius: var(--home-radius); background: var(--home-green); }
 .project-image { position: absolute; inset: 0; width: 100%; height: 100%; background: #2c5147; }
 .delivery-badge { position: absolute; top: 24rpx; right: 24rpx; max-width: 260rpx; padding: 10rpx 16rpx; overflow: hidden; border-radius: 99rpx; color: #f8f3ea; font-size: 21rpx; white-space: nowrap; text-overflow: ellipsis; background: rgba(255, 255, 255, .16); }
-.project-card { position: absolute; right: 24rpx; bottom: 24rpx; left: 24rpx; min-height: 130rpx; margin: 0; padding: 24rpx; border: 0; border-radius: 16rpx; color: #fff; text-align: left; line-height: normal; background: rgba(9, 35, 29, .64); }
+.project-card { position: absolute; right: 24rpx; bottom: 24rpx; left: 24rpx; min-height: 130rpx; margin: 0; padding: 24rpx; border: 0; border-radius: 16rpx; color: var(--home-green); text-align: left; line-height: normal; }
+.project-card--green { background: rgba(231, 241, 237, .94); }
+.project-card--gold { background: rgba(251, 240, 223, .94); }
 .project-title, .project-progress { display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .project-title { font-size: 30rpx; font-weight: 650; }
-.project-progress { margin-top: 10rpx; color: rgba(255, 255, 255, .8); font-size: 22rpx; }
+.project-progress { margin-top: 10rpx; color: var(--home-muted); font-size: 22rpx; }
 </style>

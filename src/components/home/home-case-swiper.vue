@@ -50,6 +50,8 @@ function imageSource(item: SiteSummary) {
 .case-swiper { height: 432rpx; }
 .case-row { display: flex; gap: 18rpx; min-width: 0; padding-bottom: 36rpx; }
 .case-card { flex: 1 1 0; min-width: 0; min-height: 384rpx; margin: 0; padding: 0; overflow: hidden; border: 0; border-radius: var(--home-radius); color: inherit; text-align: left; line-height: normal; background: var(--home-surface); }
+.case-card:nth-child(odd) { background: #e7f1ed; }
+.case-card:nth-child(even) { background: #fbf0df; }
 .case-image { display: block; width: 100%; height: 236rpx; background: #e5ece9; }
 .case-copy { padding: 18rpx 18rpx 20rpx; }
 .case-title, .case-solution, .case-area { display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
