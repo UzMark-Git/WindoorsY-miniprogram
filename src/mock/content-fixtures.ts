@@ -194,7 +194,7 @@ export const home: HomeContent = {
     _id: 'store_windoors_demo',
     name: '门窗老伙计',
     logo: staffImage,
-    hero_images: [heroImage],
+    hero_images: [heroImage, caseImages[0], siteImages[0]],
     address: '南昌市红谷滩区',
     phone: '0791-88888888',
   },

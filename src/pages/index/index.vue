@@ -93,7 +93,11 @@ onMounted(load)
     <ContentState v-if="status !== 'ready'" :status="status === 'ready' ? 'loading' : status" :message="message" @retry="load" />
     <template v-else-if="home">
       <view class="hero">
-        <image class="hero-image" :src="resolveHeroImage(heroImages, failedHeroImages, 0, placeholder)" mode="aspectFill" :aria-label="`${home.store.name}门店窗景`" @error="failHero(0)" />
+        <swiper class="hero-swiper" :indicator-dots="heroImages.length > 1" :autoplay="heroImages.length > 1" :circular="heroImages.length > 1" :interval="5000" :duration="500" indicator-color="rgba(255,255,255,.38)" indicator-active-color="#ffffff">
+          <swiper-item v-for="(image, index) in heroImages" :key="`${image}-${index}`">
+            <image class="hero-image" :src="resolveHeroImage(heroImages, failedHeroImages, index, placeholder)" mode="aspectFill" :aria-label="`${home.store.name}门店窗景 ${index + 1}`" @error="failHero(index)" />
+          </swiper-item>
+        </swiper>
         <view class="veil" />
         <view class="hero-copy"><text class="eyebrow">南昌本地门窗服务</text><text class="hero-title">门窗老伙计</text><text class="hero-lead">产品、案例、施工记录与十年质保都在这里</text></view>
       </view>
@@ -118,6 +122,7 @@ onMounted(load)
 <style scoped>
 .page { --home-green: #173d34; --home-gold: #ae772d; --home-surface: #ffffff; --home-muted: #66766f; --home-radius: 28rpx; min-height: 100vh; padding-bottom: 23rpx; background: #f4f6f4; }
 .hero { position: relative; height: 610rpx; overflow: hidden; }
+.hero-swiper { width: 100%; height: 100%; }
 .hero-image { width: 100%; height: 100%; }
 .veil { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; background: linear-gradient(180deg,rgba(10,30,25,.08),rgba(10,30,25,.78)); }
 .hero-copy { position: absolute; left: 40rpx; right: 40rpx; bottom: 62rpx; z-index: 2; color: white; }
