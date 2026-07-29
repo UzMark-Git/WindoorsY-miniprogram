@@ -34,7 +34,7 @@ const emit = defineEmits<{ warranty: []; store: [] }>()
 .warranty-title { margin-top: 14rpx; font-size: 34rpx; font-weight: 650; }
 .warranty-copy { margin-top: 12rpx; color: rgba(255, 255, 255, .78); font-size: 23rpx; line-height: 1.6; }
 .warranty-link { margin-top: 20rpx; color: #f1d9a7; font-size: 24rpx; }
-.store-strip { display: flex; align-items: center; justify-content: space-between; gap: 20rpx; padding: 24rpx 28rpx; border-radius: var(--home-radius); color: var(--home-green); background: #e8ebe9; }
+.store-strip { display: flex; align-items: center; justify-content: space-between; gap: 20rpx; padding: 24rpx 28rpx; border-radius: var(--home-radius); color: var(--home-green); background: #f5f8f6; }
 .store-copy { min-width: 0; }
 .store-name { overflow: hidden; font-size: 28rpx; font-weight: 600; white-space: nowrap; text-overflow: ellipsis; }
 .store-hours { margin-top: 10rpx; color: var(--home-muted); font-size: 22rpx; }
