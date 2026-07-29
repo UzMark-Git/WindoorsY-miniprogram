@@ -37,7 +37,8 @@ function openDiscoveryItem(item:SearchItem){open(item)}
 function openEmptyContact(){const contact=emptyActions.value.contact;if(contact.type==='phone'){uni.makePhoneCall({phoneNumber:contact.phone});return}uni.switchTab({url:'/pages/services/index'})}
 async function submit(event?:any){const value=inputValue(event);keyword.value=value;if(value.length<2){uni.showToast({title:'请至少输入 2 个字符',icon:'none'});focus.value=true;return}if(value.length>30){uni.showToast({title:'搜索关键词最多 30 个字符',icon:'none'});return}loading.value=true;error.value='';try{const result=await searchContent({keyword:value,storeId:STORE_ID}) as SearchResult;searchedKeyword.value=result.keyword;for(const type of types)groups[type]=result.groups[type]||emptyGroup()}catch(e:any){error.value=/network|offline|网络/i.test(String(e?.message||e))?'网络已断开，请检查后重试':'搜索失败，请稍后重试'}finally{loading.value=false}}
 async function more(type:SearchContentType){if(loadingMore[type]||!groups[type].hasMore)return;loadingMore[type]=true;try{const result=await searchContent({keyword:searchedKeyword.value,storeId:STORE_ID,type,page:groups[type].page+1,pageSize:5}) as {group:SearchGroup};groups[type]={...result.group,items:[...groups[type].items,...result.group.items]}}catch{uni.showToast({title:'加载更多失败',icon:'none'})}finally{loadingMore[type]=false}}
-onLoad(query=>{keyword.value=String(query?.keyword||'').trim();loadDiscovery();if(keyword.value)submit()})
+function decodeSearchKeyword(value:string){try{return decodeURIComponent(value)}catch{return value}}
+onLoad(query=>{keyword.value=decodeSearchKeyword(String(query?.keyword||'')).trim();loadDiscovery();if(keyword.value)submit()})
 onReady(()=>{setTimeout(()=>focus.value=true,220)})
 </script>
 
