@@ -5,6 +5,7 @@ import { getSearchDiscovery, searchContent } from '../../api/content'
 import type { SearchContentType, SearchDiscovery, SearchGroup, SearchItem, SearchResult } from '../../types/domain'
 import { constructionDetailUrl, siteDetailUrl } from '../../utils/site-navigation'
 import { buildEmptySearchActions, productCategoryLabel } from './search-presentation'
+import FloatingWechatService from '../../components/floating-wechat-service.vue'
 import { searchDiscoveryCacheKey } from '../../utils/search-discovery-cache'
 
 const STORE_ID='store_windoors_demo',placeholder='/static/demo/placeholder.png'
@@ -57,6 +58,7 @@ onReady(()=>{setTimeout(()=>focus.value=true,220)})
       <view class="discovery-note"><text>搜索当前门店的公开内容</text><text>可搜索产品、案例、施工和质保内容</text></view>
     </view>
     <view v-else class="groups"><view v-for="type in visibleTypes" :key="type" class="group"><view class="heading"><text>{{labels[type]}}</text><text>{{groups[type].items.length}} 条结果</text></view><button v-for="item in groups[type].items" :key="`${type}-${item.id}`" class="result" :aria-label="`查看${labels[type]}${item.title}`" @click="open(item)"><image :src="itemImage(item)" mode="aspectFill" @error="failImage(item)"/><view><text class="title">{{item.title}}</text><text class="summary">{{item.summary}}</text><text class="meta">{{itemMeta(item)}}</text></view><text class="arrow">›</text></button><button v-if="groups[type].hasMore" class="more" :disabled="loadingMore[type]" @click="more(type)">{{loadingMore[type]?'加载中…':'加载更多'}}</button></view></view>
+    <FloatingWechatService placement="plain" />
   </view>
 </template>
 

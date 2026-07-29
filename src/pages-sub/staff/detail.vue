@@ -4,6 +4,7 @@ import { onLoad, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app'
 import { getStaffProfile } from '../../api/content'
 import ContentState from '../../components/content-state.vue'
 import DetailActionBar from '../../components/detail-action-bar.vue'
+import FloatingWechatService from '../../components/floating-wechat-service.vue'
 import ServiceCard from '../../components/service-card.vue'
 import type { StaffDetail } from '../../types/domain'
 import { classifyDetailError } from '../../utils/detail-state'
@@ -49,6 +50,7 @@ onShareTimeline(()=>profile.value?timelineMessage(`门窗服务顾问：${profil
       </view>
       <DetailActionBar type="staff" :content-id="profile._id" :title="profile.name" :image="profile.avatar" :return-url="`/pages-sub/staff/detail?id=${encodeURIComponent(profile._id)}`" @appoint="appoint"/>
     </template>
+    <FloatingWechatService placement="actionbar" />
   </view>
 </template>
 

@@ -4,6 +4,7 @@ import { onLoad, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app'
 import { getSiteDetail, getStaffProfile } from '../../api/content'
 import ContentState from '../../components/content-state.vue'
 import DetailActionBar from '../../components/detail-action-bar.vue'
+import FloatingWechatService from '../../components/floating-wechat-service.vue'
 import MediaGallery from '../../components/media-gallery.vue'
 import SiteProgress from '../../components/site-progress.vue'
 import type { SiteDetail, SiteStage, StaffProfile } from '../../types/domain'
@@ -62,6 +63,7 @@ onShareTimeline(() => site.value ? timelineMessage(`门窗案例：${site.value.
     <view class="panel"><text class="section-title">服务人员</text><button v-for="person in staff" :key="person._id" class="person-control" :aria-label="`查看${person.name}的人员详情`" @click="openStaff(person._id)"><image :src="person.avatar || placeholder" mode="aspectFill" :aria-label="`${person.name}头像`"/><view><text class="person-name">{{ person.name }}</text><text class="muted">{{ person.role }}</text></view><text class="arrow">›</text></button><text v-if="!staff.length" class="muted">暂无人员信息</text></view>
   </template>
   <DetailActionBar v-if="status==='ready'&&site" type="site" :content-id="site._id" :title="site.title" :image="site.cover_image" :return-url="`/pages-sub/sites/detail?id=${encodeURIComponent(site._id)}`" primary-label="立即获取报价" @appoint="appoint"/>
+  <FloatingWechatService placement="actionbar" />
 </view></template>
 
 <style scoped>

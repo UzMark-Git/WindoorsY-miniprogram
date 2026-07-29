@@ -3,6 +3,7 @@ import { computed, onMounted, ref } from 'vue'
 import { getSiteFilters, listSites } from '../../api/content'
 import ContentState from '../../components/content-state.vue'
 import DemoModeBadge from '../../components/demo-mode-badge.vue'
+import FloatingWechatService from '../../components/floating-wechat-service.vue'
 import SiteCard from '../../components/site-card.vue'
 import type { CaseCategory, SiteSummary } from '../../types/domain'
 import { createRequestGate } from '../../utils/request-gate'
@@ -96,6 +97,7 @@ onMounted(async () => {
     <ContentState v-if="status !== 'ready'" :status="status === 'ready' ? 'loading' : status" :message="status === 'empty' ? '暂无符合条件的案例' : message" @retry="load(true)" />
     <button v-if="status === 'empty' && appliedKeyword" class="clear-conditions" @click="clearSearch">清除搜索条件</button>
     <view v-if="status === 'ready'" class="list"><SiteCard v-for="site in items" :key="site._id" compact :site="site" @select="selectSite" /><button v-if="hasMore" class="load-more" :disabled="loadingMore" @click="nextPage">{{ loadingMore ? '加载中…' : '加载更多' }}</button><text v-else class="end">— 已展示全部案例 —</text></view>
+    <FloatingWechatService placement="tabbar" />
   </view>
 </template>
 

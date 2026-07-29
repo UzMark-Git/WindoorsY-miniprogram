@@ -3,6 +3,7 @@ import { onMounted, ref } from 'vue'
 import { getHome } from '../../api/content'
 import ContentState from '../../components/content-state.vue'
 import DemoModeBadge from '../../components/demo-mode-badge.vue'
+import FloatingWechatService from '../../components/floating-wechat-service.vue'
 import HomeNeedsSwiper from '../../components/home/home-needs-swiper.vue'
 import HomeSearchPanel from '../../components/home/home-search-panel.vue'
 import HomeCaseSwiper from '../../components/home/home-case-swiper.vue'
@@ -116,6 +117,7 @@ onMounted(load)
       <text class="dot">·</text>
       <button @click="openLegal('/pages/legal/privacy-policy')">隐私政策</button>
     </view>
+    <FloatingWechatService placement="tabbar" />
   </view>
 </template>
 

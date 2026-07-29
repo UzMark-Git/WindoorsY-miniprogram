@@ -3,6 +3,7 @@ import { onMounted, ref } from 'vue'
 import { getServiceFilters, listServices } from '../../api/content'
 import ContentState from '../../components/content-state.vue'
 import DemoModeBadge from '../../components/demo-mode-badge.vue'
+import FloatingWechatService from '../../components/floating-wechat-service.vue'
 import PrimaryPageIntro from '../../components/primary-page-intro.vue'
 import ServiceCard from '../../components/service-card.vue'
 import type { ServiceSummary, SiteStage, WarrantyStatus } from '../../types/domain'
@@ -77,6 +78,7 @@ onMounted(async()=>{try{districts.value=(await getServiceFilters(STORE_ID)).dist
     <ContentState v-if="status!=='ready'" :status="status" :message="status==='empty'?'暂无施工或质保项目':message" @retry="load(true)"/>
     <button v-if="status==='empty'&&appliedKeyword" class="clear-conditions" @click="clearSearch">清除搜索条件</button>
     <view v-if="status==='ready'" class="list"><ServiceCard v-for="item in items" :key="item._id" :item="item" @select="open(item)" /><button v-if="hasMore" class="more" :disabled="loadingMore" @click="more">{{loadingMore?'加载中…':'加载更多'}}</button><text v-else class="end">— 已展示全部项目 —</text></view>
+    <FloatingWechatService placement="tabbar" />
   </view>
 </template>
 <style scoped>.page{min-height:100vh;padding-bottom:calc(110rpx + env(safe-area-inset-bottom));background:#f4f6f4}.search-filter-card{position:sticky;top:0;z-index:2;margin:22rpx 30rpx;padding:18rpx;border-radius:24rpx;background:#fff;box-shadow:0 10rpx 28rpx rgba(25,61,52,.08)}.search-row{display:flex;align-items:center;min-height:88rpx;padding:0 20rpx;border-radius:18rpx;background:#f5f8f6}.search-icon{margin-right:14rpx;color:#b67b2c;font-size:34rpx}.search-row input{flex:1;color:#193c33;font-size:26rpx}.clear-search{display:flex;align-items:center;min-height:88rpx;padding-left:20rpx;color:#256153;font-size:24rpx}.filters{display:flex;gap:14rpx;margin-top:14rpx}.filters picker{flex:1;min-width:0}.filter{padding:18rpx 20rpx;border-radius:14rpx;color:#334b45;background:#f5f8f6;font-size:24rpx}.filter text{float:right;color:#9ba7a3}.clear-conditions{width:300rpx;min-height:88rpx;margin:10rpx auto 24rpx;border:0;border-radius:44rpx;color:#fff;background:#256153;font-size:25rpx;line-height:88rpx}.clear-conditions::after{border:0}.list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20rpx;padding:0 30rpx}.more{grid-column:1 / -1;border:1rpx solid #b9c8c3;border-radius:36rpx;color:#245c50;background:transparent}.more::after{border:0}.end{grid-column:1 / -1;padding:20rpx;text-align:center;color:#99a5a1;font-size:22rpx}</style>
