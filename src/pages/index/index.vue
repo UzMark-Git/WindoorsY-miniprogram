@@ -127,7 +127,7 @@ onMounted(load)
 .home-search-panel{display:block;margin:-44rpx 30rpx 0}
 .section { padding: 62rpx 30rpx 0; }.heading { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom: 28rpx; }.kicker { color: var(--home-gold); }.section-title { display:block; margin-top:10rpx; color:var(--home-green); font-size:38rpx; font-weight:650; }
 .needs{padding-top:54rpx}
-.cases{padding-top:34rpx}
+.cases,.sites,.staff{padding-top:25rpx}
 .service-footer-section { padding-bottom: 14rpx; }
 .legal-links { display: flex; align-items:center; justify-content: center; gap: 14rpx; padding: 56rpx 30rpx 12rpx; color: var(--home-muted); font-size: 22rpx; }
 .legal-links button { min-width:88rpx; min-height:88rpx; margin:0; padding:0 12rpx; border:0; color:inherit; background:transparent; font-size:22rpx; line-height:88rpx; }
