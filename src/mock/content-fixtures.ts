@@ -15,7 +15,15 @@ const base = {
   created_at: now,
   updated_at: now,
 }
-const image = '/static/demo/placeholder.png'
+const heroImage = '/static/demo/hero-home.jpg'
+const productImage = '/static/demo/product-01.jpg'
+const caseImages = [
+  '/static/demo/case-01.jpg',
+  '/static/demo/case-02.jpg',
+  '/static/demo/case-03.jpg',
+] as const
+const siteImages = ['/static/demo/site-01.jpg', '/static/demo/site-02.jpg'] as const
+const staffImage = '/static/demo/staff-01.jpg'
 
 export const products: ProductSummary[] = [
   {
@@ -23,8 +31,8 @@ export const products: ProductSummary[] = [
     _id: 'product-1',
     name: '静音系统窗',
     category: 'system_window',
-    cover_image: image,
-    gallery: [image],
+    cover_image: productImage,
+    gallery: [productImage],
     summary: '兼顾隔音、气密与日常通风',
     highlights: ['多腔体隔热', '多道密封'],
     specifications: ['型材壁厚 1.8mm'],
@@ -36,8 +44,8 @@ export const products: ProductSummary[] = [
     _id: 'product-2',
     name: '全景系统窗',
     category: 'system_window',
-    cover_image: image,
-    gallery: [image],
+    cover_image: productImage,
+    gallery: [productImage],
     summary: '大玻璃视野与安全结构兼顾',
     highlights: ['开阔视野', '安全玻璃'],
     specifications: ['中空钢化玻璃'],
@@ -49,8 +57,8 @@ export const products: ProductSummary[] = [
     _id: 'product-3',
     name: '断桥平开窗',
     category: 'bridge_aluminum',
-    cover_image: image,
-    gallery: [image],
+    cover_image: productImage,
+    gallery: [productImage],
     summary: '封窗注意事项包含保温、排水与五金选择',
     highlights: ['保温隔热'],
     specifications: ['PA66 隔热条'],
@@ -68,7 +76,7 @@ export const sites: SiteDetail[] = stages.map((stage, index) => ({
   _id: `site-${index + 1}`,
   title: siteTitles[index],
   location: `南昌市${districts[index]}`,
-  cover_image: image,
+  cover_image: caseImages[index % caseImages.length],
   summary: index === 1 ? '九龙湖封窗方案与施工记录演示' : '真实门窗方案与施工记录演示',
   district: districts[index],
   area: 18 + index * 3,
@@ -89,7 +97,7 @@ export const constructionSites: SiteDetail[] = constructionStages.map((stage, in
   _id: `construction-${index + 1}`,
   title: constructionTitles[index],
   location: `南昌市${constructionDistricts[index]}`,
-  cover_image: image,
+  cover_image: siteImages[index % siteImages.length],
   summary: '独立施工项目进度与现场交付记录',
   district: constructionDistricts[index],
   area: 22 + index * 4,
@@ -108,7 +116,7 @@ export const staff: StaffDetail[] = staffNames.map((name, index) => ({
   ...base,
   _id: `staff-${index + 1}`,
   name,
-  avatar: image,
+  avatar: staffImage,
   role: staffRoles[index],
   bio: '负责从需求沟通到现场交付的专业服务。',
   specialties: ['现场沟通', '门窗方案'],
@@ -129,7 +137,7 @@ export const warranties: WarrantyDetail[] = [
     ...base,
     _id: 'warranty-1',
     title: '滨江首府',
-    cover_image: image,
+    cover_image: siteImages[1],
     summary: '真实门窗方案与施工记录演示',
     district: '红谷滩区',
     area: 30,
@@ -185,8 +193,8 @@ export const home: HomeContent = {
     ...base,
     _id: 'store_windoors_demo',
     name: '门窗老伙计',
-    logo: image,
-    hero_images: [image],
+    logo: staffImage,
+    hero_images: [heroImage],
     address: '南昌市红谷滩区',
     phone: '0791-88888888',
   },
@@ -212,7 +220,7 @@ export const websiteHome: WebsiteHome = {
       eyebrow: '就在南昌 · 欢迎来店坐坐',
       title: '门窗这件事，找个靠谱的本地人。',
       description: '测量、设计、安装、质保，我们一直都在。',
-      image,
+      image: heroImage,
       primary_cta: '微信预约上门',
       secondary_cta: '看看邻居家的案例',
     },
@@ -240,14 +248,14 @@ export const websiteHome: WebsiteHome = {
     featured_staff_ids: staff.map((item) => item._id),
     contact: {
       business_hours: '09:00-18:00',
-      miniprogram_qr: image,
+      miniprogram_qr: staffImage,
       map_url: '',
     },
     seo: {
       title: '门窗老伙计｜南昌本地门窗服务',
       description: '南昌本地门窗测量、设计、安装与十年质保。',
       keywords: ['南昌门窗', '系统窗', '门窗安装'],
-      og_image: image,
+      og_image: heroImage,
     },
     sections: {
       story: true,
