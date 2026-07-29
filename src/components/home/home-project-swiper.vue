@@ -43,7 +43,7 @@ function projectCardTone(item: ServiceSummary) {
   <view class="project-module">
     <view class="module-heading">
       <view><text class="kicker">RECENT PROJECTS</text><text class="section-title">施工全程可见</text></view>
-      <button class="all-button" @click="emit('all')">查看全部</button>
+      <button class="all-button" @click="emit('all')">查看全部进度</button>
     </view>
     <swiper class="project-swiper" :indicator-dots="projects.length > 1" :autoplay="false" :circular="false" indicator-color="rgba(25,60,51,.2)" indicator-active-color="#183e34">
       <swiper-item v-for="item in projects" :key="item._id">
