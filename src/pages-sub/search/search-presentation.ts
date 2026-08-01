@@ -18,3 +18,47 @@ export function buildEmptySearchActions(phone?: string) {
     contact: phone ? { type: 'phone' as const, phone } : { type: 'services' as const },
   }
 }
+
+type SearchRequestCallbacks<Result> = {
+  onStart(): void
+  onSuccess(result: Result): void
+  onError(error: unknown): void
+  onFinish(): void
+}
+
+type SearchRequestQuery = Record<string, unknown>
+type SearchRequestExecutor = (query: Readonly<SearchRequestQuery>) => Promise<unknown>
+
+export function createSearchRequestCoordinator(execute: SearchRequestExecutor) {
+  let generation = 0
+
+  async function run<Result>(
+    requestGeneration: number,
+    query: SearchRequestQuery,
+    callbacks: SearchRequestCallbacks<Result>,
+  ): Promise<boolean> {
+    const snapshot = Object.freeze({ ...query })
+    callbacks.onStart()
+    try {
+      const result = await execute(snapshot) as Result
+      if (requestGeneration !== generation) return false
+      callbacks.onSuccess(result)
+      return true
+    } catch (error) {
+      if (requestGeneration !== generation) return false
+      callbacks.onError(error)
+      return false
+    } finally {
+      if (requestGeneration === generation) callbacks.onFinish()
+    }
+  }
+
+  return {
+    search<Result>(query: SearchRequestQuery, callbacks: SearchRequestCallbacks<Result>) {
+      return run<Result>(++generation, query, callbacks)
+    },
+    page<Result>(query: SearchRequestQuery, callbacks: SearchRequestCallbacks<Result>) {
+      return run<Result>(generation, query, callbacks)
+    },
+  }
+}

@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { computed, reactive, ref } from 'vue'
 import { onLoad, onReady } from '@dcloudio/uni-app'
-import { getSearchDiscovery, searchContent } from '../../api/content'
+import { getSearchDiscovery, searchContent, type SearchQuery } from '../../api/content'
 import type { SearchContentType, SearchDiscovery, SearchGroup, SearchItem, SearchResult } from '../../types/domain'
 import { constructionDetailUrl, siteDetailUrl } from '../../utils/site-navigation'
-import { buildEmptySearchActions, productCategoryLabel } from './search-presentation'
+import { buildEmptySearchActions, createSearchRequestCoordinator, productCategoryLabel } from './search-presentation'
 import FloatingWechatService from '../../components/floating-wechat-service.vue'
 import { searchDiscoveryCacheKey } from '../../utils/search-discovery-cache'
 
@@ -23,6 +23,7 @@ const visibleTypes=computed(()=>types.filter(type=>groups[type].items.length))
 const activeDiscoveryType=computed(()=>discoveryTypes[activeDiscoveryIndex.value].type)
 const discoverySwiperHeight='270rpx'
 const emptyActions=computed(()=>buildEmptySearchActions(discovery.contact_phone))
+const searchRequests=createSearchRequestCoordinator(query=>searchContent(query as SearchQuery))
 
 function normalizeDiscovery(data:SearchDiscovery):SearchDiscovery{return {keywords:(data.keywords||[]).slice(0,4),groups:{products:(data.groups?.products||[]).slice(0,5),sites:(data.groups?.sites||[]).slice(0,5),construction:(data.groups?.construction||[]).slice(0,5),warranties:(data.groups?.warranties||[]).slice(0,5)},contact_phone:String(data.contact_phone||'').trim()}}
 async function loadDiscovery(){const cached=uni.getStorageSync(SEARCH_DISCOVERY_KEY) as {savedAt?:number;data?:SearchDiscovery}|undefined;if(cached?.data&&Date.now()-Number(cached.savedAt||0)<SEARCH_DISCOVERY_TTL){Object.assign(discovery,normalizeDiscovery(cached.data));return}try{const data=normalizeDiscovery(await getSearchDiscovery(STORE_ID));Object.assign(discovery,data);uni.setStorageSync(SEARCH_DISCOVERY_KEY,{savedAt:Date.now(),data})}catch{}}
@@ -36,8 +37,8 @@ function failImage(item:SearchItem){failedImages.value[`${item.type}-${item.id}`
 function open(item:SearchItem){const urls={products:`/pages-sub/products/detail?id=${encodeURIComponent(item.id)}`,sites:siteDetailUrl(item.id),construction:constructionDetailUrl(item.id),warranties:`/pages-sub/services/detail?id=${encodeURIComponent(item.id)}`};uni.navigateTo({url:urls[item.type]})}
 function openDiscoveryItem(item:SearchItem){open(item)}
 function openEmptyContact(){const contact=emptyActions.value.contact;if(contact.type==='phone'){uni.makePhoneCall({phoneNumber:contact.phone});return}uni.switchTab({url:'/pages/services/index'})}
-async function submit(event?:any){const value=inputValue(event);keyword.value=value;if(value.length<2){uni.showToast({title:'请至少输入 2 个字符',icon:'none'});focus.value=true;return}if(value.length>30){uni.showToast({title:'搜索关键词最多 30 个字符',icon:'none'});return}loading.value=true;error.value='';try{const result=await searchContent({keyword:value,storeId:STORE_ID}) as SearchResult;searchedKeyword.value=result.keyword;for(const type of types)groups[type]=result.groups[type]||emptyGroup()}catch(e:any){error.value=/network|offline|网络/i.test(String(e?.message||e))?'网络已断开，请检查后重试':'搜索失败，请稍后重试'}finally{loading.value=false}}
-async function more(type:SearchContentType){if(loadingMore[type]||!groups[type].hasMore)return;loadingMore[type]=true;try{const result=await searchContent({keyword:searchedKeyword.value,storeId:STORE_ID,type,page:groups[type].page+1,pageSize:5}) as {group:SearchGroup};groups[type]={...result.group,items:[...groups[type].items,...result.group.items]}}catch{uni.showToast({title:'加载更多失败',icon:'none'})}finally{loadingMore[type]=false}}
+async function submit(event?:any){const value=inputValue(event);keyword.value=value;if(value.length<2){uni.showToast({title:'请至少输入 2 个字符',icon:'none'});focus.value=true;return}if(value.length>30){uni.showToast({title:'搜索关键词最多 30 个字符',icon:'none'});return}await searchRequests.search<SearchResult>({keyword:value,storeId:STORE_ID},{onStart(){loading.value=true;error.value='';for(const type of types)loadingMore[type]=false},onSuccess(result){searchedKeyword.value=result.keyword;for(const type of types)groups[type]=result.groups[type]||emptyGroup()},onError(e){error.value=/network|offline|网络/i.test(String((e as any)?.message||e))?'网络已断开，请检查后重试':'搜索失败，请稍后重试'},onFinish(){loading.value=false}})}
+async function more(type:SearchContentType){if(loadingMore[type]||!groups[type].hasMore)return;await searchRequests.page<{group:SearchGroup}>({keyword:searchedKeyword.value,storeId:STORE_ID,type,page:groups[type].page+1,pageSize:5},{onStart(){loadingMore[type]=true},onSuccess(result){groups[type]={...result.group,items:[...groups[type].items,...result.group.items]}},onError(){uni.showToast({title:'加载更多失败',icon:'none'})},onFinish(){loadingMore[type]=false}})}
 function decodeSearchKeyword(value:string){try{return decodeURIComponent(value)}catch{return value}}
 onLoad(query=>{keyword.value=decodeSearchKeyword(String(query?.keyword||'')).trim();loadDiscovery();if(keyword.value)submit()})
 onReady(()=>{setTimeout(()=>focus.value=true,220)})
