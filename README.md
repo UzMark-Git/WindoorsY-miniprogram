@@ -41,37 +41,17 @@ pnpm dlx serve .
 
 GitHub 和 Gitee 的仓库页面会直接显示上面的截图；交互演示需要在浏览器中单独打开。
 
-## HBuilderX 本地 Mock 演示
+## HBuilderX 本地演示
 
-本地 Mock 模式从 `src/mock/content-fixtures.ts` 和
-`src/mock/content-repository.ts` 读取演示数据。正式构建默认连接 uniCloud；只有在
-本机未跟踪的 `.env.local` 中显式设置以下变量时才启用 Mock：
+项目默认连接已关联的 uniCloud 服务空间。需要纯本地页面演示时，在未跟踪的
+`.env.local` 中设置：
 
 ```dotenv
 VITE_LOCAL_DEMO=true
 ```
 
-首页、产品、案例、服务和“我的”五个一级页面会显示“演示数据”标识，其中“我的”
-不会触发登录、收藏或预约等私有云读取。
-
-在 HBuilderX 中导入以下小程序项目目录：
-
-```text
-D:\WindoorsY\.worktrees\pages-ui-demo\apps\miniprogram
-```
-
-然后依次选择“运行 → 运行到小程序模拟器 → 微信开发者工具”。启用上述环境变量后
-使用本地演示数据，无需关联 uniCloud 服务空间；删除该变量或设置为 `false` 后恢复
-在线云函数。
-
-自动化运行时隔离冒烟测试已通过：测试将 `uniCloud.importObject`、
-`uniCloud.database` 和 `uni.uploadFile` 设为一旦调用就抛错，并覆盖应用启动、
-五个一级页面、公开详情页以及私有/写入页面边界。微信开发者工具人工验证尚未执行，
-仍需按下方步骤检查页面视觉、交互和控制台。
-
-此分支只用于本地页面视觉验证，不是正式部署源。不得上传 uniCloud-aliyun，
-不得上传 Schema，不得上传云函数，也不要将本地 Mock 数据导入任何 uniCloud
-服务空间。
+本地演示模式不会调用云对象、云数据库或上传接口。删除该变量或设置为 `false` 后恢复
+在线模式。
 
 ## 整体技术架构
 
