@@ -28,6 +28,16 @@ function badgeText(item: ServiceSummary) {
   return item.service_type === 'warranty' ? projectBadge(item.service_type, item.warranty_status) : constructionBadge
 }
 
+function projectBadgeTone(item: ServiceSummary) {
+  if (item.service_type === 'warranty' && item.warranty_status === 'expired') {
+    return 'delivery-badge--warranty-expired'
+  }
+  if (item.service_type === 'warranty') {
+    return 'delivery-badge--warranty-active'
+  }
+  return 'delivery-badge--construction'
+}
+
 function projectCardTone(item: ServiceSummary) {
   if (item.service_type === 'warranty' && item.warranty_status === 'expired') {
     return 'project-card--gray'
@@ -49,7 +59,7 @@ function projectCardTone(item: ServiceSummary) {
       <swiper-item v-for="item in projects" :key="item._id">
         <view class="project-slide" @click="emit('select', item)">
           <image class="project-image" :src="imageSource(item)" mode="aspectFill" @error="failedImages[item._id] = true" />
-          <text class="delivery-badge">{{ badgeText(item) }}</text>
+          <text :class="['delivery-badge', projectBadgeTone(item)]">{{ badgeText(item) }}</text>
           <button :class="['project-card', projectCardTone(item)]">
             <text class="project-title">{{ item.title }} · {{ stageLabel[item.stage] }}</text>
             <text class="project-progress">{{ progressText(item) }}</text>
@@ -70,11 +80,14 @@ function projectCardTone(item: ServiceSummary) {
 .project-swiper { height: 462rpx; overflow: hidden; border-radius: 20rpx; }
 .project-slide { position: relative; width: 100%; height: 414rpx; overflow: hidden; border-radius: var(--home-radius); background: var(--home-green); }
 .project-image { position: absolute; inset: 0; width: 100%; height: 100%; background: #2c5147; }
-.delivery-badge { position: absolute; top: 24rpx; right: 24rpx; max-width: 260rpx; padding: 10rpx 16rpx; overflow: hidden; border: 1rpx solid rgba(216, 179, 111, .72); border-radius: 99rpx; color: #fff8eb; font-size: 21rpx; white-space: nowrap; text-overflow: ellipsis; background: rgba(24, 62, 52, .82); box-shadow: 0 4rpx 14rpx rgba(10, 31, 25, .22); }
+.delivery-badge { position: absolute; top: 24rpx; right: 24rpx; max-width: 260rpx; padding: 10rpx 16rpx; overflow: hidden; border: 1rpx solid transparent; border-radius: 99rpx; color: #fff8eb; font-size: 21rpx; white-space: nowrap; text-overflow: ellipsis; box-shadow: 0 4rpx 14rpx rgba(10, 31, 25, .22); }
+.delivery-badge--construction { border-color: rgba(242, 206, 139, .76); background: rgba(139, 91, 29, .78); }
+.delivery-badge--warranty-active { border-color: rgba(174, 214, 197, .76); background: rgba(24, 62, 52, .78); }
+.delivery-badge--warranty-expired { border-color: rgba(207, 215, 211, .7); background: rgba(70, 79, 75, .78); }
 .project-card { position: absolute; right: 24rpx; bottom: 24rpx; left: 24rpx; min-height: 130rpx; margin: 0; padding: 24rpx; border: 0; border-radius: 16rpx; color: var(--home-green); text-align: left; line-height: normal; }
-.project-card--green { background: rgba(231, 241, 237, .94); }
-.project-card--gold { background: rgba(251, 240, 223, .94); }
-.project-card--gray { background: rgba(232, 235, 233, .96); }
+.project-card--green { background: rgba(231, 241, 237, .82); }
+.project-card--gold { background: rgba(251, 240, 223, .82); }
+.project-card--gray { background: rgba(232, 235, 233, .82); }
 .project-title, .project-progress { display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .project-title { font-size: 30rpx; font-weight: 650; }
 .project-progress { margin-top: 10rpx; color: var(--home-muted); font-size: 22rpx; }
