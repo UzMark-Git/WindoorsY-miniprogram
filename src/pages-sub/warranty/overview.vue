@@ -3,17 +3,16 @@ import { onMounted } from 'vue'
 import { onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app'
 import { getHome, listServices } from '../../api/content'
 import FloatingWechatService from '../../components/floating-wechat-service.vue'
+import ServiceCard from '../../components/service-card.vue'
 import {
   WARRANTY_OVERVIEW_URL,
   createWarrantyOverviewController,
-  formatWarrantyDate,
   warrantyDetailUrl,
   warrantyPrinciples,
   warrantySteps,
 } from '../../utils/warranty-overview'
 
 const STORE_ID = 'store_windoors_demo'
-const placeholder = '/static/demo/placeholder.png'
 
 const controller = createWarrantyOverviewController({
   listServices,
@@ -83,12 +82,9 @@ onShareTimeline(() => ({ title: '十年质保，让服务有据可查' }))
       <view class="case-heading"><text class="section-kicker">ACTIVE WARRANTIES</text><text class="section-title">质保中的案例</text></view>
       <text v-if="overview.caseStatus === 'loading'" class="state-copy">正在加载公开质保案例…</text>
       <text v-else-if="overview.caseStatus === 'empty'" class="state-copy">暂无质保中的公开案例</text>
-      <view v-else-if="overview.caseStatus === 'ready'" class="case-grid">
-        <button v-for="item in overview.cases" :key="item._id" class="case-card" @click="openCase(item._id)">
-          <image :src="item.cover_image || placeholder" mode="aspectFill" />
-          <view class="case-body"><text class="case-title">{{ item.title }}</text><text class="case-meta">{{ item.district || item.location }}</text><text class="case-meta">编号 {{ item.warranty_no || '以凭证为准' }}</text><text class="case-meta">到期 {{ formatWarrantyDate(item.warranty_expires_at) }}</text></view>
-        </button>
-      </view>
+      <scroll-view v-else-if="overview.caseStatus === 'ready'" scroll-x class="case-scroll">
+        <view class="case-row"><view v-for="item in overview.cases" :key="item._id" class="case-item"><ServiceCard :item="item" compact @select="openCase" /></view></view>
+      </scroll-view>
       <button v-else class="retry-button" @click="loadCases">重新加载案例</button>
     </view>
     <FloatingWechatService placement="plain" />
@@ -107,7 +103,7 @@ onShareTimeline(() => ({ title: '十年质保，让服务有据可查' }))
 .step { display:flex; gap:20rpx; padding:24rpx 0; border-bottom:1rpx solid #edf0ee; }
 .step:last-child { border-bottom:0; padding-bottom:0; }
 .step-number { display:flex; flex:0 0 58rpx; width:58rpx; height:58rpx; align-items:center; justify-content:center; border-radius:50%; color:var(--home-gold); background:#f7efe1; font-size:21rpx; font-weight:650; }
-.step-copy text,.principle text,.case-body text { display:block; }
+.step-copy text,.principle text { display:block; }
 .step-copy text:first-child { color:#24463c; font-size:28rpx; font-weight:650; }
 .step-copy text:last-child,.principle text:last-child { margin-top:8rpx; color:var(--home-muted); font-size:24rpx; line-height:1.6; }
 .principle { display:flex; gap:16rpx; padding:22rpx 0; border-bottom:1rpx solid #edf0ee; }
@@ -117,14 +113,16 @@ onShareTimeline(() => ({ title: '十年质保，让服务有据可查' }))
 .primary-button,.secondary-button,.retry-button,.phone-retry { display:flex; width:100%; min-height:88rpx; margin:20rpx 0 0; padding:0 28rpx; align-items:center; justify-content:center; border-radius:44rpx; font-size:26rpx; line-height:1.6; }
 .primary-button { border:0; color:#fff; background:var(--home-green); }
 .secondary-button,.retry-button { border:1rpx solid #aac0b8; color:var(--home-green); background:transparent; }
-.primary-button::after,.secondary-button::after,.retry-button::after,.case-card::after { border:0; }
+.primary-button::after,.secondary-button::after,.retry-button::after { border:0; }
 .case-heading { margin-bottom:22rpx; }
-.case-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18rpx; }
-.case-card { width:100%; margin:0; padding:0; overflow:hidden; border:0; border-radius:20rpx; text-align:left; background:#f8faf8; }
-.case-card image { width:100%; height:190rpx; background:#e8eeea; }
-.case-body { padding:18rpx; }
-.case-title { overflow:hidden; color:#24463c; font-size:26rpx; font-weight:650; white-space:nowrap; text-overflow:ellipsis; }
-.case-meta { margin-top:8rpx; color:var(--home-muted); font-size:21rpx; line-height:1.45; }
+.case-scroll { width:100%; white-space:nowrap; }
+.case-row { display:flex; gap:18rpx; padding-bottom:23rpx; }
+.case-item { flex:0 0 430rpx; white-space:normal; }
+.case-item :deep(.cover) { height:250rpx; }
+.case-item :deep(.body) { padding:22rpx; }
+.case-item :deep(.title) { font-size:29rpx; }
+.case-item :deep(.summary) { display:none; }
+.case-item :deep(.meta) { flex-direction:column; gap:8rpx; }
 .state-copy { display:block; padding:32rpx 0 8rpx; color:var(--home-muted); text-align:center; font-size:24rpx; line-height:1.6; }
 .phone-state { display:block; margin-top:16rpx; color:var(--home-muted); font-size:23rpx; line-height:1.6; }
 .phone-state--error { color:#a34831; }
