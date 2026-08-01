@@ -1,4 +1,4 @@
-export const PRIMARY_LIST_PAGE_SIZE = 2
+export const PRIMARY_LIST_PAGE_SIZE = 6
 
 export function mergeListPage<T extends { _id: string }>(
   current: T[],
