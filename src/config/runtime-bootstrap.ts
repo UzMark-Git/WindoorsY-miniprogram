@@ -1,19 +1,12 @@
 import { isCloudRuntimeEnabled } from './demo-isolation'
+import { initializeOnlineIdentityRuntime } from './identity-adapter'
 
-type IdentityRuntimeModule = {
-  default?: () => void
-}
-
-export type IdentityRuntimeLoader = () => Promise<IdentityRuntimeModule>
-
-const loadIdentityRuntime: IdentityRuntimeLoader = () =>
-  import('../uni_modules/uni-id-pages/init.js')
+export type IdentityRuntimeInitializer = () => void | Promise<void>
 
 export async function initializeIdentityRuntime(
-  loader: IdentityRuntimeLoader = loadIdentityRuntime,
+  initialize: IdentityRuntimeInitializer = initializeOnlineIdentityRuntime,
 ): Promise<'initialized' | 'skipped'> {
   if (!isCloudRuntimeEnabled()) return 'skipped'
-  const module = await loader()
-  module.default?.()
+  await initialize()
   return 'initialized'
 }

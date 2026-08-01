@@ -44,7 +44,7 @@
   "globalStyle": { "navigationBarTextStyle": "black", "navigationBarBackgroundColor": "#ffffff", "backgroundColor": "#f7f8fa" },
   "uniIdRouter": {
     "loginPage": "uni_modules/uni-id-pages/pages/login/login",
-    "needLogin": ["pages-sub/appointments/create"],
+    "needLogin": [],
     "resToLogin": true
   }
 }
