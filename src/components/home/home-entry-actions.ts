@@ -7,9 +7,3 @@ export const homeSuggestionActions: HomeSuggestionAction[] = [
   { label: '封窗注意事项', type: 'search', keyword: '封窗注意事项' },
   { label: '我的施工进度', type: 'private', entry: 'progress' },
 ]
-
-export type WarrantyHomeTarget = { kind: 'detail'; id: string } | { kind: 'services' }
-
-export function warrantyHomeTarget(warrantyId?: string): WarrantyHomeTarget {
-  return warrantyId ? { kind: 'detail', id: warrantyId } : { kind: 'services' }
-}

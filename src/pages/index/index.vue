@@ -10,7 +10,7 @@ import HomeCaseSwiper from '../../components/home/home-case-swiper.vue'
 import HomeProjectSwiper from '../../components/home/home-project-swiper.vue'
 import HomeStaffStrip from '../../components/home/home-staff-strip.vue'
 import HomeServiceFooter from '../../components/home/home-service-footer.vue'
-import { warrantyHomeTarget } from '../../components/home/home-entry-actions'
+import { WARRANTY_OVERVIEW_URL } from '../../pages-sub/warranty/warranty-overview'
 import type { HomeContent } from '../../types/domain'
 import { markHeroImageFailed, normalizeHeroImages, resolveHeroImage } from '../../utils/hero-carousel'
 import { navigateToLegalPage } from '../../utils/legal-navigation'
@@ -63,12 +63,7 @@ function selectService(item:HomeContent['projects'][number]) { uni.navigateTo({u
 function selectCase(id: string) { uni.navigateTo({ url: `/pages-sub/sites/detail?id=${encodeURIComponent(id)}` }) }
 function selectStaff(id: string) { uni.navigateTo({ url: `/pages-sub/staff/detail?id=${encodeURIComponent(id)}` }) }
 function openWarranty() {
-  const target = warrantyHomeTarget(home.value?.warranty?._id)
-  if (target.kind === 'detail') {
-    uni.navigateTo({ url: `/pages-sub/services/detail?id=${encodeURIComponent(target.id)}` })
-    return
-  }
-  uni.switchTab({ url: '/pages/services/index' })
+  uni.navigateTo({ url: WARRANTY_OVERVIEW_URL })
 }
 function openStoreInfo() {
   const store = home.value?.store

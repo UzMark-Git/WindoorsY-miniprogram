@@ -35,6 +35,7 @@
       { "path": "staff/detail", "style": { "navigationBarTitleText": "人员详情" } },
       { "path": "products/detail", "style": { "navigationBarTitleText": "产品详情" } },
       { "path": "services/detail", "style": { "navigationBarTitleText": "质保详情" } },
+      { "path": "warranty/overview", "style": { "navigationBarTitleText": "十年质保" } },
       { "path": "search/index", "style": { "navigationBarTitleText": "全局搜索" } },
       { "path": "appointments/create", "style": { "navigationBarTitleText": "预约咨询" } },
       { "path": "appointments/result", "style": { "navigationBarTitleText": "预约成功" } },
