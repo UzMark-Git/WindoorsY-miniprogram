@@ -54,6 +54,9 @@ export function createSearchRequestCoordinator(execute: SearchRequestExecutor) {
   }
 
   return {
+    invalidate() {
+      generation += 1
+    },
     search<Result>(query: SearchRequestQuery, callbacks: SearchRequestCallbacks<Result>) {
       return run<Result>(++generation, query, callbacks)
     },

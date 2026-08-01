@@ -3,7 +3,13 @@ import { reactive, ref } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
 import { createAppointment, type AppointmentSourceType } from '../../api/appointments'
 import { isLocalDemoMode } from '../../config/runtime'
-import { validateAppointment, type AppointmentErrors, type AppointmentFields } from '../../utils/appointment'
+import {
+  createAppointmentLoginDraft,
+  restoreAppointmentLoginDraft,
+  validateAppointment,
+  type AppointmentErrors,
+  type AppointmentFields,
+} from '../../utils/appointment'
 import UniDataPicker from '@dcloudio/uni-ui/lib/uni-data-picker/uni-data-picker.vue'
 import {
   APPOINTMENT_REGION_READY_DELAY,
@@ -37,7 +43,7 @@ function isAuthError(error: unknown) {
 }
 function login() {
   const url = returnUrl()
-  uni.setStorageSync(loginReturnKey, url)
+  uni.setStorageSync(loginReturnKey, createAppointmentLoginDraft(url, form, regionPickerValue.value))
   uni.navigateTo({ url: `/uni_modules/uni-id-pages/pages/login/login?uniIdRedirectUrl=${encodeURIComponent(url)}` })
 }
 function phoneInput(event: any) {
@@ -74,6 +80,12 @@ onLoad((query: Record<string, string | undefined>) => {
   source.source_type = (query.source_type || '') as AppointmentSourceType
   source.source_id = query.source_id || ''
   source.store_id = query.store_id || ''
+  const draft = restoreAppointmentLoginDraft(uni.getStorageSync(loginReturnKey), returnUrl())
+  if (draft) {
+    Object.assign(form, draft.form)
+    regionPickerValue.value = draft.regionCode
+  }
+  uni.removeStorageSync(loginReturnKey)
 })
 </script>
 

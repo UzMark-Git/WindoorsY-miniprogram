@@ -1,5 +1,44 @@
 export type AppointmentFields = { name: string; phone: string; city: string; need: string }
 export type AppointmentErrors = Partial<Record<keyof AppointmentFields, string>>
+export type AppointmentLoginDraft = {
+  returnUrl: string
+  form: AppointmentFields
+  regionCode: string
+}
+
+export function createAppointmentLoginDraft(
+  returnUrl: string,
+  form: AppointmentFields,
+  regionCode: string,
+): AppointmentLoginDraft {
+  return {
+    returnUrl,
+    form: { name: form.name, phone: form.phone, city: form.city, need: form.need },
+    regionCode,
+  }
+}
+
+export function restoreAppointmentLoginDraft(
+  value: unknown,
+  returnUrl: string,
+): Pick<AppointmentLoginDraft, 'form' | 'regionCode'> | null {
+  if (!value || typeof value !== 'object') return null
+  const draft = value as Partial<AppointmentLoginDraft>
+  const form = draft.form as Partial<AppointmentFields> | undefined
+  if (
+    draft.returnUrl !== returnUrl ||
+    !form ||
+    typeof form.name !== 'string' ||
+    typeof form.phone !== 'string' ||
+    typeof form.city !== 'string' ||
+    typeof form.need !== 'string' ||
+    typeof draft.regionCode !== 'string'
+  ) return null
+  return {
+    form: { name: form.name, phone: form.phone, city: form.city, need: form.need },
+    regionCode: draft.regionCode,
+  }
+}
 
 export function validateAppointment(input: AppointmentFields): AppointmentErrors {
   const errors: AppointmentErrors = {}
