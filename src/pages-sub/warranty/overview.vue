@@ -1,46 +1,30 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted, reactive } from 'vue'
 import { onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app'
 import { getHome, listServices } from '../../api/content'
 import FloatingWechatService from '../../components/floating-wechat-service.vue'
-import type { ServiceSummary } from '../../types/domain'
 import {
   WARRANTY_OVERVIEW_URL,
-  activeWarrantyQuery,
+  createWarrantyOverviewController,
   formatWarrantyDate,
   warrantyDetailUrl,
   warrantyPrinciples,
   warrantySteps,
-} from './warranty-overview'
+} from '../../utils/warranty-overview'
 
 const STORE_ID = 'store_windoors_demo'
-const cases = ref<ServiceSummary[]>([])
-const caseStatus = ref<'loading' | 'ready' | 'empty' | 'error'>('loading')
-const phone = ref('')
 const placeholder = '/static/demo/placeholder.png'
 
-async function loadCases() {
-  caseStatus.value = 'loading'
-  try {
-    const result = await listServices(activeWarrantyQuery(STORE_ID))
-    cases.value = result.items.slice(0, 6)
-    caseStatus.value = cases.value.length ? 'ready' : 'empty'
-  } catch {
-    caseStatus.value = 'error'
-  }
-}
-
-async function loadPhone() {
-  try { phone.value = (await getHome(STORE_ID)).store.phone || '' } catch { phone.value = '' }
-}
-
-function callWarranty() {
-  if (phone.value) {
-    uni.makePhoneCall({ phoneNumber: phone.value })
-    return
-  }
-  uni.showToast({ title: '门店电话暂未配置，请使用微信客服', icon: 'none' })
-}
+const controller = createWarrantyOverviewController({
+  listServices,
+  getHome,
+  makePhoneCall: phoneNumber => uni.makePhoneCall({ phoneNumber }),
+  showToast: title => uni.showToast({ title, icon: 'none' }),
+}, STORE_ID)
+const overview = reactive(controller.state)
+const loadCases = controller.loadCases
+const loadPhone = controller.loadPhone
+const callWarranty = controller.callWarranty
 
 function scrollToCases() {
   uni.pageScrollTo({ selector: '#active-warranties', duration: 300 })
@@ -88,16 +72,19 @@ onShareTimeline(() => ({ title: '十年质保，让服务有据可查' }))
       <text class="section-kicker">GET SUPPORT</text>
       <text class="section-title">如何申请</text>
       <text class="apply-copy">提供质保编号或手机号、问题描述及现场照片，门店核验后安排远程指导、上门检查或维修。</text>
-      <button class="primary-button" @click="callWarranty">电话咨询质保</button>
+      <button class="primary-button" :loading="overview.phoneStatus === 'loading'" :disabled="overview.phoneStatus === 'loading'" @click="callWarranty">电话咨询质保</button>
+      <text v-if="overview.phoneStatus === 'loading'" class="phone-state">正在获取门店电话</text>
+      <text v-else-if="overview.phoneStatus === 'empty'" class="phone-state">门店电话暂未配置，请使用微信客服</text>
+      <view v-else-if="overview.phoneStatus === 'error'" class="phone-state phone-state--error"><text>门店电话加载失败</text><button class="phone-retry" @click="loadPhone">重试获取电话</button></view>
       <button class="secondary-button" @click="scrollToCases">查看质保中的案例</button>
     </view>
 
     <view id="active-warranties" class="case-section">
       <view class="case-heading"><text class="section-kicker">ACTIVE WARRANTIES</text><text class="section-title">质保中的案例</text></view>
-      <text v-if="caseStatus === 'loading'" class="state-copy">正在加载公开质保案例…</text>
-      <text v-else-if="caseStatus === 'empty'" class="state-copy">暂无质保中的公开案例</text>
-      <view v-else-if="caseStatus === 'ready'" class="case-grid">
-        <button v-for="item in cases" :key="item._id" class="case-card" @click="openCase(item._id)">
+      <text v-if="overview.caseStatus === 'loading'" class="state-copy">正在加载公开质保案例…</text>
+      <text v-else-if="overview.caseStatus === 'empty'" class="state-copy">暂无质保中的公开案例</text>
+      <view v-else-if="overview.caseStatus === 'ready'" class="case-grid">
+        <button v-for="item in overview.cases" :key="item._id" class="case-card" @click="openCase(item._id)">
           <image :src="item.cover_image || placeholder" mode="aspectFill" />
           <view class="case-body"><text class="case-title">{{ item.title }}</text><text class="case-meta">{{ item.district || item.location }}</text><text class="case-meta">编号 {{ item.warranty_no || '以凭证为准' }}</text><text class="case-meta">到期 {{ formatWarrantyDate(item.warranty_expires_at) }}</text></view>
         </button>
@@ -127,7 +114,7 @@ onShareTimeline(() => ({ title: '十年质保，让服务有据可查' }))
 .principle:last-child { border-bottom:0; padding-bottom:0; }
 .principle text:first-child { color:var(--home-gold); font-weight:650; }
 .apply-copy { color:var(--home-muted); }
-.primary-button,.secondary-button,.retry-button { display:flex; width:100%; min-height:88rpx; margin:20rpx 0 0; padding:0 28rpx; align-items:center; justify-content:center; border-radius:44rpx; font-size:26rpx; line-height:1.6; }
+.primary-button,.secondary-button,.retry-button,.phone-retry { display:flex; width:100%; min-height:88rpx; margin:20rpx 0 0; padding:0 28rpx; align-items:center; justify-content:center; border-radius:44rpx; font-size:26rpx; line-height:1.6; }
 .primary-button { border:0; color:#fff; background:var(--home-green); }
 .secondary-button,.retry-button { border:1rpx solid #aac0b8; color:var(--home-green); background:transparent; }
 .primary-button::after,.secondary-button::after,.retry-button::after,.case-card::after { border:0; }
@@ -139,4 +126,8 @@ onShareTimeline(() => ({ title: '十年质保，让服务有据可查' }))
 .case-title { overflow:hidden; color:#24463c; font-size:26rpx; font-weight:650; white-space:nowrap; text-overflow:ellipsis; }
 .case-meta { margin-top:8rpx; color:var(--home-muted); font-size:21rpx; line-height:1.45; }
 .state-copy { display:block; padding:32rpx 0 8rpx; color:var(--home-muted); text-align:center; font-size:24rpx; line-height:1.6; }
+.phone-state { display:block; margin-top:16rpx; color:var(--home-muted); font-size:23rpx; line-height:1.6; }
+.phone-state--error { color:#a34831; }
+.phone-retry { width:auto; margin:12rpx 0 0; border:1rpx solid #d7a99d; color:#8c3b29; background:transparent; font-size:23rpx; }
+.phone-retry::after { border:0; }
 </style>

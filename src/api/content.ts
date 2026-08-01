@@ -27,6 +27,7 @@ export type NormalizedWarrantyQuery = { page:number;pageSize:number;storeId?:str
 export type ServiceQuery = { page?:number;pageSize?:number;storeId?:string;district?:string;type?:'construction'|'warranty';stage?:SiteStage;warranty_status?:WarrantyStatus;keyword?:string }
 export type NormalizedServiceQuery = { page:number;pageSize:number;storeId?:string;district?:string;type?:'construction'|'warranty';stage?:SiteStage;warranty_status?:WarrantyStatus;keyword?:string }
 export type SearchContentResult = SearchResult|{keyword:string;type:SearchContentType;group:SearchGroup}
+export type ContentRequestOptions = { customUI?: boolean }
 
 export interface ContentRepository {
   getHome(storeId: string): Promise<HomeContent>
@@ -46,7 +47,7 @@ export interface ContentRepository {
 }
 
 declare const uniCloud: {
-  importObject(name: string): ContentRepository
+  importObject(name: string, options?: ContentRequestOptions): ContentRepository
 }
 
 export function normalizeSiteQuery(input: SiteQuery): NormalizedSiteQuery {
@@ -115,10 +116,10 @@ export function normalizeSearchQuery(input: SearchQuery): NormalizedSearchQuery 
   return {keyword,storeId,...(input.type?{type:input.type}:{}),page,pageSize}
 }
 
-const content = () => uniCloud.importObject('content-co')
-const provider = (): ContentRepository => isLocalDemoMode() ? mockContentRepository : content()
+const content = (options?: ContentRequestOptions) => uniCloud.importObject('content-co', options)
+const provider = (options?: ContentRequestOptions): ContentRepository => isLocalDemoMode() ? mockContentRepository : content(options)
 
-export const getHome = (storeId: string) => provider().getHome(storeId)
+export const getHome = (storeId: string, options?: ContentRequestOptions) => provider(options).getHome(storeId)
 export const listSites = (query: SiteQuery = {}) => provider().listSites(normalizeSiteQuery(query))
 export const getSiteFilters = (storeId?: string) => provider().getSiteFilters(storeId?.trim() || undefined)
 export const getSiteDetail = (siteId: string) => provider().getSiteDetail(siteId)
@@ -126,7 +127,7 @@ export const getStaffProfile = (staffId: string) => provider().getStaffProfile(s
 export const listProducts = (query: ProductQuery = {}) => provider().listProducts(normalizeProductQuery(query))
 export const getProductDetail = (productId: string) => provider().getProductDetail(productId)
 export const listWarranties = (query:WarrantyQuery={}) => provider().listWarranties(normalizeWarrantyQuery(query))
-export const listServices = (query:ServiceQuery={}) => provider().listServices(normalizeServiceQuery(query))
+export const listServices = (query:ServiceQuery={}, options?: ContentRequestOptions) => provider(options).listServices(normalizeServiceQuery(query))
 export const getServiceFilters = (storeId?:string) => provider().getServiceFilters(storeId?.trim()||undefined)
 export const getWarrantyDetail = (siteId:string) => provider().getWarrantyDetail(siteId)
 export const getWebsiteHome = (storeId:string) => provider().getWebsiteHome(storeId)
