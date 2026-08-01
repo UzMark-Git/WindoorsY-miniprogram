@@ -80,8 +80,8 @@ function projectCardTone(item: ServiceSummary) {
 .project-swiper { height: 462rpx; overflow: hidden; border-radius: 20rpx; }
 .project-slide { position: relative; width: 100%; height: 414rpx; overflow: hidden; border-radius: var(--home-radius); background: var(--home-green); }
 .project-image { position: absolute; inset: 0; width: 100%; height: 100%; background: #2c5147; }
-.delivery-badge { position: absolute; top: 24rpx; right: 24rpx; max-width: 260rpx; padding: 10rpx 16rpx; overflow: hidden; border: 1rpx solid transparent; border-radius: 99rpx; color: #fff8eb; font-size: 21rpx; white-space: nowrap; text-overflow: ellipsis; box-shadow: 0 4rpx 14rpx rgba(10, 31, 25, .22); }
-.delivery-badge--construction { border-color: rgba(242, 206, 139, .76); background: rgba(139, 91, 29, .78); }
+.delivery-badge { position: absolute; top: 24rpx; right: 24rpx; max-width: 260rpx; padding: 10rpx 16rpx; overflow: hidden; border: 1rpx solid transparent; border-radius: 99rpx; color: #fff8eb; font-size: 21rpx; white-space: nowrap; text-overflow: ellipsis; box-shadow: 0 4rpx 12rpx rgba(10, 31, 25, .16); }
+.delivery-badge--construction { border-color: rgba(174, 119, 45, .58); color: var(--home-green); background: rgba(255, 250, 240, .88); }
 .delivery-badge--warranty-active { border-color: rgba(174, 214, 197, .76); background: rgba(24, 62, 52, .78); }
 .delivery-badge--warranty-expired { border-color: rgba(207, 215, 211, .7); background: rgba(70, 79, 75, .78); }
 .project-card { position: absolute; right: 24rpx; bottom: 24rpx; left: 24rpx; min-height: 130rpx; margin: 0; padding: 24rpx; border: 0; border-radius: 16rpx; color: var(--home-green); text-align: left; line-height: normal; }
