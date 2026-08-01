@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, reactive } from 'vue'
+import { onMounted } from 'vue'
 import { onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app'
 import { getHome, listServices } from '../../api/content'
 import FloatingWechatService from '../../components/floating-wechat-service.vue'
@@ -21,7 +21,7 @@ const controller = createWarrantyOverviewController({
   makePhoneCall: phoneNumber => uni.makePhoneCall({ phoneNumber }),
   showToast: title => uni.showToast({ title, icon: 'none' }),
 }, STORE_ID)
-const overview = reactive(controller.state)
+const overview = controller.state
 const loadCases = controller.loadCases
 const loadPhone = controller.loadPhone
 const callWarranty = controller.callWarranty

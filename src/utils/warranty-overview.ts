@@ -1,3 +1,4 @@
+import { reactive } from 'vue'
 import type { ContentRequestOptions, ServiceQuery } from '../api/content'
 import type { HomeContent, ServiceListResult, ServiceSummary } from '../types/domain'
 
@@ -51,7 +52,7 @@ export type WarrantyOverviewState = {
 const silentRequest: ContentRequestOptions = { customUI: true }
 
 export function createWarrantyOverviewController(dependencies: WarrantyOverviewDependencies, storeId: string) {
-  const state: WarrantyOverviewState = { cases: [], caseStatus: 'loading', phone: '', phoneStatus: 'loading' }
+  const state = reactive<WarrantyOverviewState>({ cases: [], caseStatus: 'loading', phone: '', phoneStatus: 'loading' })
 
   async function loadCases() {
     state.caseStatus = 'loading'
