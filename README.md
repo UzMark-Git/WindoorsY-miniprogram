@@ -20,13 +20,13 @@
 
 下面是当前小程序的部分真实页面：
 
-| 首页 | 产品中心 |
+| 首页 | 案例详情 |
 | --- | --- |
-| ![小程序首页](demo/assets/Screenshot_2026-08-02-00-47-16-106_com.tencent.mm.jpg) | ![门窗产品中心](demo/assets/Screenshot_2026-08-02-00-47-44-504_com.tencent.mm.jpg) |
+| ![小程序首页](demo/assets/Screenshot_2026-08-02-00-47-16-106_com.tencent.mm.jpg) | ![客户案例详情](demo/assets/Screenshot_2026-08-02-00-52-34-979_com.tencent.mm.jpg) |
 
-| 案例详情 | 工地施工流程 |
+| 产品中心 | 工地施工流程 |
 | --- | --- |
-| ![客户案例详情](demo/assets/Screenshot_2026-08-02-00-52-34-979_com.tencent.mm.jpg) | ![工地施工流程管理](demo/assets/Screenshot_2026-08-02-00-48-34-255_com.tencent.mm.jpg) |
+| ![门窗产品中心](demo/assets/Screenshot_2026-08-02-00-47-44-504_com.tencent.mm.jpg) | ![工地施工流程管理](demo/assets/Screenshot_2026-08-02-00-48-34-255_com.tencent.mm.jpg) |
 
 [`/demo/`](demo/index.html) 是当前最新的 V2 静态演示：按“认识门店、选择产品、跟进施工、服务团队、十年质保”五个章节串联 18 个真实页面，支持截图内热点、前后切换、键盘操作、独立长图滚动和微信扫码入口。[`/demo/V1/`](demo/V1/index.html) 保留经典版演示，[`/demo/DevProgress/`](demo/DevProgress/index.html) 提供公开开发进度说明；三个页面入口互通。
 
