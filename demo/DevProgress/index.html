@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#123d33" />
+  <meta name="description" content="案例小助手微信小程序开发进度：了解产品浏览、案例参考、施工服务、预约咨询与十年质保等客户体验的已验证能力。" />
+  <meta property="og:title" content="案例小助手｜开发进度" />
+  <meta property="og:description" content="面向客户的门窗服务小程序开发进度与已验证能力。" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="案例小助手｜开发进度" />
+  <meta name="twitter:description" content="门窗服务小程序的客户体验进展。" />
+  <title>案例小助手｜微信小程序开发进度</title>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+    "name": "案例小助手",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "WeChat Mini Program"
+}
+  </script>
+  <style>
+    :root { --green:#123d33; --green-dark:#09271f; --gold:#c9954f; --paper:#f7f1e5; --ink:#18332c; --muted:#587068; --line:#d9d0bf; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--paper); color:var(--ink); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; line-height:1.65; }
+    a { color:inherit; }
+    .hero { overflow:hidden; position:relative; padding:26px max(22px,calc((100% - 1120px) / 2)) 94px; color:#fff; background:radial-gradient(circle at 88% 12%,#347361 0,transparent 29%),linear-gradient(128deg,var(--green),var(--green-dark)); }
+    .hero::after { position:absolute; right:-70px; bottom:-100px; width:330px; height:330px; border:1px solid rgba(230,196,128,.38); border-radius:50%; content:""; }
+    .nav { display:flex; position:relative; z-index:1; align-items:center; justify-content:space-between; gap:24px; max-width:1120px; margin:auto; font-size:14px; }
+    .brand { display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.08em; }
+    .brand span { display:grid; place-items:center; width:30px; height:30px; border:1px solid var(--gold); border-radius:9px; color:#f2cc8d; }
+    .nav-links { display:flex; gap:18px; }
+    .nav-links a { color:rgba(255,255,255,.78); text-decoration:none; }
+    .nav-links a:hover { color:#f2cc8d; }
+    .hero-inner { position:relative; z-index:1; max-width:1120px; margin:88px auto 0; }
+    .eyebrow { margin:0 0 12px; color:#f2cc8d; font-size:12px; font-weight:800; letter-spacing:.19em; }
+    h1 { max-width:760px; margin:0; font-size:clamp(42px,6vw,76px); line-height:1.08; letter-spacing:-.055em; }
+    .lead { max-width:620px; margin:24px 0 0; color:rgba(255,255,255,.8); font-size:clamp(16px,2vw,19px); }
+    .verified { display:inline-flex; align-items:center; gap:9px; margin-top:28px; padding:9px 14px; border:1px solid rgba(242,204,141,.55); border-radius:999px; background:rgba(255,255,255,.08); color:#f9e4bf; font-size:14px; }
+    .verified i { width:8px; height:8px; border-radius:50%; background:#e6b968; box-shadow:0 0 0 4px rgba(230,185,104,.16); }
+    main { width:min(1120px,calc(100% - 44px)); margin:-45px auto 0; padding-bottom:74px; }
+    section { margin-top:28px; padding:clamp(24px,4vw,48px); border:1px solid var(--line); border-radius:22px; background:#fffdf8; box-shadow:0 12px 34px rgba(28,52,43,.05); }
+    .intro { position:relative; display:grid; grid-template-columns:1.1fr .9fr; gap:36px; align-items:center; }
+    h2 { margin:0; font-size:clamp(25px,3.2vw,38px); line-height:1.25; letter-spacing:-.035em; }
+    h3 { margin:12px 0 0; font-size:19px; }
+    p { margin:12px 0 0; }
+    .intro p { color:var(--muted); }
+    .date-card { padding:25px; border-radius:18px; background:#ecdfc7; }
+    .date-card small { display:block; color:#5a6556; font-weight:700; letter-spacing:.08em; }
+    .date-card time { display:block; margin-top:4px; color:var(--green); font-size:30px; font-weight:850; letter-spacing:-.045em; }
+    .date-card p { color:#43564d; font-size:14px; }
+    .section-note { max-width:660px; color:var(--muted); }
+    .abilities { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-top:27px; }
+    .ability { min-height:176px; padding:22px; border:1px solid #e5ded1; border-radius:16px; background:#fff; }
+    .number { color:var(--gold); font-weight:850; font-size:13px; letter-spacing:.1em; }
+    .ability p { color:var(--muted); font-size:14px; }
+    .milestones { display:grid; gap:2px; margin-top:26px; }
+    .milestone { display:grid; grid-template-columns:128px 1fr; gap:21px; padding:19px 0; border-top:1px solid #e5ded1; }
+    .milestone:first-child { border-top:0; }
+    .milestone strong { color:var(--green); }
+    .milestone p { margin:0; color:var(--muted); }
+    .proof { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:25px; }
+    .proof article { padding:23px; border-radius:16px; background:var(--green); color:#fff; }
+    .proof article:nth-child(2) { background:#22554a; }
+    .proof article:nth-child(3) { background:#946a36; }
+    .proof b { display:block; color:#f4d59e; font-size:13px; letter-spacing:.08em; }
+    .proof strong { display:block; margin-top:8px; font-size:21px; line-height:1.35; }
+    .future { display:grid; grid-template-columns:1fr auto; gap:28px; align-items:end; background:#f1e8d7; }
+    .future p { max-width:720px; color:#4f655c; }
+    .badge { display:inline-block; padding:8px 12px; border-radius:999px; background:var(--gold); color:#fff; font-size:13px; font-weight:800; white-space:nowrap; }
+    .actions { display:flex; flex-wrap:wrap; gap:12px; margin-top:28px; }
+    .button { display:inline-flex; align-items:center; min-height:46px; padding:0 18px; border:1px solid var(--green); border-radius:10px; background:var(--green); color:#fff; font-weight:750; text-decoration:none; }
+    .button.alt { background:transparent; color:var(--green); }
+    footer { max-width:1120px; margin:0 auto; padding:0 22px 35px; color:#6c7a72; font-size:13px; text-align:center; }
+    @media (max-width:780px) { .hero { padding-bottom:77px; } .hero-inner { margin-top:63px; } .intro,.future { grid-template-columns:1fr; } .abilities { grid-template-columns:repeat(2,1fr); } .proof { grid-template-columns:1fr; } .milestone { grid-template-columns:1fr; gap:4px; } }
+    @media (max-width:460px) { main { width:min(100% - 28px,1120px); } .nav-links { gap:12px; font-size:12px; } .abilities { grid-template-columns:1fr; } section { border-radius:17px; } }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <nav class="nav" aria-label="演示页面导航">
+      <div class="brand"><span>W</span>案例小助手</div>
+      <div class="nav-links"><a href="../">返回演示首页</a><a href="../V1/">查看 V1</a></div>
+    </nav>
+    <div class="hero-inner">
+      <p class="eyebrow">CUSTOMER EXPERIENCE · DEVELOPMENT UPDATE</p>
+      <h1>把每一次门窗咨询，做得更清楚、更安心。</h1>
+      <p class="lead">这是案例小助手微信小程序面向客户的开发进度。产品、案例、施工服务、预约咨询和十年质保，正逐步汇成一条可理解、可跟进的服务体验。</p>
+      <div class="verified"><i></i>已验证的客户体验进展</div>
+    </div>
+  </header>
+  <main>
+    <section class="intro" aria-labelledby="position-title">
+      <div><p class="eyebrow">产品定位</p><h2 id="position-title">从选窗参考，到服务跟进</h2><p>小程序围绕家庭门窗服务的真实决策过程组织内容：先了解产品与案例，再发起咨询、查看施工信息，并获得十年质保相关说明。页面重点是让信息更易找、沟通更直接。</p></div>
+      <aside class="date-card" aria-label="验证日期"><small>最近一次验证</small><time datetime="2026-08-02">2026-08-02</time><p>以下内容仅呈现已验证的客户侧能力与结果。</p></aside>
+    </section>
+    <section aria-labelledby="ability-title">
+      <p class="eyebrow">已具备的体验</p><h2 id="ability-title">四类常用服务能力</h2><p class="section-note">客户可从更贴近日常需求的入口认识服务内容，并在需要时继续咨询。</p>
+      <div class="abilities">
+        <article class="ability"><span class="number">01 / 产品</span><h3>产品浏览</h3><p>按门窗类型查看产品信息与相关参考内容。</p></article>
+        <article class="ability"><span class="number">02 / 案例</span><h3>案例参考</h3><p>通过案例与关键词检索，帮助梳理需求方向。</p></article>
+        <article class="ability"><span class="number">03 / 服务</span><h3>施工跟进</h3><p>查看施工项目与阶段信息，让服务过程更清晰。</p></article>
+        <article class="ability"><span class="number">04 / 保障</span><h3>十年质保</h3><p>了解质保流程、服务边界与咨询入口。</p></article>
+      </div>
+    </section>
+    <section aria-labelledby="foundation-title">
+      <p class="eyebrow">稳定服务基础</p><h2 id="foundation-title">内容、响应与信息保护同步完善</h2>
+      <div class="milestones">
+        <article class="milestone"><strong>管理后台</strong><p>门店可持续维护产品、案例、施工项目与服务人员等公开信息，让客户看到的内容更及时。</p></article>
+        <article class="milestone"><strong>内容服务</strong><p>公开内容通过统一的内容服务提供，支持产品、案例、施工与质保页面保持一致的展示体验。</p></article>
+        <article class="milestone"><strong>隐私保护</strong><p>用户协议、隐私政策与微信隐私说明已提供，预约与个人信息按服务所需范围处理。</p></article>
+      </div>
+    </section>
+    <section aria-labelledby="milestone-title">
+      <p class="eyebrow">代表性里程碑</p><h2 id="milestone-title">围绕咨询与服务的关键页面已逐步完善</h2>
+      <div class="milestones">
+        <article class="milestone"><strong>内容发现</strong><p>首页入口、产品分类、案例浏览和搜索结果已形成连贯的查找路径。</p></article>
+        <article class="milestone"><strong>服务信息</strong><p>施工项目、服务人员与详情页面帮助客户了解项目相关信息。</p></article>
+        <article class="milestone"><strong>咨询保障</strong><p>预约咨询、电话联系、个人中心与十年质保说明共同组成服务入口。</p></article>
+      </div>
+    </section>
+    <section aria-labelledby="verification-title">
+      <p class="eyebrow">验证状态</p><h2 id="verification-title">进展以已验证结果为准</h2>
+      <div class="proof">
+        <article><b>测试覆盖</b><strong>110 个测试文件</strong></article>
+        <article><b>测试结果</b><strong>466 项测试通过</strong></article>
+        <article><b>小程序体验</b><strong>微信小程序构建成功</strong></article>
+      </div>
+    </section>
+    <section class="future" aria-labelledby="future-title">
+      <div><p class="eyebrow">下一阶段方向</p><h2 id="future-title">继续让售后与长期服务更易跟进</h2><p>后续将继续完善与客户服务相关的保障查询、售后申请与工单流转体验。具体节奏以实际进展为准。</p></div>
+      <span class="badge">规划中</span>
+    </section>
+    <section aria-labelledby="action-title">
+      <p class="eyebrow">开始了解</p><h2 id="action-title">回到演示，看看服务如何串联</h2><p class="section-note">演示页面展示从产品、案例到施工与质保的客户体验路径。</p>
+      <div class="actions"><a class="button" href="../">进入 V2 演示</a><a class="button alt" href="../V1/">查看 V1 经典版</a></div>
+    </section>
+  </main>
+  <footer>案例小助手 · 面向客户的门窗服务体验</footer>
+</body>
+</html>

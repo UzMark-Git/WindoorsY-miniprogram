@@ -1,0 +1,1195 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex,follow" />
+  <meta name="theme-color" content="#0c2c25" />
+  <title>门窗老伙计+｜小程序全流程体验</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --deep: #071b17;
+      --green: #123f35;
+      --green-light: #286b5b;
+      --gold: #d6aa68;
+      --paper: #f6f8f5;
+      --muted: rgba(255, 255, 255, .64);
+      --line: rgba(255, 255, 255, .13);
+      --phone-w: min(38vh, 390px);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      min-height: 100%;
+      overflow-x: hidden;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+      background:
+        radial-gradient(circle at 72% 26%, rgba(49, 115, 96, .44), transparent 30%),
+        radial-gradient(circle at 12% 80%, rgba(183, 131, 63, .13), transparent 31%),
+        linear-gradient(135deg, #123d33 0%, var(--deep) 52%, #06130f 100%);
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+
+    body::before {
+      position: fixed;
+      inset: 0;
+      content: "";
+      pointer-events: none;
+      opacity: .34;
+      background:
+        linear-gradient(90deg, rgba(255,255,255,.08) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(255,255,255,.06) 1px, transparent 1px);
+      background-size: 64px 64px;
+      mask-image: linear-gradient(to bottom, #000, transparent 86%);
+    }
+
+    button { font: inherit; }
+
+    .version-link {
+      position: fixed;
+      z-index: 20;
+      top: 16px;
+      right: 18px;
+      padding: 8px 12px;
+      border: 1px solid rgba(214,170,104,.55);
+      border-radius: 999px;
+      background: rgba(7,27,23,.8);
+      color: var(--gold);
+      font-size: 12px;
+      text-decoration: none;
+    }
+
+    .stage {
+      position: relative;
+      z-index: 1;
+      width: min(1380px, 100%);
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: clamp(22px, 3vw, 50px);
+      display: grid;
+      grid-template-columns: minmax(280px, 1fr) minmax(340px, 470px);
+      grid-template-rows: 1fr auto;
+      align-items: center;
+      gap: 24px clamp(36px, 7vw, 108px);
+    }
+
+    .story-panel { max-width: 600px; }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: clamp(46px, 8vh, 92px);
+      color: rgba(255,255,255,.82);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 4px;
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 36px;
+      height: 36px;
+      border: 1px solid rgba(214,170,104,.55);
+      border-radius: 10px;
+      color: var(--gold);
+      letter-spacing: 0;
+    }
+
+    .eyebrow {
+      margin: 0 0 14px;
+      color: var(--gold);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(38px, 5vw, 70px);
+      line-height: 1.08;
+      letter-spacing: -.04em;
+    }
+
+    .narration {
+      min-height: 3.5em;
+      max-width: 520px;
+      margin: 22px 0 0;
+      color: var(--muted);
+      font-size: clamp(14px, 1.4vw, 17px);
+      line-height: 1.85;
+    }
+
+    .chapters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin-top: 34px;
+    }
+
+    .chapter {
+      min-height: 42px;
+      padding: 0 15px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255,255,255,.055);
+      color: rgba(255,255,255,.65);
+      cursor: pointer;
+      transition: .2s ease;
+    }
+
+    .chapter:hover {
+      color: #fff;
+      border-color: rgba(214,170,104,.44);
+      transform: translateY(-1px);
+    }
+
+    .chapter.active {
+      border-color: var(--gold);
+      background: var(--gold);
+      color: #163c32;
+      font-weight: 800;
+    }
+
+    .progress {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-top: 34px;
+      color: rgba(255,255,255,.48);
+      font-size: 12px;
+      letter-spacing: 2px;
+    }
+
+    .progress-track {
+      width: min(240px, 46vw);
+      height: 2px;
+      overflow: hidden;
+      background: rgba(255,255,255,.15);
+    }
+
+    .progress-bar {
+      width: 0;
+      height: 100%;
+      background: var(--gold);
+      transition: width .32s ease;
+    }
+
+    .qr-card {
+      display: grid;
+      width: min(470px, 100%);
+      margin-top: 28px;
+      padding: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(214,170,104,.34);
+      border-radius: 16px;
+      background: rgba(255,255,255,.07);
+      color: #fff;
+      cursor: pointer;
+      text-align: left;
+      transition: transform .2s ease, border-color .2s ease, background .2s ease;
+    }
+
+    .qr-card:hover {
+      border-color: rgba(214,170,104,.7);
+      background: rgba(255,255,255,.11);
+      transform: translateY(-2px);
+    }
+
+    .qr-card-copy {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 2px 4px 10px;
+    }
+
+    .qr-card-copy strong { font-size: 13px; }
+
+    .qr-card-copy span {
+      color: var(--gold);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1px;
+    }
+
+    .qr-card img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 10px;
+      background: #fff;
+    }
+
+    .qr-mobile-button { display: none; }
+
+    .phone-stage {
+      position: relative;
+      align-self: center;
+      justify-self: center;
+    }
+
+    .phone-glow {
+      position: absolute;
+      inset: 8% -22%;
+      border-radius: 50%;
+      background: rgba(57,139,116,.22);
+      filter: blur(60px);
+      pointer-events: none;
+    }
+
+    .phone-shell {
+      position: relative;
+      width: var(--phone-w);
+      padding: 9px;
+      border: 1px solid rgba(255,255,255,.3);
+      border-radius: 38px;
+      background: linear-gradient(145deg, rgba(255,255,255,.42), rgba(255,255,255,.08) 24%, rgba(0,0,0,.32));
+      box-shadow: 0 36px 100px rgba(0,0,0,.48), inset 0 0 0 1px rgba(255,255,255,.08);
+    }
+
+    .phone-screen {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 637 / 1319;
+      overflow: hidden;
+      border-radius: 30px;
+      background: var(--paper);
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,.1);
+    }
+
+    .shot {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: var(--paper);
+      user-select: none;
+      pointer-events: none;
+      transition: opacity .2s ease, transform .28s ease, filter .2s ease;
+    }
+
+    .shot.switching {
+      opacity: .18;
+      transform: scale(.985) translateY(7px);
+      filter: blur(2px);
+    }
+
+    .page-pill {
+      position: absolute;
+      z-index: 5;
+      top: 14px;
+      left: 50%;
+      max-width: 72%;
+      padding: 7px 12px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,.65);
+      border-radius: 999px;
+      background: rgba(255,255,255,.9);
+      box-shadow: 0 8px 28px rgba(12,48,39,.16);
+      color: #18473b;
+      font-size: 11px;
+      font-weight: 800;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      transform: translateX(-50%);
+      backdrop-filter: blur(12px);
+    }
+
+    .hotspot {
+      position: absolute;
+      z-index: 3;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      border-radius: 10px;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .hotspot:hover {
+      background: rgba(214,170,104,.13);
+      box-shadow: inset 0 0 0 1px rgba(214,170,104,.48);
+    }
+
+    .show-zones .hotspot {
+      background: rgba(214,170,104,.14);
+      box-shadow: inset 0 0 0 1px rgba(183,131,63,.7);
+    }
+
+    .hotspot::before {
+      position: absolute;
+      inset: 7px auto auto 7px;
+      max-width: calc(100% - 14px);
+      padding: 3px 6px;
+      overflow: hidden;
+      border-radius: 5px;
+      content: attr(data-label);
+      background: rgba(10,46,38,.86);
+      color: #fff;
+      font-size: 8px;
+      line-height: 1.2;
+      opacity: 0;
+      pointer-events: none;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .show-zones .hotspot::before { opacity: 1; }
+
+    .hotspot.pulse::after {
+      position: absolute;
+      left: var(--tap-x, 50%);
+      top: var(--tap-y, 50%);
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      content: "";
+      background: rgba(214,170,104,.7);
+      transform: translate(-50%, -50%);
+      animation: ripple .45s ease-out forwards;
+    }
+
+    @keyframes ripple {
+      to { opacity: 0; transform: translate(-50%, -50%) scale(5); }
+    }
+
+    .toast, .load-error {
+      position: absolute;
+      z-index: 10;
+      left: 50%;
+      width: min(82%, 290px);
+      padding: 12px 15px;
+      border-radius: 13px;
+      background: rgba(10,49,40,.95);
+      color: #fff;
+      font-size: 13px;
+      line-height: 1.5;
+      text-align: center;
+      box-shadow: 0 14px 36px rgba(0,0,0,.25);
+      transform: translateX(-50%);
+    }
+
+    .toast {
+      bottom: 78px;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(-50%) translateY(12px);
+      transition: .2s ease;
+    }
+
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    .load-error {
+      top: 50%;
+      display: none;
+      background: #7d3429;
+      transform: translate(-50%, -50%);
+    }
+
+    .load-error.show { display: block; }
+
+    .demo-controls {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 14px;
+      width: min(900px, 100%);
+      margin: 0 auto;
+      padding: 11px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255,255,255,.075);
+      box-shadow: 0 20px 60px rgba(0,0,0,.2);
+      backdrop-filter: blur(20px);
+    }
+
+    .nav-group, .tool-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    .control {
+      min-height: 42px;
+      padding: 0 15px;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 12px;
+      background: rgba(255,255,255,.07);
+      color: rgba(255,255,255,.82);
+      cursor: pointer;
+      transition: .18s ease;
+    }
+
+    .control:hover:not(:disabled) {
+      border-color: rgba(214,170,104,.45);
+      background: rgba(255,255,255,.13);
+      color: #fff;
+    }
+
+    .control:disabled { opacity: .34; cursor: not-allowed; }
+    .control.primary { background: rgba(214,170,104,.95); color: #173f35; font-weight: 800; }
+    .control.active { border-color: var(--gold); color: var(--gold); }
+
+    .control-status {
+      min-width: 0;
+      text-align: center;
+    }
+
+    .control-status strong {
+      display: block;
+      overflow: hidden;
+      font-size: 13px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .control-status span {
+      color: rgba(255,255,255,.48);
+      font-size: 11px;
+    }
+
+    .qr-dialog {
+      width: min(960px, calc(100vw - 36px));
+      max-height: calc(100vh - 36px);
+      padding: 0;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 22px;
+      background: #f6f7f5;
+      color: #173f35;
+      box-shadow: 0 32px 100px rgba(0,0,0,.52);
+    }
+
+    .qr-dialog::backdrop {
+      background: rgba(3,18,14,.78);
+      backdrop-filter: blur(12px);
+    }
+
+    .qr-dialog-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 18px 20px 14px;
+    }
+
+    .qr-dialog-header h2 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .qr-dialog-header p {
+      margin: 4px 0 0;
+      color: #6a756f;
+      font-size: 12px;
+    }
+
+    .qr-close {
+      display: grid;
+      flex: 0 0 auto;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      padding: 0;
+      border: 1px solid #dce3df;
+      border-radius: 50%;
+      background: #fff;
+      color: #173f35;
+      cursor: pointer;
+      font-size: 22px;
+      line-height: 1;
+    }
+
+    .qr-dialog-media {
+      padding: 0 20px 20px;
+    }
+
+    .qr-dialog-media img {
+      display: block;
+      width: 100%;
+      max-height: calc(100vh - 145px);
+      object-fit: contain;
+      border-radius: 14px;
+      background: #fff;
+    }
+
+    .qr-error {
+      display: none;
+      min-height: 180px;
+      place-items: center;
+      border-radius: 14px;
+      background: #f7e7e3;
+      color: #8b3e32;
+      font-weight: 700;
+    }
+
+    .qr-error.show { display: grid; }
+    body.qr-open { overflow: hidden; }
+
+    @media (max-width: 1020px) {
+      :root { --phone-w: min(38vh, 360px); }
+      .stage { grid-template-columns: minmax(250px, 1fr) minmax(310px, 390px); gap: 24px 36px; }
+      .brand { margin-bottom: 36px; }
+      h1 { font-size: clamp(34px, 5vw, 52px); }
+      .chapter { min-height: 38px; padding-inline: 12px; font-size: 12px; }
+    }
+
+    @media (max-width: 680px) {
+      html, body {
+        max-width: 100%;
+        overflow-x: clip;
+      }
+
+      :root { --phone-w: min(92vw, 415px); }
+      body { background: #071b17; }
+      .stage {
+        display: flex;
+        min-height: 100svh;
+        flex-direction: column;
+        gap: 12px;
+        padding: max(8px, env(safe-area-inset-top)) 8px max(8px, env(safe-area-inset-bottom));
+      }
+      .story-panel { width: 100%; order: 2; }
+      .brand, .eyebrow, h1, .narration, .progress { display: none; }
+      .qr-card { display: none; }
+      .chapters { justify-content: center; gap: 6px; margin: 0; }
+      .chapter { min-height: 34px; padding-inline: 10px; font-size: 11px; }
+      .phone-stage { order: 1; }
+      .phone-shell { padding: 5px; border-radius: 32px; }
+      .phone-screen { border-radius: 27px; }
+      .demo-controls {
+        order: 3;
+        width: 100%;
+        max-width: 100%;
+        grid-template-columns: 1fr auto;
+        gap: 8px;
+        padding: 7px;
+      }
+      .control-status { display: none; }
+      .nav-group { width: 100%; }
+      .tool-group {
+        min-width: 0;
+        flex-wrap: wrap;
+      }
+      .nav-group .control { flex: 1; }
+      .control { min-height: 38px; padding-inline: 11px; font-size: 12px; }
+      #zonesButton, #resetButton { font-size: 0; }
+      #zonesButton::after { content: "热点"; font-size: 12px; }
+      #resetButton::after { content: "重置"; font-size: 12px; }
+      .qr-mobile-button {
+        display: inline-flex;
+        align-items: center;
+      }
+      .qr-dialog {
+        width: calc(100vw - 20px);
+        max-height: calc(100svh - 20px);
+        border-radius: 18px;
+      }
+      .qr-dialog-header { padding: 14px 14px 10px; }
+      .qr-dialog-header h2 { font-size: 17px; }
+      .qr-dialog-media { padding: 0 10px 10px; }
+      .qr-dialog-media img { max-height: calc(100svh - 112px); }
+    }
+  </style>
+</head>
+<body>
+  <a class="version-link" href="../">查看最新版 V2</a>
+  <main class="stage">
+    <section class="story-panel" aria-label="演示讲解">
+      <div class="brand"><span class="brand-mark">W</span><span>WINDOORS · 门窗老伙计+</span></div>
+      <p class="eyebrow" id="chapterNumber">CHAPTER 01</p>
+      <h1 id="chapterTitle">认识门店</h1>
+      <p class="narration" id="narration">从门店实力、服务团队与近期项目开始，快速建立客户信任。</p>
+      <div class="chapters" id="chapters" aria-label="演示章节"></div>
+      <div class="progress">
+        <span id="pageNumber">01</span>
+        <div class="progress-track"><div class="progress-bar" id="progressBar"></div></div>
+        <span id="pageTotal">21</span>
+      </div>
+      <button class="qr-card qr-trigger" type="button" aria-label="打开微信小程序二维码">
+        <span class="qr-card-copy">
+          <strong>微信扫码体验真实小程序</strong>
+          <span>SCAN TO OPEN ↗</span>
+        </span>
+        <img src="assets/weixin.png" alt="微信搜一搜门窗老伙计+小程序码" />
+      </button>
+    </section>
+
+    <section class="phone-stage" aria-label="小程序手机演示">
+      <div class="phone-glow"></div>
+      <div class="phone-shell" id="phoneShell">
+        <div class="phone-screen">
+          <div class="page-pill" id="pagePill">首页</div>
+          <img class="shot" id="shot" src="assets/1785135366656.png" alt="小程序首页截图" />
+          <div id="hotspots"></div>
+          <div class="toast" id="toast" role="status"></div>
+          <div class="load-error" id="loadError" role="alert"></div>
+        </div>
+      </div>
+    </section>
+
+    <nav class="demo-controls" aria-label="演示控制">
+      <div class="nav-group">
+        <button class="control" type="button" id="previousButton">← 上一页</button>
+        <button class="control primary" type="button" id="nextButton">下一页 →</button>
+      </div>
+      <div class="control-status">
+        <strong id="currentTitle">首页</strong>
+        <span>点击手机内卡片与导航，也可以使用键盘方向键</span>
+      </div>
+      <div class="tool-group">
+        <button class="control qr-mobile-button qr-trigger" type="button">微信扫码体验</button>
+        <button class="control" type="button" id="zonesButton">显示点击区域</button>
+        <button class="control" type="button" id="resetButton">重新开始</button>
+      </div>
+    </nav>
+  </main>
+
+  <dialog class="qr-dialog" id="qrDialog" aria-labelledby="qrDialogTitle">
+    <div class="qr-dialog-header">
+      <div>
+        <h2 id="qrDialogTitle">微信扫码体验门窗老伙计+</h2>
+        <p>使用微信扫描小程序码，或在微信中搜索“门窗老伙计+”</p>
+      </div>
+      <button class="qr-close" type="button" id="qrCloseButton" aria-label="关闭二维码">×</button>
+    </div>
+    <div class="qr-dialog-media">
+      <img id="qrDialogImage" src="assets/weixin.png" alt="微信搜一搜门窗老伙计+小程序码" />
+      <div class="qr-error" id="qrError" role="alert">二维码图片加载失败</div>
+    </div>
+  </dialog>
+
+  <script>
+    const chapters = [
+      { id: "discover", label: "认识门店", narration: "从门店实力、服务团队与近期项目开始，快速建立客户信任。", entry: "home", pages: ["home", "homeTeam", "homeProjects", "mine", "search"] },
+      { id: "products", label: "选产品", narration: "按门窗类型浏览产品，让客户快速找到适合自己的方案。", entry: "products", pages: ["products", "productsMore"] },
+      { id: "cases", label: "看案例", narration: "真实案例展示区域、面积、服务人员与完整资料记录。", entry: "cases", pages: ["cases", "casesMore", "caseDetail", "caseRecord", "caseDetailAlt", "caseRecordAlt"] },
+      { id: "delivery", label: "跟进施工", narration: "从方案确认到安装验收，每个节点、照片和负责人都有记录。", entry: "service", pages: ["service", "serviceMore", "siteDetail", "siteUpdates", "siteUpdatesMore", "siteTeam"] },
+      { id: "warranty", label: "十年质保", narration: "项目完工后继续提供十年质保凭证与售后咨询入口。", entry: "warranty", pages: ["warranty", "warrantyRecord"] }
+    ];
+
+    const pages = {
+      home: {
+        title: "首页 · 门窗老伙计",
+        chapter: "discover",
+        narration: "先认识门店、服务团队、精选产品与近期项目。",
+        img: "assets/1785135366656.png",
+        spots: [
+          ["服务人员", "homeTeam", 4, 29, 92, 14],
+          ["精选产品", "products", 4, 45, 92, 31],
+          ["近期项目", "homeProjects", 4, 72, 92, 18],
+          ["产品", "products", 19, 91, 14, 7],
+          ["案例", "cases", 36, 91, 14, 7],
+          ["服务", "service", 53, 91, 14, 7],
+          ["我的", "mine", 82, 91, 14, 7]
+        ]
+      },
+      homeTeam: {
+        title: "首页 · 服务团队与产品",
+        chapter: "discover",
+        narration: "门店团队与精选产品直接呈现，让客户知道由谁负责、有什么可选。",
+        img: "assets/1785135392339.png",
+        spots: [
+          ["服务人员", "siteTeam", 4, 4, 92, 15],
+          ["查看全部产品", "products", 70, 22, 25, 7],
+          ["精选产品", "products", 4, 27, 92, 35],
+          ["近期项目", "homeProjects", 4, 64, 92, 27],
+          ["案例", "cases", 36, 91, 14, 7],
+          ["服务", "service", 53, 91, 14, 7]
+        ]
+      },
+      homeProjects: {
+        title: "首页 · 近期施工与质保",
+        chapter: "discover",
+        narration: "首页即可看到近期项目的进度与状态，把持续服务做成看得见的记录。",
+        img: "assets/1785135408669.png",
+        spots: [
+          ["项目详情", "siteDetail", 4, 5, 92, 26],
+          ["项目详情", "siteDetail", 4, 31, 92, 26],
+          ["项目详情", "warranty", 4, 58, 92, 27],
+          ["服务", "service", 53, 91, 14, 7],
+          ["我的", "mine", 82, 91, 14, 7]
+        ]
+      },
+      mine: {
+        title: "我的 · 收藏与预约",
+        chapter: "discover",
+        narration: "登录后统一查看产品、案例、人员收藏与自己的预约记录。",
+        img: "assets/1785135526286.png",
+        spots: [
+          ["微信登录", "login", 8, 27, 84, 8],
+          ["产品收藏", "products", 7, 49, 28, 25],
+          ["案例收藏", "cases", 36, 49, 28, 25],
+          ["人员收藏", "siteTeam", 65, 49, 28, 25],
+          ["预约记录", "appointment", 30, 74, 40, 8],
+          ["首页", "home", 2, 91, 14, 7]
+        ]
+      },
+      search: {
+        title: "全局搜索",
+        chapter: "discover",
+        narration: "一个入口同时查找案例、施工项目和服务人员。",
+        img: "assets/1785135696298.png",
+        spots: [
+          ["搜索", "searchAction", 81, 6, 15, 7],
+          ["案例结果", "caseDetailAlt", 5, 34, 44, 26],
+          ["案例结果", "caseDetail", 51, 34, 44, 26],
+          ["施工项目", "siteDetail", 5, 61, 44, 27],
+          ["服务人员", "siteTeam", 51, 61, 44, 27]
+        ]
+      },
+      products: {
+        title: "产品 · 分类浏览",
+        chapter: "products",
+        narration: "按系统门窗、推拉门等类别筛选，快速比较产品系列。",
+        img: "assets/1785135430729.png",
+        spots: [
+          ["产品分类", "productsMore", 3, 17, 94, 11],
+          ["查看产品", "productAction", 4, 29, 44, 31],
+          ["查看产品", "productAction", 52, 29, 44, 31],
+          ["更多产品", "productsMore", 4, 60, 92, 29],
+          ["首页", "home", 2, 91, 14, 7],
+          ["案例", "cases", 36, 91, 14, 7],
+          ["服务", "service", 53, 91, 14, 7]
+        ]
+      },
+      productsMore: {
+        title: "产品 · 更多系列",
+        chapter: "products",
+        narration: "继续浏览不同结构与系列，查看型号、简介和参考价格。",
+        img: "assets/1785135441282.png",
+        spots: [
+          ["查看产品", "productAction", 4, 16, 44, 31],
+          ["查看产品", "productAction", 52, 16, 44, 31],
+          ["查看产品", "productAction", 4, 48, 44, 31],
+          ["查看产品", "productAction", 52, 48, 44, 31],
+          ["首页", "home", 2, 91, 14, 7],
+          ["案例", "cases", 36, 91, 14, 7]
+        ]
+      },
+      cases: {
+        title: "案例 · 真实项目",
+        chapter: "cases",
+        narration: "按地区筛选真实案例，查看不同户型和门窗方案的落地效果。",
+        img: "assets/1785135459058.png",
+        spots: [
+          ["地区筛选", "filterAction", 5, 22, 90, 8],
+          ["案例详情", "caseDetailAlt", 4, 32, 44, 28],
+          ["案例详情", "caseDetail", 52, 32, 44, 28],
+          ["更多案例", "casesMore", 4, 61, 92, 28],
+          ["产品", "products", 19, 91, 14, 7],
+          ["服务", "service", 53, 91, 14, 7]
+        ]
+      },
+      casesMore: {
+        title: "案例 · 更多区域",
+        chapter: "cases",
+        narration: "更多完工案例持续沉淀，方便客户按区域与房型参考。",
+        img: "assets/1785135484693.png",
+        spots: [
+          ["地区筛选", "filterAction", 5, 7, 90, 8],
+          ["案例详情", "caseDetail", 4, 17, 44, 29],
+          ["案例详情", "caseDetailAlt", 52, 17, 44, 29],
+          ["案例详情", "caseRecord", 4, 47, 44, 29],
+          ["案例详情", "caseRecordAlt", 52, 47, 44, 29],
+          ["服务", "service", 53, 91, 14, 7]
+        ]
+      },
+      caseDetail: {
+        title: "案例详情 · 万达游泳城区",
+        chapter: "cases",
+        narration: "案例详情汇总空间照片、面积、门窗类型、方案进度与服务人员。",
+        img: "assets/1785135546652.png",
+        spots: [
+          ["返回", "back", 0, 4, 13, 7],
+          ["资料记录", "caseRecord", 5, 67, 90, 18],
+          ["立即预约", "appointment", 66, 91, 31, 7],
+          ["收藏", "favorite", 19, 91, 13, 7],
+          ["分享", "share", 3, 91, 13, 7]
+        ]
+      },
+      caseRecord: {
+        title: "案例详情 · 资料记录",
+        chapter: "cases",
+        narration: "按时间记录每次方案沟通与现场资料，过程可追溯。",
+        img: "assets/1785135554015.png",
+        spots: [
+          ["返回", "caseDetail", 0, 4, 13, 7],
+          ["资料图片", "imageAction", 5, 20, 90, 36],
+          ["获取报价", "appointment", 9, 67, 82, 8],
+          ["服务人员", "siteTeam", 5, 78, 90, 13]
+        ]
+      },
+      caseDetailAlt: {
+        title: "案例详情 · 文创产业园",
+        chapter: "cases",
+        narration: "不同项目使用同一套清晰结构，客户能快速了解项目与服务进展。",
+        img: "assets/1785135572882.png",
+        spots: [
+          ["返回", "back", 0, 4, 13, 7],
+          ["资料记录", "caseRecordAlt", 5, 67, 90, 18],
+          ["立即预约", "appointment", 66, 91, 31, 7],
+          ["收藏", "favorite", 19, 91, 13, 7]
+        ]
+      },
+      caseRecordAlt: {
+        title: "案例详情 · 跟进记录",
+        chapter: "cases",
+        narration: "记录改造前现场、沟通说明和报价入口，减少信息遗漏。",
+        img: "assets/1785135580950.png",
+        spots: [
+          ["返回", "caseDetailAlt", 0, 4, 13, 7],
+          ["资料图片", "imageAction", 5, 19, 90, 36],
+          ["获取报价", "appointment", 9, 66, 82, 8],
+          ["服务人员", "siteTeam", 5, 77, 90, 13]
+        ]
+      },
+      service: {
+        title: "服务 · 施工与质保",
+        chapter: "delivery",
+        narration: "按地区和状态查看在建、完工与质保项目。",
+        img: "assets/1785135498085.png",
+        spots: [
+          ["筛选", "filterAction", 5, 22, 90, 8],
+          ["施工详情", "siteDetail", 4, 32, 44, 28],
+          ["质保详情", "warranty", 52, 32, 44, 28],
+          ["更多项目", "serviceMore", 4, 61, 92, 28],
+          ["案例", "cases", 36, 91, 14, 7],
+          ["我的", "mine", 82, 91, 14, 7]
+        ]
+      },
+      serviceMore: {
+        title: "服务 · 更多项目",
+        chapter: "delivery",
+        narration: "服务列表持续呈现各项目当前状态、区域和最新日期。",
+        img: "assets/1785135512045.png",
+        spots: [
+          ["筛选", "filterAction", 5, 7, 90, 8],
+          ["施工详情", "siteDetail", 4, 17, 44, 29],
+          ["质保详情", "warranty", 52, 17, 44, 29],
+          ["施工详情", "siteUpdates", 4, 47, 44, 29],
+          ["施工详情", "siteTeam", 52, 47, 44, 29]
+        ]
+      },
+      siteDetail: {
+        title: "施工详情 · 项目总览",
+        chapter: "delivery",
+        narration: "项目总览展示方案、当前进度和最新施工动态。",
+        img: "assets/1785135651674.png",
+        spots: [
+          ["返回", "back", 0, 4, 13, 7],
+          ["施工动态", "siteUpdates", 5, 56, 90, 30],
+          ["立即预约", "appointment", 66, 91, 31, 7],
+          ["电话咨询", "call", 34, 91, 28, 7]
+        ]
+      },
+      siteUpdates: {
+        title: "施工详情 · 施工动态",
+        chapter: "delivery",
+        narration: "节点、日期、负责人、质量检查和现场照片统一记录。",
+        img: "assets/1785135659349.png",
+        spots: [
+          ["返回", "siteDetail", 0, 4, 13, 7],
+          ["动态照片", "imageAction", 6, 25, 88, 24],
+          ["更多动态", "siteUpdatesMore", 5, 50, 90, 36],
+          ["电话咨询", "call", 34, 91, 28, 7]
+        ]
+      },
+      siteUpdatesMore: {
+        title: "施工详情 · 更多动态",
+        chapter: "delivery",
+        narration: "从材料进场到安装验收，连续记录让交付过程透明。",
+        img: "assets/1785135672348.png",
+        spots: [
+          ["返回", "siteUpdates", 0, 4, 13, 7],
+          ["动态照片", "imageAction", 6, 17, 88, 29],
+          ["动态照片", "imageAction", 6, 48, 88, 31],
+          ["服务团队", "siteTeam", 6, 79, 88, 9],
+          ["立即预约", "appointment", 66, 91, 31, 7]
+        ]
+      },
+      siteTeam: {
+        title: "施工详情 · 服务团队",
+        chapter: "delivery",
+        narration: "测量、设计、施工各环节责任到人，客户知道该找谁。",
+        img: "assets/1785135683856.png",
+        spots: [
+          ["返回", "back", 0, 4, 13, 7],
+          ["负责人", "staffAction", 5, 39, 90, 12],
+          ["服务人员", "staffAction", 5, 52, 90, 12],
+          ["施工人员", "staffAction", 5, 65, 90, 12],
+          ["立即预约", "appointment", 66, 91, 31, 7]
+        ]
+      },
+      warranty: {
+        title: "十年质保 · 凭证",
+        chapter: "warranty",
+        narration: "完工项目生成十年质保凭证，期限、范围和项目资料清晰可查。",
+        img: "assets/1785135606064.png",
+        spots: [
+          ["返回", "back", 0, 4, 13, 7],
+          ["质保资料", "warrantyRecord", 5, 50, 90, 31],
+          ["电话咨询", "call", 34, 91, 28, 7],
+          ["分享", "share", 3, 91, 13, 7]
+        ]
+      },
+      warrantyRecord: {
+        title: "十年质保 · 项目记录",
+        chapter: "warranty",
+        narration: "质保凭证关联项目记录，售后沟通有依据、服务不中断。",
+        img: "assets/1785135611408.png",
+        spots: [
+          ["返回", "warranty", 0, 4, 13, 7],
+          ["项目记录", "imageAction", 5, 47, 90, 32],
+          ["电话咨询", "call", 34, 91, 28, 7],
+          ["收藏", "favorite", 19, 91, 13, 7]
+        ]
+      }
+    };
+
+    const actions = {
+      login: "演示提示：微信小程序中可使用微信账号安全登录。",
+      appointment: "演示提示：已打开预约咨询入口，门店会尽快联系客户。",
+      call: "演示提示：微信小程序中会调起客服电话确认拨打。",
+      share: "演示提示：微信小程序中可转发给好友或生成分享内容。",
+      favorite: "已模拟收藏，登录后会同步到“我的收藏”。",
+      filterAction: "演示提示：可按地区和项目状态筛选内容。",
+      productAction: "演示提示：点击产品可查看型号、介绍和关联案例。",
+      imageAction: "演示提示：微信小程序中可查看完整现场图片。",
+      staffAction: "演示提示：可进入服务人员主页查看能力与近期项目。",
+      searchAction: "演示提示：搜索同时覆盖案例、施工项目与服务人员。"
+    };
+
+    const pageOrder = chapters.flatMap(chapter => chapter.pages);
+    const chapterMap = Object.fromEntries(chapters.map((chapter, index) => [chapter.id, { ...chapter, index }]));
+    const historyStack = ["home"];
+    let current = "home";
+    let toastTimer;
+
+    const shot = document.getElementById("shot");
+    const hotspots = document.getElementById("hotspots");
+    const phoneShell = document.getElementById("phoneShell");
+    const toast = document.getElementById("toast");
+    const loadError = document.getElementById("loadError");
+    const pagePill = document.getElementById("pagePill");
+    const currentTitle = document.getElementById("currentTitle");
+    const chapterNumber = document.getElementById("chapterNumber");
+    const chapterTitle = document.getElementById("chapterTitle");
+    const narration = document.getElementById("narration");
+    const pageNumber = document.getElementById("pageNumber");
+    const pageTotal = document.getElementById("pageTotal");
+    const progressBar = document.getElementById("progressBar");
+    const chapterButtons = document.getElementById("chapters");
+    const previousButton = document.getElementById("previousButton");
+    const nextButton = document.getElementById("nextButton");
+    const zonesButton = document.getElementById("zonesButton");
+    const resetButton = document.getElementById("resetButton");
+    const qrDialog = document.getElementById("qrDialog");
+    const qrCloseButton = document.getElementById("qrCloseButton");
+    const qrDialogImage = document.getElementById("qrDialogImage");
+    const qrError = document.getElementById("qrError");
+
+    function pad(value) {
+      return String(value).padStart(2, "0");
+    }
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = window.setTimeout(() => toast.classList.remove("show"), 2200);
+    }
+
+    function preloadAround(index) {
+      [index - 1, index + 1].forEach(nextIndex => {
+        if (pageOrder[nextIndex]) {
+          const image = new Image();
+          image.src = pages[pageOrder[nextIndex]].img;
+        }
+      });
+    }
+
+    function go(target, options = {}) {
+      if (actions[target]) {
+        showToast(actions[target]);
+        return;
+      }
+      if (target === "back") {
+        if (historyStack.length > 1) historyStack.pop();
+        render(historyStack[historyStack.length - 1] || "home");
+        return;
+      }
+      if (!pages[target]) {
+        showToast("这个演示页面暂时不可用。");
+        return;
+      }
+      if (options.resetHistory) {
+        historyStack.splice(0, historyStack.length, target);
+      } else if (target !== current) {
+        historyStack.push(target);
+      }
+      render(target);
+    }
+
+    function step(delta) {
+      const index = pageOrder.indexOf(current);
+      const target = pageOrder[index + delta];
+      if (target) go(target);
+    }
+
+    function selectChapter(chapterId) {
+      const chapter = chapterMap[chapterId];
+      if (chapter) go(chapter.entry, { resetHistory: true });
+    }
+
+    function openQrDialog() {
+      qrError.classList.remove("show");
+      qrDialogImage.hidden = false;
+      qrDialog.showModal();
+      document.body.classList.add("qr-open");
+    }
+
+    function closeQrDialog() {
+      if (qrDialog.open) qrDialog.close();
+      document.body.classList.remove("qr-open");
+    }
+
+    function createHotspot([label, target, x, y, width, height]) {
+      const button = document.createElement("button");
+      button.className = "hotspot";
+      button.type = "button";
+      button.dataset.label = label;
+      button.title = label;
+      button.setAttribute("aria-label", label);
+      Object.assign(button.style, {
+        left: `${x}%`,
+        top: `${y}%`,
+        width: `${width}%`,
+        height: `${height}%`
+      });
+      button.addEventListener("pointerdown", event => {
+        const rect = button.getBoundingClientRect();
+        button.style.setProperty("--tap-x", `${event.clientX - rect.left}px`);
+        button.style.setProperty("--tap-y", `${event.clientY - rect.top}px`);
+        button.classList.remove("pulse");
+        void button.offsetWidth;
+        button.classList.add("pulse");
+      });
+      button.addEventListener("click", () => go(target));
+      return button;
+    }
+
+    function render(pageId) {
+      const page = pages[pageId];
+      if (!page) return;
+      const pageIndex = pageOrder.indexOf(pageId);
+      const chapter = chapterMap[page.chapter];
+      current = pageId;
+      loadError.classList.remove("show");
+      shot.classList.add("switching");
+      window.setTimeout(() => {
+        shot.src = page.img;
+        shot.alt = `${page.title}小程序截图`;
+        pagePill.textContent = page.title;
+        currentTitle.textContent = page.title;
+        chapterNumber.textContent = `CHAPTER ${pad(chapter.index + 1)}`;
+        chapterTitle.textContent = chapter.label;
+        narration.textContent = page.narration || chapter.narration;
+        pageNumber.textContent = pad(pageIndex + 1);
+        pageTotal.textContent = pad(pageOrder.length);
+        progressBar.style.width = `${((pageIndex + 1) / pageOrder.length) * 100}%`;
+        previousButton.disabled = pageIndex === 0;
+        nextButton.disabled = pageIndex === pageOrder.length - 1;
+        hotspots.replaceChildren(...page.spots.map(createHotspot));
+        chapterButtons.querySelectorAll(".chapter").forEach(button => {
+          button.classList.toggle("active", button.dataset.chapter === page.chapter);
+        });
+        preloadAround(pageIndex);
+      }, 100);
+    }
+
+    chapters.forEach(chapter => {
+      const button = document.createElement("button");
+      button.className = "chapter";
+      button.type = "button";
+      button.dataset.chapter = chapter.id;
+      button.textContent = chapter.label;
+      button.addEventListener("click", () => selectChapter(chapter.id));
+      chapterButtons.appendChild(button);
+    });
+
+    Object.entries(pages).forEach(([pageId, page]) => {
+      page.spots.forEach(([label, target]) => {
+        if (target !== "back" && !pages[target] && !actions[target]) {
+          console.error(`演示热点目标不存在: ${pageId} -> ${label} -> ${target}`);
+        }
+      });
+    });
+
+    shot.addEventListener("load", () => {
+      shot.classList.remove("switching");
+      loadError.classList.remove("show");
+    });
+
+    shot.addEventListener("error", () => {
+      shot.classList.remove("switching");
+      loadError.textContent = `截图加载失败：${pages[current].img}`;
+      loadError.classList.add("show");
+    });
+
+    previousButton.addEventListener("click", () => step(-1));
+    nextButton.addEventListener("click", () => step(1));
+    zonesButton.addEventListener("click", () => {
+      phoneShell.classList.toggle("show-zones");
+      zonesButton.classList.toggle("active", phoneShell.classList.contains("show-zones"));
+      zonesButton.textContent = phoneShell.classList.contains("show-zones") ? "隐藏点击区域" : "显示点击区域";
+      showToast(phoneShell.classList.contains("show-zones") ? "已标出手机内可点击区域" : "已隐藏点击区域");
+    });
+    resetButton.addEventListener("click", () => {
+      go("home", { resetHistory: true });
+      showToast("已重新开始客户演示");
+    });
+    document.querySelectorAll(".qr-trigger").forEach(button => {
+      button.addEventListener("click", openQrDialog);
+    });
+    qrCloseButton.addEventListener("click", closeQrDialog);
+    qrDialog.addEventListener("click", event => {
+      const rect = qrDialog.getBoundingClientRect();
+      const inside = event.clientX >= rect.left && event.clientX <= rect.right
+        && event.clientY >= rect.top && event.clientY <= rect.bottom;
+      if (!inside) closeQrDialog();
+    });
+    qrDialog.addEventListener("close", () => {
+      document.body.classList.remove("qr-open");
+    });
+    qrDialogImage.addEventListener("error", () => {
+      qrDialogImage.hidden = true;
+      qrError.classList.add("show");
+    });
+
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape" && qrDialog.open) {
+        closeQrDialog();
+        return;
+      }
+      if (event.key === "ArrowLeft") step(-1);
+      if (event.key === "ArrowRight") step(1);
+      if (event.key === "Escape") toast.classList.remove("show");
+    });
+
+    render("home");
+    window.setTimeout(() => showToast("点击手机里的卡片和底部导航开始体验"), 500);
+  </script>
+</body>
+</html>

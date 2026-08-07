@@ -1,6 +1,6 @@
-# 门窗老伙计+ 微信小程序
+# 案例小助手 微信小程序
 
-门窗老伙计+（项目代号 WindoorsY）是一个门窗服务平台微信小程序，面向用户提供门窗产品、真实案例、施工进度、十年质保和预约咨询等内容展示与联系能力。
+案例小助手（项目代号 WindoorsY）是一个门窗服务平台微信小程序，面向用户提供门窗产品、真实案例、施工进度、十年质保和预约咨询等内容展示与联系能力。
 
 `WeChat Mini Program` · `uni-app` · `Vue 3` · `TypeScript` · `uniCloud`
 
@@ -22,13 +22,13 @@
 
 | 首页 | 产品中心 |
 | --- | --- |
-| ![小程序首页](demo/assets/1785135366656.png) | ![门窗产品中心](demo/assets/1785135430729.png) |
+| ![小程序首页](demo/assets/Screenshot_2026-08-02-00-47-16-106_com.tencent.mm.jpg) | ![门窗产品中心](demo/assets/Screenshot_2026-08-02-00-47-44-504_com.tencent.mm.jpg) |
 
 | 案例详情 | 工地施工流程 |
 | --- | --- |
-| ![客户案例详情](demo/assets/1785135546652.png) | ![工地施工流程管理](demo/assets/1785135659349.png) |
+| ![客户案例详情](demo/assets/Screenshot_2026-08-02-00-52-34-979_com.tencent.mm.jpg) | ![工地施工流程管理](demo/assets/Screenshot_2026-08-02-00-48-34-255_com.tencent.mm.jpg) |
 
-完整的沉浸式静态演示页位于 [`demo/index.html`](demo/index.html)，按“认识门店、选产品、看案例、跟进施工、十年质保”五个章节串联 21 个真实页面。演示页支持截图内热点、前后切换、键盘操作和响应式布局，并提供微信扫码体验真实小程序的入口。
+[`/demo/`](demo/index.html) 是当前最新的 V2 静态演示：按“认识门店、选择产品、跟进施工、服务团队、十年质保”五个章节串联 18 个真实页面，支持截图内热点、前后切换、键盘操作、独立长图滚动和微信扫码入口。[`/demo/V1/`](demo/V1/index.html) 保留经典版演示，[`/demo/DevProgress/`](demo/DevProgress/index.html) 提供公开开发进度说明；三个页面入口互通。
 
 在本地查看交互演示：
 
