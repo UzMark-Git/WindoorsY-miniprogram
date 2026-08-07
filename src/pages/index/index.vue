@@ -95,7 +95,7 @@ onMounted(load)
           </swiper-item>
         </swiper>
         <view class="veil" />
-        <view class="hero-copy"><text class="eyebrow">南昌本地门窗服务</text><text class="hero-title">门窗老伙计</text><text class="hero-lead">产品、案例、施工记录与十年质保都在这里</text></view>
+        <view class="hero-copy"><text class="eyebrow">南昌本地门窗服务</text><text class="hero-title">{{ home.store.name }}</text><text class="hero-lead">产品、案例、施工记录与十年质保都在这里</text></view>
       </view>
       <HomeSearchPanel class="home-search-panel" @search="openSearch" @private-entry="openPrivateEntry" />
       <view class="section section--paginated needs"><view class="heading"><view><text class="kicker">WINDOW SOLUTIONS</text><text class="section-title">你家想解决什么问题？</text></view></view><HomeNeedsSwiper @select="openSearch" /></view>
