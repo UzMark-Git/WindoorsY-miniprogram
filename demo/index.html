@@ -34,6 +34,12 @@
     .links { display:flex; gap:18px; margin-top:25px; }
     .links a { color:rgba(255,255,255,.65); font-size:13px; text-decoration:none; }
     .links a:hover { color:#e4bd7e; text-decoration:underline; }
+    .qr-card { display:grid; width:min(470px,100%); margin-top:24px; padding:10px; overflow:hidden; border:1px solid rgba(228,189,126,.38); border-radius:16px; background:rgba(255,255,255,.07); color:#fff; cursor:pointer; text-align:left; transition:transform .2s ease,border-color .2s ease,background .2s ease; }
+    .qr-card:hover { border-color:rgba(228,189,126,.72); background:rgba(255,255,255,.11); transform:translateY(-2px); }
+    .qr-card-copy { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:2px 4px 10px; }
+    .qr-card-copy strong { font-size:13px; }
+    .qr-card-copy span { color:#e4bd7e; font-size:11px; font-weight:800; letter-spacing:1px; }
+    .qr-card img { display:block; width:100%; height:auto; border-radius:10px; background:#fff; }
     .phone-stage { position:relative; display:flex; align-items:center; justify-content:center; justify-self:center; height:100%; min-height:0; }
     .phone-stage::before { position:absolute; inset:8% -22%; border-radius:50%; background:#3d8876; content:""; filter:blur(58px); opacity:.35; }
     .phone-shell { position:relative; width:auto; max-width:var(--phone-w); height:100%; min-height:0; padding:8px; border:1px solid rgba(255,255,255,.32); border-radius:37px; aspect-ratio:637 / 1319; background:linear-gradient(145deg,rgba(255,255,255,.48),rgba(255,255,255,.08) 27%,rgba(0,0,0,.35)); box-shadow:0 35px 100px rgba(0,0,0,.48); }
@@ -73,6 +79,7 @@
       .stage { display:flex; height:100svh; min-height:0; overflow:hidden; flex-direction:column; gap:9px; padding:max(8px,env(safe-area-inset-top)) 8px max(8px,env(safe-area-inset-bottom)); }
       .story { display:flex; order:2; flex:0 0 auto; flex-direction:column; width:100%; }
       .brand,.eyebrow,h1,.narration,.progress,.links { display:none; }
+      .qr-card { display: none; }
       .chapters { flex:0 0 auto; justify-content:center; margin:0; gap:6px; }
       .chapter { min-height:34px; padding:0 6px; font-size:10px; }
       .phone-stage { display:flex; order:1; flex:1 1 auto; align-items:center; justify-content:center; min-height:0; }
@@ -102,6 +109,10 @@
         <a href="DevProgress/">查看开发进度</a>
         <a href="V1/">查看 V1 经典版</a>
       </div>
+      <button class="qr-card qr-trigger" type="button" aria-label="打开微信小程序二维码">
+        <span class="qr-card-copy"><strong>微信扫码体验真实小程序</strong><span>SCAN TO OPEN ↗</span></span>
+        <img src="assets/weixin.png" alt="案例小助手微信小程序码" />
+      </button>
     </section>
 
     <section class="phone-stage" aria-label="小程序手机演示">
@@ -397,7 +408,9 @@
       event.currentTarget.textContent = phoneShell.classList.contains("show-zones") ? "隐藏热点" : "显示热点";
     });
     document.getElementById("resetButton").addEventListener("click", () => { go("home", { resetHistory: true }); showToast("已回到演示起点。"); });
-    document.getElementById("qrButton").addEventListener("click", () => qrDialog.showModal());
+    document.querySelectorAll(".qr-trigger").forEach(button => {
+      button.addEventListener("click", () => qrDialog.showModal());
+    });
     document.getElementById("qrCloseButton").addEventListener("click", () => qrDialog.close());
     document.addEventListener("keydown", event => {
       if (event.key === "ArrowLeft") step(-1);
