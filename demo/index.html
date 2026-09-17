@@ -31,9 +31,9 @@
     .progress { display:flex; align-items:center; gap:12px; margin-top:25px; color:rgba(255,255,255,.55); font-size:12px; letter-spacing:2px; }
     .track { width:min(230px,42vw); height:2px; background:rgba(255,255,255,.18); }
     .track i { display:block; width:0; height:100%; background:#e4bd7e; transition:width .25s ease; }
-    .links { display:flex; gap:18px; margin-top:25px; }
-    .links a { color:rgba(255,255,255,.65); font-size:13px; text-decoration:none; }
-    .links a:hover { color:#e4bd7e; text-decoration:underline; }
+    .version-links { position:fixed; z-index:20; top:16px; right:18px; display:flex; gap:8px; }
+    .version-links a { padding:8px 12px; border:1px solid rgba(214,170,104,.55); border-radius:999px; background:rgba(7,27,23,.8); color:#e4bd7e; font-size:12px; text-decoration:none; }
+    .version-links a:hover { background:rgba(255,255,255,.1); }
     .qr-card { display:grid; width:min(470px,100%); margin-top:24px; padding:10px; overflow:hidden; border:1px solid rgba(228,189,126,.38); border-radius:16px; background:rgba(255,255,255,.07); color:#fff; cursor:pointer; text-align:left; transition:transform .2s ease,border-color .2s ease,background .2s ease; }
     .qr-card:hover { border-color:rgba(228,189,126,.72); background:rgba(255,255,255,.11); transform:translateY(-2px); }
     .qr-card-copy { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:2px 4px 10px; }
@@ -77,7 +77,7 @@
       .brand { margin-bottom:14px; }
       .narration { margin-top:12px; }
       .chapters { margin-top:18px; }
-      .progress,.links { margin-top:16px; }
+      .progress { margin-top:16px; }
       .qr-card { margin-top:14px; }
     }
     @media (max-width:740px) {
@@ -85,8 +85,9 @@
       html, body { width:100%; height:100%; min-height:100%; overflow:hidden; }
       .stage { display:flex; height:100svh; min-height:0; overflow:hidden; flex-direction:column; gap:9px; padding:max(8px,env(safe-area-inset-top)) 8px max(8px,env(safe-area-inset-bottom)); }
       .story { display:flex; order:2; flex:0 0 auto; flex-direction:column; width:100%; }
-      .brand,.eyebrow,h1,.narration,.progress,.links { display:none; }
+      .brand,.eyebrow,h1,.narration,.progress { display:none; }
       .qr-card { display: none; }
+      .version-links { display:none; }
       .chapters { flex:0 0 auto; justify-content:center; margin:0; gap:6px; }
       .chapter { min-height:34px; padding:0 6px; font-size:10px; }
       .phone-stage { display:flex; order:1; flex:1 1 auto; align-items:center; justify-content:center; min-height:0; }
@@ -104,6 +105,10 @@
   </style>
 </head>
 <body>
+  <nav class="version-links" aria-label="演示版本入口">
+    <a href="DevProgress/">查看开发进度</a>
+    <a href="V1/">查看 V1 经典版</a>
+  </nav>
   <main class="stage">
     <section class="story" aria-label="演示讲解">
       <div class="brand"><b>W</b><span>WINDOORS · 案例小助手</span></div>
@@ -112,10 +117,6 @@
       <p class="narration" id="narration">从首页的服务入口出发，了解产品、案例、施工和十年质保。</p>
       <div class="chapters" id="chapters" aria-label="演示章节"></div>
       <div class="progress"><span id="pageNumber">01</span><div class="track"><i id="progressBar"></i></div><span id="pageTotal">18</span></div>
-      <div class="links">
-        <a href="DevProgress/">查看开发进度</a>
-        <a href="V1/">查看 V1 经典版</a>
-      </div>
       <button class="qr-card qr-trigger" type="button" aria-label="打开微信小程序二维码">
         <span class="qr-card-copy"><strong>微信扫码体验真实小程序</strong><span>SCAN TO OPEN ↗</span></span>
         <img src="assets/weixin.png" alt="案例小助手微信小程序码" />
