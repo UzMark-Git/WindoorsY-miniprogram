@@ -158,50 +158,14 @@
 
   .foot{margin-top:18px;font-size:11.5px;color:var(--ink3);line-height:1.7;text-align:center}
 
-  /* ---------- 云端状态 ---------- */
-  .cloud-chip{
-    margin-left:auto;display:inline-flex;align-items:center;gap:6px;flex:0 0 auto;
-    font-size:11.5px;color:var(--ink2);background:#fff;border:1px solid var(--line);
-    padding:5px 10px;border-radius:20px;white-space:nowrap;
-  }
-  .cloud-chip i{width:6px;height:6px;border-radius:50%;background:#c4cdd9;flex:0 0 auto}
-  .cloud-chip.on{color:var(--ok);border-color:#bfe6cf;background:var(--ok-bg)}
-  .cloud-chip.on i{background:#12b76a}
-  .cloud-chip.off{color:var(--warn);border-color:#f5c2c0;background:var(--warn-bg)}
-  .cloud-chip.off i{background:#e0483c}
-
-  /* ---------- 云端记录 ---------- */
   .concl-actions{display:flex;gap:8px;margin-top:10px}
   .concl-actions .btn{flex:1 1 0;padding:9px 4px}
-  .btn:disabled{opacity:.5;cursor:not-allowed}
-  .rec-bar{display:flex;gap:8px;margin-bottom:10px}
-  .rec-bar input{
-    flex:1;min-width:0;padding:8px 11px;border-radius:9px;border:1px solid var(--line);
-    background:#fbfcfe;font-family:inherit;font-size:13px;color:var(--ink);outline:none;
-  }
-  .rec-bar input:focus{border-color:var(--brand2);background:#fff;box-shadow:0 0 0 3px rgba(68,114,196,.12)}
-  .rec-list{list-style:none;margin:0;padding:0}
-  .rec-item{display:flex;align-items:center;gap:8px;padding:9px 0;border-top:1px solid var(--line);font-size:13px}
-  .rec-item:first-child{border-top:none}
-  .rec-main{flex:1;min-width:0;cursor:pointer}
-  .rec-main:hover .rec-t{color:var(--brand2)}
-  .rec-t{font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1.45}
-  .rec-t b{color:var(--brand);font-weight:800}
-  .rec-s{font-size:11px;color:var(--ink3);margin-top:2px;display:flex;gap:8px;flex-wrap:wrap}
-  .rec-x{
-    flex:0 0 auto;border:none;background:#f2f5fa;color:var(--ink3);width:24px;height:24px;
-    border-radius:50%;cursor:pointer;font-size:15px;line-height:1;font-family:inherit;padding:0;
-  }
-  .rec-x:hover{background:#fdecea;color:var(--warn)}
-  .rec-empty,.rec-loading{padding:16px 0;text-align:center;font-size:12.5px;color:var(--ink3)}
 
   /* ---------- 打印 ---------- */
   @media print{
     body{background:#fff}
     .wrap{max-width:none;padding:0}
     .chips,.btn,details.rules summary .arw{display:none!important}
-    #recCard{display:none!important}
-    .cloud-chip{display:none!important}
     .card,.hero,details.rules{box-shadow:none;border:1px solid #ddd}
     .hero{background:#2F5597!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
     .concl p{font-size:12px}
@@ -222,7 +186,6 @@
       <h1>玻璃配置推荐工具</h1>
       <p>输入尺寸，即时得到应选玻璃配置</p>
     </div>
-    <span class="cloud-chip" id="cloudState"><i></i>连接中…</span>
   </div>
 
   <!-- 输入 -->
@@ -276,22 +239,9 @@
       <p id="concl" class="mute">请先填写玻璃宽度与高度</p>
     </div>
     <div class="concl-actions">
-      <button class="btn" id="save">保存到云端</button>
       <button class="btn ghost" id="copy">复制</button>
       <button class="btn ghost" id="print">打印</button>
     </div>
-  </div>
-
-  <!-- 云端记录 -->
-  <div class="card" id="recCard">
-    <div class="card-h"><i class="dot"></i><h2>④ 查询记录</h2><span id="recCount"></span></div>
-    <div class="rec-bar">
-      <input id="operator" type="text" maxlength="12" autocomplete="off" placeholder="经手人（选填），保存时一并记录">
-      <button class="btn ghost" id="refreshRec" style="flex:0 0 auto">刷新</button>
-    </div>
-    <div class="note" id="recMsg" style="display:none"></div>
-    <div class="rec-loading" id="recLoading">正在读取云端记录…</div>
-    <ul class="rec-list" id="recList"></ul>
   </div>
 
   <!-- 规则 -->
@@ -319,7 +269,6 @@
 
 <div id="toast" style="position:fixed;left:50%;bottom:32px;transform:translate(-50%,20px);background:rgba(31,45,61,.94);color:#fff;font-size:13px;padding:9px 18px;border-radius:22px;opacity:0;transition:.25s;pointer-events:none;z-index:99">已复制</div>
 
-<script src="https://cdn.jsdelivr.net/npm/@tencent-ai/workbuddy-cloud-sdk@dev/lib/index.global.js"></script>
 <script>
 (function(){
   "use strict";
@@ -558,257 +507,12 @@
 
   el("print").addEventListener("click", function(){ window.print(); });
 
-  /* ==================== 云服务 ==================== */
-  /* publicConfig（由云服务开通结果提供，前端可安全携带） */
-  var PC = {
-    endpoint: "https://glass-config-selector.app.workbuddy.host",
-    oauthRelayBaseUrl: "https://www.workbuddy.cn/v2/as/genie-baas/oauth",
-    publishableKey: "wbpk_lUgu69L5nwd7YsC8QZa3pq_EZ982FjwsRxOxePTZUkrcu7WGVVRxJe1"
-  };
-  var cloud = null, cloudOK = false, records = [];
-  var OPKEY = "glass_operator";
-
-  function errText(e){
-    if(!e) return "未知错误";
-    if(typeof e === "string") return e;
-    return e.message || e.details || e.code || "请求失败";
-  }
-
-  function setCloud(state, text){
-    var n = el("cloudState");
-    n.className = "cloud-chip" + (state ? " " + state : "");
-    n.innerHTML = "<i></i>" + text;
-  }
-
-  function showRecMsg(txt, isErr){
-    var n = el("recMsg");
-    if(!txt){ n.style.display = "none"; n.innerHTML = ""; return; }
-    n.style.display = "block";
-    n.style.background = isErr ? "var(--warn-bg)" : "#f7f9fc";
-    n.style.color = isErr ? "var(--warn)" : "var(--ink2)";
-    n.style.borderStyle = "solid";
-    n.innerHTML = txt;
-  }
-
-  function esc(s){
-    return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){
-      return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
-    });
-  }
-
-  function fmtTime(v){
-    if(!v) return "";
-    var d = new Date(v);
-    if(isNaN(d.getTime())) return String(v).slice(0, 16).replace("T", " ");
-    var p = function(n){ return n < 10 ? "0" + n : "" + n; };
-    return (d.getMonth() + 1) + "-" + p(d.getDate()) + " " + p(d.getHours()) + ":" + p(d.getMinutes());
-  }
-
-  /* 初始化客户端（endpoint + publishableKey 必传） */
-  function initCloud(){
-    if(typeof WorkBuddyCloud === "undefined" || !WorkBuddyCloud.createWorkBuddyCloud){
-      cloudOK = false;
-      setCloud("off", "云服务未连接");
-      el("save").disabled = true;
-      el("recLoading").style.display = "none";
-      showRecMsg("云端组件没有加载成功（多为网络原因）。选型计算可以正常使用，但查询记录暂时无法保存与查看。", true);
-      return;
-    }
-    try{
-      cloud = WorkBuddyCloud.createWorkBuddyCloud({
-        endpoint: PC.endpoint,
-        oauthRelayBaseUrl: PC.oauthRelayBaseUrl,
-        publishableKey: PC.publishableKey
-      });
-      cloudOK = true;
-    }catch(e){
-      cloudOK = false;
-      el("save").disabled = true;
-      setCloud("off", "云服务异常");
-      showRecMsg("云服务初始化失败：" + esc(errText(e)), true);
-      return;
-    }
-    loadConfigs();
-    loadRecords();
-  }
-
-  /* ① 云端档位表：读到就用云端的，读不到则沿用内置的 9 档并明确告知 */
-  function loadConfigs(){
-    cloud.database.from("glass_configs").select("*").order("seq", { ascending: true })
-      .then(function(res){
-        if(res && res.error) throw res.error;
-        var rows = (res && res.data) || [];
-        if(rows.length) applyCloudConfigs(rows);
-        setCloud("on", "云服务已连接");
-      })
-      .catch(function(e){
-        setCloud("off", "云服务未连接");
-        showRecMsg("云端档位表读取失败，当前按页面内置的 9 档规则计算（与规范表一致）：" + esc(errText(e)), true);
-      });
-  }
-
-  function applyCloudConfigs(rows){
-    var list = [];
-    for(var i = 0; i < rows.length; i++){
-      var r = rows[i];
-      var side = Number(r.side_limit), al = Number(r.area_max_low), ah = Number(r.area_max_high);
-      list.push({
-        name: r.config_name,
-        type: r.config_type || "",
-        side: side >= 9999 ? Infinity : side,
-        al: al >= 9999 ? Infinity : al,
-        ah: ah >= 9999 ? Infinity : ah,
-        last: i === rows.length - 1
-      });
-    }
-    if(!list.length) return;
-    CFG.length = 0;
-    for(var k = 0; k < list.length; k++) CFG.push(list[k]);
-    buildTable();
-    render();
-  }
-
-  /* ② 记录：读 */
-  function loadRecords(){
-    var ld = el("recLoading");
-    ld.style.display = "block";
-    ld.textContent = "正在读取云端记录…";
-    cloud.database.from("glass_records")
-      .select("id, width_mm, height_mm, config_name, config_type, operator, created_at")
-      .order("created_at", { ascending: false })
-      .limit(30)
-      .then(function(res){
-        if(res && res.error) throw res.error;
-        records = (res && res.data) || [];
-        renderRecords();
-      })
-      .catch(function(e){
-        ld.style.display = "none";
-        el("recList").innerHTML = "";
-        el("recCount").textContent = "";
-        showRecMsg("云端记录读取失败：" + esc(errText(e)) + "　稍后点「刷新」重试。", true);
-      });
-  }
-
-  function renderRecords(){
-    el("recLoading").style.display = "none";
-    var ul = el("recList");
-    el("recCount").textContent = records.length ? ("最近 " + records.length + " 条") : "";
-    if(!records.length){
-      ul.innerHTML = '<li class="rec-empty">还没有记录。算完尺寸后点「保存到云端」，团队其他人也能看到。</li>';
-      return;
-    }
-    var html = "";
-    for(var i = 0; i < records.length; i++){
-      var r = records[i];
-      html += '<li class="rec-item">' +
-        '<div class="rec-main" data-w="' + r.width_mm + '" data-h="' + r.height_mm + '" title="点击回填尺寸">' +
-          '<div class="rec-t">' + r.width_mm + '×' + r.height_mm + ' → <b>' + esc(r.config_name) + '</b></div>' +
-          '<div class="rec-s">' +
-            '<span>' + esc(fmtTime(r.created_at)) + '</span>' +
-            (r.operator ? '<span>经手人 ' + esc(r.operator) + '</span>' : '') +
-            '<span>' + esc(r.config_type || "") + '</span>' +
-          '</div>' +
-        '</div>' +
-        '<button class="rec-x" data-del="' + r.id + '" title="删除这条记录">×</button>' +
-      '</li>';
-    }
-    ul.innerHTML = html;
-  }
-
-  /* ② 记录：写 */
-  el("save").addEventListener("click", function(){
-    var r = compute(parseFloat($w.value), parseFloat($h.value));
-    if(!r){ toast("请先输入尺寸"); return; }
-    if(!cloudOK || !cloud){ showRecMsg("云服务未连接，这条记录没有保存。", true); return; }
-    var btn = el("save");
-    var old = btn.textContent;
-    btn.disabled = true;
-    btn.textContent = "保存中…";
-    showRecMsg("", false);
-    cloud.database.from("glass_records").insert({
-      width_mm: Math.round(r.w),
-      height_mm: Math.round(r.h),
-      area_m2: r.area,
-      shape: r.shapeTxt,
-      config_name: r.cfg.name,
-      config_type: r.cfg.type,
-      judge_mode: r.judgeTxt,
-      range_text: r.rangeTxt,
-      headroom: r.head,
-      operator: (el("operator").value || "").trim() || null
-    }).select().then(function(res){
-      if(res && res.error) throw res.error;
-      var row = (res && res.data && res.data[0]) || null;
-      btn.disabled = false;
-      btn.textContent = old;
-      if(!row){
-        showRecMsg("没有写入成功（可能被权限策略拦下），请刷新后重试。", true);
-        return;
-      }
-      records.unshift(row);
-      if(records.length > 30) records.length = 30;
-      renderRecords();
-      toast("已保存到云端");
-      try{ localStorage.setItem(OPKEY, el("operator").value || ""); }catch(e){}
-    }).catch(function(e){
-      btn.disabled = false;
-      btn.textContent = old;
-      showRecMsg("保存失败：" + esc(errText(e)), true);
-    });
-  });
-
-  /* ② 记录：删 / 回填 */
-  el("recList").addEventListener("click", function(ev){
-    var thr = ev.target;
-    var delBtn = thr.closest ? thr.closest("[data-del]") : null;
-    if(delBtn){
-      var id = delBtn.getAttribute("data-del");
-      if(!window.confirm("删除这条云端记录？删除后不可恢复。")) return;
-      cloud.database.from("glass_records").delete().eq("id", id).select()
-        .then(function(res){
-          if(res && res.error) throw res.error;
-          var gone = (res && res.data) || [];
-          if(!gone.length){ showRecMsg("这条记录已经被删除或不存在，刷新看看。", true); return; }
-          records = records.filter(function(x){ return String(x.id) !== String(id); });
-          renderRecords();
-          toast("已删除");
-        })
-        .catch(function(e){ showRecMsg("删除失败：" + esc(errText(e)), true); });
-      return;
-    }
-    var main = thr.closest ? thr.closest(".rec-main") : null;
-    if(main){
-      $w.value = main.getAttribute("data-w");
-      $h.value = main.getAttribute("data-h");
-      render();
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-  });
-
-  el("refreshRec").addEventListener("click", function(){
-    if(!cloudOK || !cloud){ showRecMsg("云服务未连接，无法刷新记录。", true); return; }
-    showRecMsg("", false);
-    loadConfigs();
-    loadRecords();
-  });
-
-  /* 经手人：本地记住，方便下次直接保存 */
-  try{
-    var savedOp = localStorage.getItem(OPKEY);
-    if(savedOp) el("operator").value = savedOp;
-  }catch(e){}
-  el("operator").addEventListener("change", function(){
-    try{ localStorage.setItem(OPKEY, el("operator").value || ""); }catch(e){}
-  });
-
   /* ---------- 启动 ---------- */
   buildTable();
   buildChips();
   $w.addEventListener("input", render);
   $h.addEventListener("input", render);
   render();
-  initCloud();
 })();
 </script>
 </body>
