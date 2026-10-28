@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2F5597">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="玻璃配置">
+<meta name="format-detection" content="telephone=no">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232F5597'/%3E%3Ctext x='32' y='44' font-size='34' text-anchor='middle' fill='white'%3E%E7%8E%BB%3C/text%3E%3C/svg%3E">
+<title>玻璃配置推荐工具</title>
+<style>
+  :root{
+    --ink:#1f2d3d; --ink2:#5b6b7d; --ink3:#8794a5;
+    --line:#e4e9f0; --bg:#f4f6fa; --card:#ffffff;
+    --brand:#2F5597; --brand2:#4472C4; --brand-soft:#eaf0fa;
+    --warn:#b42318; --warn-bg:#fef3f2;
+    --ok:#067647; --ok-bg:#ecfdf3;
+    --input:#fff8e6; --input-line:#e8c96a;
+    --r:14px; --shadow:0 1px 2px rgba(16,24,40,.05), 0 6px 20px rgba(16,24,40,.07);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    font-size:15px; line-height:1.6; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:780px;margin:0 auto;padding:22px 16px 56px}
+
+  /* ---------- 头部 ---------- */
+  .head{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+  .logo{
+    width:44px;height:44px;border-radius:12px;flex:0 0 44px;
+    background:linear-gradient(135deg,#3a67b0,#2F5597);
+    color:#fff;display:flex;align-items:center;justify-content:center;
+    font-size:20px;font-weight:700;letter-spacing:1px;
+    box-shadow:0 4px 12px rgba(47,85,151,.28);
+  }
+  .head h1{margin:0;font-size:19px;font-weight:700;letter-spacing:.3px}
+  .head p{margin:1px 0 0;font-size:12.5px;color:var(--ink3)}
+
+  /* ---------- 卡片 ---------- */
+  .card{
+    background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);
+    border:1px solid var(--line);padding:16px;margin-bottom:14px;
+  }
+  .card-h{display:flex;align-items:center;gap:8px;margin:0 0 12px}
+  .card-h .dot{width:4px;height:15px;border-radius:2px;background:var(--brand2)}
+  .card-h h2{margin:0;font-size:14px;font-weight:700;color:var(--brand)}
+  .card-h span{font-size:12px;color:var(--ink3);font-weight:400}
+
+  /* ---------- 输入 ---------- */
+  .inputs{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .field{position:relative}
+  .field label{display:block;font-size:12.5px;color:var(--ink2);margin-bottom:6px;font-weight:600}
+  .field .unit{position:absolute;right:12px;bottom:9px;font-size:13px;color:var(--ink3);pointer-events:none}
+  .field input{
+    width:100%;padding:10px 34px 10px 12px;border-radius:11px;
+    border:1.5px solid var(--input-line);background:var(--input);
+    font-size:24px;font-weight:700;color:var(--ink);text-align:center;
+    font-variant-numeric:tabular-nums;outline:none;transition:.15s;
+    -moz-appearance:textfield;
+  }
+  .field input::-webkit-outer-spin-button,
+  .field input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+  .field input:focus{border-color:var(--brand2);box-shadow:0 0 0 3px rgba(68,114,196,.15)}
+  .field input::placeholder{color:#c4cdd9;font-weight:500;font-size:20px}
+
+  .chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
+  .chip{
+    border:1px solid var(--line);background:#fbfcfe;color:var(--ink2);
+    font-size:12.5px;padding:5px 11px;border-radius:20px;cursor:pointer;
+    transition:.15s;font-family:inherit;
+  }
+  .chip:hover{border-color:var(--brand2);color:var(--brand);background:var(--brand-soft)}
+  .chips .lbl{font-size:12px;color:var(--ink3);align-self:center;margin-right:2px}
+
+  /* ---------- 推荐结果 ---------- */
+  .hero{
+    background:linear-gradient(135deg,#2F5597,#3d6ab8);
+    border-radius:var(--r);padding:20px 18px;color:#fff;
+    box-shadow:0 8px 24px rgba(47,85,151,.24);margin-bottom:14px;
+    position:relative;overflow:hidden;
+  }
+  .hero::after{
+    content:"";position:absolute;right:-40px;top:-50px;width:170px;height:170px;
+    border-radius:50%;background:rgba(255,255,255,.07);z-index:0;
+  }
+  .hero > *{position:relative;z-index:1}
+  .hero .k{font-size:12.5px;opacity:.78;letter-spacing:.5px}
+  .hero .v{font-size:30px;font-weight:800;letter-spacing:.5px;line-height:1.25;margin:4px 0 8px;word-break:break-all}
+  .hero .pill{
+    display:inline-block;font-size:12px;padding:3px 10px;border-radius:20px;
+    background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.26);
+  }
+  .hero .empty{font-size:17px;font-weight:600;opacity:.9}
+
+  /* ---------- 明细 ---------- */
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border-radius:12px;overflow:hidden}
+  .cell{background:#fff;padding:10px 12px}
+  .cell .k{font-size:11.5px;color:var(--ink3);margin-bottom:2px}
+  .cell .v{font-size:14.5px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+  .cell .v small{font-size:11.5px;font-weight:600;color:var(--ink3);margin-left:2px}
+  .cell.wide{grid-column:1 / -1}
+  .v.ok{color:var(--ok)} .v.bad{color:var(--warn)}
+  .v.mute{color:var(--ink3);font-weight:600}
+
+  .note{
+    margin-top:12px;padding:10px 12px;border-radius:10px;background:#f7f9fc;
+    border:1px dashed var(--line);font-size:12.5px;color:var(--ink2);line-height:1.65;
+  }
+  .note b{color:var(--brand)}
+
+  .alerts{margin-top:10px;display:flex;flex-direction:column;gap:7px}
+  .alert{display:flex;gap:8px;padding:9px 12px;border-radius:10px;font-size:12.5px;line-height:1.5}
+  .alert.w{background:var(--warn-bg);color:var(--warn)}
+  .alert.g{background:var(--ok-bg);color:var(--ok)}
+  .alert i{font-style:normal;flex:0 0 auto;font-weight:700}
+
+  /* ---------- 结论条 ---------- */
+  .concl{
+    display:flex;align-items:center;gap:10px;background:#fbfcfe;
+    border:1px solid var(--line);border-radius:12px;padding:12px;
+  }
+  .concl p{margin:0;flex:1;font-size:13px;color:var(--ink);line-height:1.6}
+  .concl p.mute{color:var(--ink3)}
+  .btn{
+    flex:0 0 auto;border:1px solid var(--brand2);background:var(--brand2);color:#fff;
+    font-family:inherit;font-size:12.5px;font-weight:600;padding:8px 14px;
+    border-radius:9px;cursor:pointer;transition:.15s;
+  }
+  .btn:hover{background:var(--brand);border-color:var(--brand)}
+  .btn:active{transform:translateY(1px)}
+  .btn.ghost{background:#fff;color:var(--brand);border-color:#cdd9ec}
+  .btn.ghost:hover{background:var(--brand-soft)}
+
+  /* ---------- 规则表 ---------- */
+  details.rules{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden}
+  details.rules summary{
+    cursor:pointer;padding:14px 16px;font-size:13.5px;font-weight:700;color:var(--brand);
+    list-style:none;display:flex;align-items:center;gap:8px;
+  }
+  details.rules summary::-webkit-details-marker{display:none}
+  details.rules summary .arw{
+    margin-left:auto;font-size:11px;color:var(--ink3);transition:transform .2s;
+  }
+  details.rules[open] summary .arw{transform:rotate(90deg)}
+  .tbl-wrap{overflow-x:auto;border-top:1px solid var(--line)}
+  table{width:100%;border-collapse:collapse;font-size:12.5px;min-width:520px}
+  th,td{padding:8px 10px;text-align:center;border-bottom:1px solid var(--line);white-space:nowrap}
+  th{background:#f7f9fc;color:var(--ink2);font-weight:700;font-size:11.5px}
+  td:first-child,th:first-child{text-align:left;padding-left:14px}
+  tbody tr.on{background:#eef4ff}
+  tbody tr.on td{font-weight:700;color:var(--brand)}
+  tbody tr:last-child td{border-bottom:none}
+  .tbl-foot{padding:11px 16px;font-size:11.5px;color:var(--ink3);line-height:1.7;border-top:1px solid var(--line)}
+
+  .foot{margin-top:18px;font-size:11.5px;color:var(--ink3);line-height:1.7;text-align:center}
+
+  /* ---------- 云端状态 ---------- */
+  .cloud-chip{
+    margin-left:auto;display:inline-flex;align-items:center;gap:6px;flex:0 0 auto;
+    font-size:11.5px;color:var(--ink2);background:#fff;border:1px solid var(--line);
+    padding:5px 10px;border-radius:20px;white-space:nowrap;
+  }
+  .cloud-chip i{width:6px;height:6px;border-radius:50%;background:#c4cdd9;flex:0 0 auto}
+  .cloud-chip.on{color:var(--ok);border-color:#bfe6cf;background:var(--ok-bg)}
+  .cloud-chip.on i{background:#12b76a}
+  .cloud-chip.off{color:var(--warn);border-color:#f5c2c0;background:var(--warn-bg)}
+  .cloud-chip.off i{background:#e0483c}
+
+  /* ---------- 云端记录 ---------- */
+  .concl-actions{display:flex;gap:8px;margin-top:10px}
+  .concl-actions .btn{flex:1 1 0;padding:9px 4px}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
+  .rec-bar{display:flex;gap:8px;margin-bottom:10px}
+  .rec-bar input{
+    flex:1;min-width:0;padding:8px 11px;border-radius:9px;border:1px solid var(--line);
+    background:#fbfcfe;font-family:inherit;font-size:13px;color:var(--ink);outline:none;
+  }
+  .rec-bar input:focus{border-color:var(--brand2);background:#fff;box-shadow:0 0 0 3px rgba(68,114,196,.12)}
+  .rec-list{list-style:none;margin:0;padding:0}
+  .rec-item{display:flex;align-items:center;gap:8px;padding:9px 0;border-top:1px solid var(--line);font-size:13px}
+  .rec-item:first-child{border-top:none}
+  .rec-main{flex:1;min-width:0;cursor:pointer}
+  .rec-main:hover .rec-t{color:var(--brand2)}
+  .rec-t{font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1.45}
+  .rec-t b{color:var(--brand);font-weight:800}
+  .rec-s{font-size:11px;color:var(--ink3);margin-top:2px;display:flex;gap:8px;flex-wrap:wrap}
+  .rec-x{
+    flex:0 0 auto;border:none;background:#f2f5fa;color:var(--ink3);width:24px;height:24px;
+    border-radius:50%;cursor:pointer;font-size:15px;line-height:1;font-family:inherit;padding:0;
+  }
+  .rec-x:hover{background:#fdecea;color:var(--warn)}
+  .rec-empty,.rec-loading{padding:16px 0;text-align:center;font-size:12.5px;color:var(--ink3)}
+
+  /* ---------- 打印 ---------- */
+  @media print{
+    body{background:#fff}
+    .wrap{max-width:none;padding:0}
+    .chips,.btn,details.rules summary .arw{display:none!important}
+    #recCard{display:none!important}
+    .cloud-chip{display:none!important}
+    .card,.hero,details.rules{box-shadow:none;border:1px solid #ddd}
+    .hero{background:#2F5597!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .concl p{font-size:12px}
+    .cell,.note,.alert{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  }
+  @media (max-width:420px){
+    .hero .v{font-size:26px}
+    .field input{font-size:21px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="head">
+    <div class="logo">玻</div>
+    <div>
+      <h1>玻璃配置推荐工具</h1>
+      <p>输入尺寸，即时得到应选玻璃配置</p>
+    </div>
+    <span class="cloud-chip" id="cloudState"><i></i>连接中…</span>
+  </div>
+
+  <!-- 输入 -->
+  <div class="card">
+    <div class="card-h"><i class="dot"></i><h2>① 输入尺寸</h2><span>单位 mm</span></div>
+    <div class="inputs">
+      <div class="field">
+        <label for="w">玻璃宽度</label>
+        <input id="w" type="number" inputmode="numeric" min="1" step="1" placeholder="宽度" value="1200">
+        <span class="unit">mm</span>
+      </div>
+      <div class="field">
+        <label for="h">玻璃高度</label>
+        <input id="h" type="number" inputmode="numeric" min="1" step="1" placeholder="高度" value="2400">
+        <span class="unit">mm</span>
+      </div>
+    </div>
+    <div class="chips" id="chips">
+      <span class="lbl">常用：</span>
+    </div>
+  </div>
+
+  <!-- 结果 -->
+  <div class="hero" id="hero">
+    <div class="k">推荐玻璃配置</div>
+    <div class="v" id="heroV">—</div>
+    <div class="pill" id="heroType">等待输入</div>
+  </div>
+
+  <div class="card">
+    <div class="card-h"><i class="dot"></i><h2>② 计算明细</h2></div>
+    <div class="grid">
+      <div class="cell"><div class="k">玻璃面积</div><div class="v" id="oArea">—<small>㎡</small></div></div>
+      <div class="cell"><div class="k">形状判定</div><div class="v" id="oShape">—</div></div>
+      <div class="cell"><div class="k">长短边比</div><div class="v" id="oRatio">—</div></div>
+      <div class="cell"><div class="k">最大边长</div><div class="v" id="oMax">—<small>mm</small></div></div>
+      <div class="cell"><div class="k">判定方式</div><div class="v mute" id="oJudge" style="font-size:13px">—</div></div>
+      <div class="cell"><div class="k">本档区间</div><div class="v mute" id="oRange" style="font-size:13px">—</div></div>
+      <div class="cell wide"><div class="k">判定说明</div><div class="v mute" id="oDesc" style="font-size:13px;font-weight:600">—</div></div>
+      <div class="cell"><div class="k">加工极限</div><div class="v" id="oLimit">—</div></div>
+      <div class="cell"><div class="k">钢化可行性</div><div class="v" id="oTemper">—</div></div>
+    </div>
+    <div class="alerts" id="alerts"></div>
+    <div class="note" id="note" style="display:none"></div>
+  </div>
+
+  <!-- 结论 -->
+  <div class="card">
+    <div class="card-h"><i class="dot"></i><h2>③ 结论</h2><span>可直接抄单</span></div>
+    <div class="concl">
+      <p id="concl" class="mute">请先填写玻璃宽度与高度</p>
+    </div>
+    <div class="concl-actions">
+      <button class="btn" id="save">保存到云端</button>
+      <button class="btn ghost" id="copy">复制</button>
+      <button class="btn ghost" id="print">打印</button>
+    </div>
+  </div>
+
+  <!-- 云端记录 -->
+  <div class="card" id="recCard">
+    <div class="card-h"><i class="dot"></i><h2>④ 查询记录</h2><span id="recCount"></span></div>
+    <div class="rec-bar">
+      <input id="operator" type="text" maxlength="12" autocomplete="off" placeholder="经手人（选填），保存时一并记录">
+      <button class="btn ghost" id="refreshRec" style="flex:0 0 auto">刷新</button>
+    </div>
+    <div class="note" id="recMsg" style="display:none"></div>
+    <div class="rec-loading" id="recLoading">正在读取云端记录…</div>
+    <ul class="rec-list" id="recList"></ul>
+  </div>
+
+  <!-- 规则 -->
+  <details class="rules" id="rulesBox">
+    <summary>查看取档规则与分档表 <span class="arw">▸</span></summary>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr><th>档</th><th>推荐配置</th><th>正方形极限边长</th><th>高≤2300 面积上限</th><th>高&gt;2300 面积上限</th></tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+    <div class="tbl-foot">
+      规则：长短边比 = 短边 ÷ 长边，≥ 0.9 视为正方形，按「正方形极限边长」取第一个覆盖得住的档；否则按面积取档，且高度 ≤ 2300 / &gt; 2300 使用两条曲线（高位板更严）。区间左开右闭，端点值归下一档；第 9 档为兜底档，超出需转技术专项评审。
+      厂内切割 / 磨边 / 钢化 / 4SG 中空最大 3300×7000mm，宽高不得同时大于 3300mm。
+    </div>
+  </details>
+
+  <div class="foot">
+    数据源：19分贝门窗《玻璃增配规范表》<br>
+    本工具为选型辅助，不作为加工依据。量产前请由技术 / 工艺复核玻璃结构、强度与加工可行性。
+  </div>
+</div>
+
+<div id="toast" style="position:fixed;left:50%;bottom:32px;transform:translate(-50%,20px);background:rgba(31,45,61,.94);color:#fff;font-size:13px;padding:9px 18px;border-radius:22px;opacity:0;transition:.25s;pointer-events:none;z-index:99">已复制</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@tencent-ai/workbuddy-cloud-sdk@dev/lib/index.global.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- 分档数据（与《玻璃增配规范表》一致） ---------- */
+  var CFG = [
+    {name:"5mm",                   side:1400, al:2.5, ah:2,    type:"单片钢化"},
+    {name:"6mm",                   side:1650, al:3.5, ah:3,    type:"单片钢化"},
+    {name:"8mm",                   side:1850, al:5,   ah:4,    type:"单片钢化"},
+    {name:"10mm",                  side:2200, al:6,   ah:5,    type:"单片钢化"},
+    {name:"12mm",                  side:2400, al:10,  ah:7,    type:"单片钢化"},
+    {name:"8+2.28+8+中空+12",       side:2750, al:12,  ah:9,    type:"夹胶中空"},
+    {name:"10+2.28+10+中空+12",     side:3100, al:13,  ah:11,   type:"夹胶中空"},
+    {name:"10+2.28+10+中空+15",     side:3250, al:15,  ah:14,   type:"夹胶中空"},
+    {name:"12+2.28+12+中空+15",     side:Infinity, al:Infinity, ah:Infinity, type:"夹胶中空·兜底档", last:true}
+  ];
+
+  var PRESETS = [[800,1500],[1200,1500],[1500,1500],[1200,2400],[2000,2500],[2800,2600]];
+
+  var el = function(id){ return document.getElementById(id); };
+  var $w = el("w"), $h = el("h");
+
+  /* 复刻 Excel 的 ROUND(x, n)：四舍五入（避免浮点 .5 误差） */
+  function rnd(v, n){
+    var p = Math.pow(10, n);
+    return Math.round((v * p).toPrecision(12)) / p;
+  }
+  function num(v){ return (typeof v === "number" ? v : "—"); }
+
+  /* ---------- 核心：取档 ---------- */
+  function compute(w, h){
+    if(!w || !h || w <= 0 || h <= 0) return null;
+
+    var maxS = Math.max(w, h), minS = Math.min(w, h);
+    var area = rnd(w * h / 1000000, 3);
+    var ratio = rnd(minS / maxS, 2);
+    var isSquare = (minS / maxS) >= 0.9;
+    var highPlate = h > 2300;
+
+    /* 取档：第一个覆盖得住的档位 */
+    var idx = 0, i, cur;
+    for(i = 0; i < CFG.length; i++){
+      cur = CFG[i];
+      if(isSquare){ if(cur.side >= maxS){ idx = i; break; } }
+      else if(highPlate){ if(cur.ah >= area){ idx = i; break; } }
+      else { if(cur.al >= area){ idx = i; break; } }
+    }
+    if(i === CFG.length) idx = CFG.length - 1;
+
+    var cfg = CFG[idx];
+    var lo, hi;
+    if(isSquare){
+      lo = 0;
+      hi = cfg.side;
+    }else{
+      var col = highPlate ? "ah" : "al";
+      hi = cfg[col];
+      lo = (idx === 0) ? 0 : CFG[idx - 1][col];
+    }
+
+    var rangeTxt;
+    if(isSquare){
+      rangeTxt = (cfg.side === Infinity) ? "表内无对应极限·按第9档兜底" : "边 ≤ " + cfg.side + " mm";
+    }else{
+      rangeTxt = (hi === Infinity) ? "> " + lo + " ㎡" : lo + " – " + hi + " ㎡";
+    }
+
+    /* 本档余量 */
+    var head;
+    if(isSquare){
+      head = (cfg.side === Infinity) ? "已是兜底档"
+           : ((cfg.side - maxS) <= 0 ? "已达本档上限，再大即升档" : "再大 " + (cfg.side - maxS) + " mm 升档");
+    }else{
+      head = (hi === Infinity) ? "已是兜底档"
+           : ((hi - area) <= 0 ? "已达本档上限，再大即升档" : "再大 " + rnd(hi - area, 3).toFixed(3) + " ㎡ 升档");
+    }
+
+    /* 加工极限 / 钢化 */
+    var limitOK = (maxS <= 7000 && minS <= 3300);
+    var temperOK = !(w > 3300 && h > 3300);
+
+    return {
+      w:w, h:h, area:area, ratio:ratio, isSquare:isSquare, highPlate:highPlate,
+      maxS:maxS, minS:minS, idx:idx, cfg:cfg, lo:lo, hi:hi,
+      rangeTxt:rangeTxt, head:head, limitOK:limitOK, temperOK:temperOK,
+      judgeTxt: isSquare ? "正方形极限尺寸" : (highPlate ? "长方形·面积区间(高>2300)" : "长方形·面积区间(高≤2300)"),
+      judgeShort: isSquare ? "正方形极限档位" : (highPlate ? "面积档位(高＞2300)" : "面积档位(高≤2300)"),
+      shapeTxt: isSquare ? "正方形" : "长方形"
+    };
+  }
+
+  /* ---------- 渲染 ---------- */
+  function setV(id, html, cls){
+    var n = el(id);
+    n.innerHTML = html;
+    n.className = "v" + (cls ? " " + cls : "");
+  }
+
+  function render(){
+    var w = parseFloat($w.value), h = parseFloat($h.value);
+    var r = compute(w, h);
+    var tb = el("tbody");
+    var rows = tb.querySelectorAll("tr");
+    for(var j = 0; j < rows.length; j++) rows[j].classList.remove("on");
+
+    if(!r){
+      el("heroV").innerHTML = '<span class="empty">请输入宽度与高度</span>';
+      el("heroType").textContent = "等待输入";
+      setV("oArea", "—<small>㎡</small>", "mute");
+      setV("oShape", "—", "mute");
+      setV("oRatio", "—", "mute");
+      setV("oMax", "—<small>mm</small>", "mute");
+      setV("oJudge", "—", "mute");
+      setV("oRange", "—", "mute");
+      setV("oDesc", "—", "mute");
+      setV("oLimit", "—", "mute");
+      setV("oTemper", "—", "mute");
+      el("alerts").innerHTML = "";
+      el("note").style.display = "none";
+      var c = el("concl");
+      c.textContent = "请先填写玻璃宽度与高度";
+      c.className = "mute";
+      return;
+    }
+
+    /* Hero */
+    el("heroV").textContent = r.cfg.name;
+    el("heroType").textContent = r.cfg.type + "　·　" + r.rangeTxt;
+
+    /* 明细 */
+    setV("oArea", r.area.toFixed(3) + "<small>㎡</small>");
+    setV("oShape", r.shapeTxt + (r.isSquare ? "" : (r.highPlate ? "<small>高板</small>" : "<small>矮板</small>")));
+    setV("oRatio", r.ratio.toFixed(2));
+    setV("oMax", r.maxS + "<small>mm</small>");
+    setV("oJudge", r.judgeTxt, "mute");
+    setV("oRange", r.rangeTxt, "mute");
+    setV("oDesc", "长短边比 " + r.ratio.toFixed(2) + "，" +
+          (r.isSquare ? "按正方形极限列取值：" : (r.highPlate ? "高度>2300mm，按高位面积档位取值：" : "高度≤2300mm，按面积档位取值：")) +
+          r.rangeTxt + "。", "mute");
+    setV("oLimit", r.limitOK ? "通过" : "超出 3300×7000", r.limitOK ? "ok" : "bad");
+    setV("oTemper", r.temperOK ? "可钢化" : "宽高同时超限", r.temperOK ? "ok" : "bad");
+
+    /* 提示 */
+    var a = "";
+    if(!r.temperOK) a += '<div class="alert w"><i>⚠</i><span>宽、高不能同时大于 3300mm，该尺寸无法钢化，需分片或改设计。</span></div>';
+    if(!r.limitOK) a += '<div class="alert w"><i>⚠</i><span>超出 3300×7000mm 加工极限（切割 / 磨边 / 钢化 / 4SG 中空），请核对工艺。</span></div>';
+    if(r.limitOK && r.temperOK) a += '<div class="alert g"><i>✓</i><span>尺寸校验通过：在 3300×7000mm 加工极限内，且可正常钢化。</span></div>';
+    el("alerts").innerHTML = a;
+
+    /* 余量提示 */
+    var note = el("note");
+    note.style.display = "block";
+    note.innerHTML = "本档余量：<b>" + r.head + "</b>" +
+      (r.cfg.last ? "　·　超出本档（>15㎡ / >14㎡）请转技术专项评审。" : "");
+
+    /* 结论 */
+    var txt = "应选玻璃配置 " + r.cfg.name + "（" + r.cfg.type + "）｜" +
+      r.w + "×" + r.h + "mm，面积 " + r.area.toFixed(3) + " ㎡，" + r.shapeTxt +
+      "，按" + r.judgeShort + "取档 " + r.rangeTxt;
+    var c = el("concl");
+    c.textContent = txt;
+    c.className = "";
+    c.dataset.txt = txt;
+
+    /* 高亮当前档 */
+    if(rows[r.idx]) rows[r.idx].classList.add("on");
+  }
+
+  /* ---------- 表格 ---------- */
+  function buildTable(){
+    var tb = el("tbody");
+    var html = "";
+    for(var i = 0; i < CFG.length; i++){
+      var c = CFG[i];
+      html += "<tr>" +
+        "<td>" + (i + 1) + "</td>" +
+        "<td>" + c.name + "</td>" +
+        "<td>" + (c.side === Infinity ? "—" : "≤ " + c.side) + "</td>" +
+        "<td>" + (c.al === Infinity ? "—" : "≤ " + c.al) + "</td>" +
+        "<td>" + (c.ah === Infinity ? "—" : "≤ " + c.ah) + "</td>" +
+        "</tr>";
+    }
+    tb.innerHTML = html;
+  }
+
+  /* ---------- 常用尺寸 ---------- */
+  function buildChips(){
+    var box = el("chips");
+    PRESETS.forEach(function(p){
+      var b = document.createElement("button");
+      b.className = "chip";
+      b.type = "button";
+      b.textContent = p[0] + "×" + p[1];
+      b.addEventListener("click", function(){
+        $w.value = p[0]; $h.value = p[1]; render();
+      });
+      box.appendChild(b);
+    });
+  }
+
+  /* ---------- 复制 / 打印 ---------- */
+  function toast(msg){
+    var t = el("toast");
+    t.textContent = msg;
+    t.style.opacity = "1";
+    t.style.transform = "translate(-50%,0)";
+    clearTimeout(t._tm);
+    t._tm = setTimeout(function(){
+      t.style.opacity = "0";
+      t.style.transform = "translate(-50%,20px)";
+    }, 1600);
+  }
+
+  el("copy").addEventListener("click", function(){
+    var c = el("concl");
+    var txt = c.dataset.txt;
+    if(!txt){ toast("请先输入尺寸"); return; }
+    if(navigator.clipboard && window.isSecureContext){
+      navigator.clipboard.writeText(txt).then(function(){ toast("已复制"); }, function(){ fallbackCopy(txt); });
+    }else{
+      fallbackCopy(txt);
+    }
+  });
+
+  function fallbackCopy(txt){
+    var ta = document.createElement("textarea");
+    ta.value = txt;
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.select();
+    try{ document.execCommand("copy"); toast("已复制"); }
+    catch(e){ toast("复制失败，请长按选择"); }
+    document.body.removeChild(ta);
+  }
+
+  el("print").addEventListener("click", function(){ window.print(); });
+
+  /* ==================== 云服务 ==================== */
+  /* publicConfig（由云服务开通结果提供，前端可安全携带） */
+  var PC = {
+    endpoint: "https://glass-config-selector.app.workbuddy.host",
+    oauthRelayBaseUrl: "https://www.workbuddy.cn/v2/as/genie-baas/oauth",
+    publishableKey: "wbpk_lUgu69L5nwd7YsC8QZa3pq_EZ982FjwsRxOxePTZUkrcu7WGVVRxJe1"
+  };
+  var cloud = null, cloudOK = false, records = [];
+  var OPKEY = "glass_operator";
+
+  function errText(e){
+    if(!e) return "未知错误";
+    if(typeof e === "string") return e;
+    return e.message || e.details || e.code || "请求失败";
+  }
+
+  function setCloud(state, text){
+    var n = el("cloudState");
+    n.className = "cloud-chip" + (state ? " " + state : "");
+    n.innerHTML = "<i></i>" + text;
+  }
+
+  function showRecMsg(txt, isErr){
+    var n = el("recMsg");
+    if(!txt){ n.style.display = "none"; n.innerHTML = ""; return; }
+    n.style.display = "block";
+    n.style.background = isErr ? "var(--warn-bg)" : "#f7f9fc";
+    n.style.color = isErr ? "var(--warn)" : "var(--ink2)";
+    n.style.borderStyle = "solid";
+    n.innerHTML = txt;
+  }
+
+  function esc(s){
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
+    });
+  }
+
+  function fmtTime(v){
+    if(!v) return "";
+    var d = new Date(v);
+    if(isNaN(d.getTime())) return String(v).slice(0, 16).replace("T", " ");
+    var p = function(n){ return n < 10 ? "0" + n : "" + n; };
+    return (d.getMonth() + 1) + "-" + p(d.getDate()) + " " + p(d.getHours()) + ":" + p(d.getMinutes());
+  }
+
+  /* 初始化客户端（endpoint + publishableKey 必传） */
+  function initCloud(){
+    if(typeof WorkBuddyCloud === "undefined" || !WorkBuddyCloud.createWorkBuddyCloud){
+      cloudOK = false;
+      setCloud("off", "云服务未连接");
+      el("save").disabled = true;
+      el("recLoading").style.display = "none";
+      showRecMsg("云端组件没有加载成功（多为网络原因）。选型计算可以正常使用，但查询记录暂时无法保存与查看。", true);
+      return;
+    }
+    try{
+      cloud = WorkBuddyCloud.createWorkBuddyCloud({
+        endpoint: PC.endpoint,
+        oauthRelayBaseUrl: PC.oauthRelayBaseUrl,
+        publishableKey: PC.publishableKey
+      });
+      cloudOK = true;
+    }catch(e){
+      cloudOK = false;
+      el("save").disabled = true;
+      setCloud("off", "云服务异常");
+      showRecMsg("云服务初始化失败：" + esc(errText(e)), true);
+      return;
+    }
+    loadConfigs();
+    loadRecords();
+  }
+
+  /* ① 云端档位表：读到就用云端的，读不到则沿用内置的 9 档并明确告知 */
+  function loadConfigs(){
+    cloud.database.from("glass_configs").select("*").order("seq", { ascending: true })
+      .then(function(res){
+        if(res && res.error) throw res.error;
+        var rows = (res && res.data) || [];
+        if(rows.length) applyCloudConfigs(rows);
+        setCloud("on", "云服务已连接");
+      })
+      .catch(function(e){
+        setCloud("off", "云服务未连接");
+        showRecMsg("云端档位表读取失败，当前按页面内置的 9 档规则计算（与规范表一致）：" + esc(errText(e)), true);
+      });
+  }
+
+  function applyCloudConfigs(rows){
+    var list = [];
+    for(var i = 0; i < rows.length; i++){
+      var r = rows[i];
+      var side = Number(r.side_limit), al = Number(r.area_max_low), ah = Number(r.area_max_high);
+      list.push({
+        name: r.config_name,
+        type: r.config_type || "",
+        side: side >= 9999 ? Infinity : side,
+        al: al >= 9999 ? Infinity : al,
+        ah: ah >= 9999 ? Infinity : ah,
+        last: i === rows.length - 1
+      });
+    }
+    if(!list.length) return;
+    CFG.length = 0;
+    for(var k = 0; k < list.length; k++) CFG.push(list[k]);
+    buildTable();
+    render();
+  }
+
+  /* ② 记录：读 */
+  function loadRecords(){
+    var ld = el("recLoading");
+    ld.style.display = "block";
+    ld.textContent = "正在读取云端记录…";
+    cloud.database.from("glass_records")
+      .select("id, width_mm, height_mm, config_name, config_type, operator, created_at")
+      .order("created_at", { ascending: false })
+      .limit(30)
+      .then(function(res){
+        if(res && res.error) throw res.error;
+        records = (res && res.data) || [];
+        renderRecords();
+      })
+      .catch(function(e){
+        ld.style.display = "none";
+        el("recList").innerHTML = "";
+        el("recCount").textContent = "";
+        showRecMsg("云端记录读取失败：" + esc(errText(e)) + "　稍后点「刷新」重试。", true);
+      });
+  }
+
+  function renderRecords(){
+    el("recLoading").style.display = "none";
+    var ul = el("recList");
+    el("recCount").textContent = records.length ? ("最近 " + records.length + " 条") : "";
+    if(!records.length){
+      ul.innerHTML = '<li class="rec-empty">还没有记录。算完尺寸后点「保存到云端」，团队其他人也能看到。</li>';
+      return;
+    }
+    var html = "";
+    for(var i = 0; i < records.length; i++){
+      var r = records[i];
+      html += '<li class="rec-item">' +
+        '<div class="rec-main" data-w="' + r.width_mm + '" data-h="' + r.height_mm + '" title="点击回填尺寸">' +
+          '<div class="rec-t">' + r.width_mm + '×' + r.height_mm + ' → <b>' + esc(r.config_name) + '</b></div>' +
+          '<div class="rec-s">' +
+            '<span>' + esc(fmtTime(r.created_at)) + '</span>' +
+            (r.operator ? '<span>经手人 ' + esc(r.operator) + '</span>' : '') +
+            '<span>' + esc(r.config_type || "") + '</span>' +
+          '</div>' +
+        '</div>' +
+        '<button class="rec-x" data-del="' + r.id + '" title="删除这条记录">×</button>' +
+      '</li>';
+    }
+    ul.innerHTML = html;
+  }
+
+  /* ② 记录：写 */
+  el("save").addEventListener("click", function(){
+    var r = compute(parseFloat($w.value), parseFloat($h.value));
+    if(!r){ toast("请先输入尺寸"); return; }
+    if(!cloudOK || !cloud){ showRecMsg("云服务未连接，这条记录没有保存。", true); return; }
+    var btn = el("save");
+    var old = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = "保存中…";
+    showRecMsg("", false);
+    cloud.database.from("glass_records").insert({
+      width_mm: Math.round(r.w),
+      height_mm: Math.round(r.h),
+      area_m2: r.area,
+      shape: r.shapeTxt,
+      config_name: r.cfg.name,
+      config_type: r.cfg.type,
+      judge_mode: r.judgeTxt,
+      range_text: r.rangeTxt,
+      headroom: r.head,
+      operator: (el("operator").value || "").trim() || null
+    }).select().then(function(res){
+      if(res && res.error) throw res.error;
+      var row = (res && res.data && res.data[0]) || null;
+      btn.disabled = false;
+      btn.textContent = old;
+      if(!row){
+        showRecMsg("没有写入成功（可能被权限策略拦下），请刷新后重试。", true);
+        return;
+      }
+      records.unshift(row);
+      if(records.length > 30) records.length = 30;
+      renderRecords();
+      toast("已保存到云端");
+      try{ localStorage.setItem(OPKEY, el("operator").value || ""); }catch(e){}
+    }).catch(function(e){
+      btn.disabled = false;
+      btn.textContent = old;
+      showRecMsg("保存失败：" + esc(errText(e)), true);
+    });
+  });
+
+  /* ② 记录：删 / 回填 */
+  el("recList").addEventListener("click", function(ev){
+    var thr = ev.target;
+    var delBtn = thr.closest ? thr.closest("[data-del]") : null;
+    if(delBtn){
+      var id = delBtn.getAttribute("data-del");
+      if(!window.confirm("删除这条云端记录？删除后不可恢复。")) return;
+      cloud.database.from("glass_records").delete().eq("id", id).select()
+        .then(function(res){
+          if(res && res.error) throw res.error;
+          var gone = (res && res.data) || [];
+          if(!gone.length){ showRecMsg("这条记录已经被删除或不存在，刷新看看。", true); return; }
+          records = records.filter(function(x){ return String(x.id) !== String(id); });
+          renderRecords();
+          toast("已删除");
+        })
+        .catch(function(e){ showRecMsg("删除失败：" + esc(errText(e)), true); });
+      return;
+    }
+    var main = thr.closest ? thr.closest(".rec-main") : null;
+    if(main){
+      $w.value = main.getAttribute("data-w");
+      $h.value = main.getAttribute("data-h");
+      render();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  });
+
+  el("refreshRec").addEventListener("click", function(){
+    if(!cloudOK || !cloud){ showRecMsg("云服务未连接，无法刷新记录。", true); return; }
+    showRecMsg("", false);
+    loadConfigs();
+    loadRecords();
+  });
+
+  /* 经手人：本地记住，方便下次直接保存 */
+  try{
+    var savedOp = localStorage.getItem(OPKEY);
+    if(savedOp) el("operator").value = savedOp;
+  }catch(e){}
+  el("operator").addEventListener("change", function(){
+    try{ localStorage.setItem(OPKEY, el("operator").value || ""); }catch(e){}
+  });
+
+  /* ---------- 启动 ---------- */
+  buildTable();
+  buildChips();
+  $w.addEventListener("input", render);
+  $h.addEventListener("input", render);
+  render();
+  initCloud();
+})();
+</script>
+</body>
+</html>
