@@ -23,7 +23,6 @@ import type {
   WarrantyDetail,
   WarrantyListResult,
 } from '../types/domain'
-import type { WebsiteHome } from '@windoors/shared'
 import {
   constructionSites,
   home,
@@ -32,7 +31,6 @@ import {
   sites,
   staff,
   warranties,
-  websiteHome,
 } from './content-fixtures'
 
 const storeId = home.store._id
@@ -179,11 +177,6 @@ export const mockGetServiceFilters = async (
   return {
     districts: [...new Set(services.map((item) => item.district))],
   }
-}
-
-export const mockGetWebsiteHome = async (value: string): Promise<WebsiteHome> => {
-  requireStoreId(value)
-  return clone(websiteHome)
 }
 
 const includes = (value: string, keyword: string): boolean =>
@@ -353,7 +346,6 @@ export const mockContentRepository = {
   getWarrantyDetail: mockGetWarrantyDetail,
   getSiteFilters: mockGetSiteFilters,
   getServiceFilters: mockGetServiceFilters,
-  getWebsiteHome: mockGetWebsiteHome,
   searchContent: mockSearchContent,
   getSearchDiscovery: mockGetSearchDiscovery,
 } satisfies ContentRepository

@@ -1,5 +1,4 @@
 import type { CaseCategory, HomeContent, ProductCategory, ProductDetail, ProductListResult, SearchContentType, SearchDiscovery, SearchGroup, SearchResult, SiteDetail, SiteFilters, SiteListResult, SiteStage, StaffDetail, WarrantyDetail, WarrantyListResult, ServiceListResult, WarrantyStatus } from '../types/domain'
-import type { WebsiteHome } from '@windoors/shared'
 import { isLocalDemoMode } from '../config/runtime'
 import { mockContentRepository } from '../mock/content-repository'
 
@@ -41,7 +40,6 @@ export interface ContentRepository {
   listServices(query:NormalizedServiceQuery):Promise<ServiceListResult>
   getServiceFilters(storeId?:string):Promise<{districts:string[]}>
   getWarrantyDetail(siteId:string):Promise<WarrantyDetail>
-  getWebsiteHome(storeId:string):Promise<WebsiteHome>
   searchContent(query:NormalizedSearchQuery):Promise<SearchContentResult>
   getSearchDiscovery(storeId:string):Promise<SearchDiscovery>
 }
@@ -130,6 +128,5 @@ export const listWarranties = (query:WarrantyQuery={}) => provider().listWarrant
 export const listServices = (query:ServiceQuery={}, options?: ContentRequestOptions) => provider(options).listServices(normalizeServiceQuery(query))
 export const getServiceFilters = (storeId?:string) => provider().getServiceFilters(storeId?.trim()||undefined)
 export const getWarrantyDetail = (siteId:string) => provider().getWarrantyDetail(siteId)
-export const getWebsiteHome = (storeId:string) => provider().getWebsiteHome(storeId)
 export const searchContent = (query:SearchQuery) => provider().searchContent(normalizeSearchQuery(query))
 export const getSearchDiscovery = (storeId:string) => provider().getSearchDiscovery(storeId.trim())

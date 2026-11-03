@@ -55,7 +55,7 @@ VITE_LOCAL_DEMO=true
 
 ## 整体技术架构
 
-项目采用 pnpm workspace 管理多个应用，共享类型位于 `packages/shared`。
+项目采用 pnpm workspace 管理小程序与管理后台。
 
 ### 微信小程序前端
 
@@ -80,12 +80,6 @@ VITE_LOCAL_DEMO=true
 - 职责：登录鉴权、公开内容查询、后台内容管理、预约、收藏和分享
 
 小程序和管理后台主要通过 uniCloud 云对象访问后端。根 `uniCloud-aliyun/` 是代码审查与正式部署使用的源目录，不要只修改应用内部的本地映射或 vendored 副本。
-
-### 共享代码
-
-- 目录：`packages/shared/`
-- 包名：`@windoors/shared`
-- 职责：共享业务数据类型，减少各应用之间的数据结构偏差
 
 ## 环境要求
 
