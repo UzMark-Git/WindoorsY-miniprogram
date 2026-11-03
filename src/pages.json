@@ -1,6 +1,6 @@
 {
   "pages": [
-    { "path": "pages/index/index", "style": { "navigationBarTitleText": "风庭门窗", "navigationStyle": "custom" } },
+    { "path": "pages/index/index", "style": { "navigationBarTitleText": "@WindoorsY选窗助手", "navigationStyle": "custom" } },
     { "path": "pages/products/index", "style": { "navigationBarTitleText": "产品" } },
     { "path": "pages/sites/index", "style": { "navigationBarTitleText": "案例" } },
     { "path": "pages/services/index", "style": { "navigationBarTitleText": "服务" } },
