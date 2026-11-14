@@ -12,6 +12,11 @@ export function productCategoryLabel(value: string) {
   return productCategoryLabels[value as ProductCategory] || '门窗产品'
 }
 
+export function compactDiscoveryKeyword(value: string) {
+  const characters = Array.from(value)
+  return characters.length > 5 ? `${characters.slice(0, 5).join('')}..` : value
+}
+
 export function buildEmptySearchActions(phone?: string) {
   return {
     keywords: ['阳台封窗', '隔音窗', '系统窗'],

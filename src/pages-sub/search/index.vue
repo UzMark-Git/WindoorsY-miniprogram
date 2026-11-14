@@ -4,7 +4,7 @@ import { onLoad, onReady } from '@dcloudio/uni-app'
 import { getSearchDiscovery, searchContent, type SearchQuery } from '../../api/content'
 import type { SearchContentType, SearchDiscovery, SearchGroup, SearchItem, SearchResult } from '../../types/domain'
 import { constructionDetailUrl, siteDetailUrl } from '../../utils/site-navigation'
-import { buildEmptySearchActions, createSearchRequestCoordinator, productCategoryLabel } from './search-presentation'
+import { buildEmptySearchActions, compactDiscoveryKeyword, createSearchRequestCoordinator, productCategoryLabel } from './search-presentation'
 import FloatingWechatService from '../../components/floating-wechat-service.vue'
 import { searchDiscoveryCacheKey } from '../../utils/search-discovery-cache'
 
@@ -51,7 +51,7 @@ onReady(()=>{setTimeout(()=>focus.value=true,220)})
     <view v-else-if="error" class="state error"><text>{{error}}</text><button @click="submit">重新搜索</button></view>
     <view v-else-if="searchedKeyword&&!visibleTypes.length" class="state empty-result"><text>没有找到“{{searchedKeyword}}”</text><text class="hint">试试案例名称、施工阶段或质保编号</text><view class="empty-keywords"><button v-for="item in emptyActions.keywords" :key="item" @click="searchKeyword(item)">{{item}}</button></view><button class="contact-button" @click="openEmptyContact">{{emptyActions.contact.type==='phone'?'电话咨询门店':'查看服务咨询入口'}}</button></view>
     <view v-else-if="!searchedKeyword" class="discovery">
-      <view v-if="discovery.keywords.length" class="keyword-block"><text class="discovery-title">猜你喜欢找</text><view class="keyword-list"><button v-for="item in discovery.keywords" :key="item" @click="searchKeyword(item)">{{item}}</button></view></view>
+      <view v-if="discovery.keywords.length" class="keyword-block"><text class="discovery-title">猜你在看</text><view class="keyword-list"><button v-for="item in discovery.keywords" :key="item" @click="searchKeyword(item)">{{compactDiscoveryKeyword(item)}}</button></view></view>
       <view class="discovery-panel">
         <view class="discovery-tabs"><button v-for="item in discoveryTypes" :key="item.type" :class="{active:activeDiscoveryType===item.type}" @click="selectDiscoveryType(item.type)">{{item.label}}</button></view>
         <swiper class="discovery-swiper" :current="activeDiscoveryIndex" :style="{height:discoverySwiperHeight}" @change="changeDiscoverySwiper"><swiper-item v-for="group in discoveryTypes" :key="group.type"><scroll-view scroll-x :show-scrollbar="false" class="discovery-scroll"><view v-if="discovery.groups[group.type].length" class="discovery-row"><button v-for="item in discovery.groups[group.type].slice(0,5)" :key="`${item.type}-${item.id}`" class="discovery-card" @click="openDiscoveryItem(item)"><image :src="itemImage(item)" mode="aspectFill" @error="failImage(item)"/><view class="discovery-copy"><text class="title">{{item.title}}</text><text class="meta">{{itemMeta(item)}}</text></view></button></view><view v-else class="state compact"><text>暂无推荐内容</text><text class="hint">输入名称、地区或阶段试试</text></view></scroll-view></swiper-item></swiper>
