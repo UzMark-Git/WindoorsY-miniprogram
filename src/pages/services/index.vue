@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { computed, ref } from 'vue'
+import { onShow, onTabItemTap } from '@dcloudio/uni-app'
 import { getServiceFilters, listServices } from '../../api/content'
 import ContentState from '../../components/content-state.vue'
 import DemoModeBadge from '../../components/demo-mode-badge.vue'
@@ -7,17 +8,24 @@ import FloatingWechatService from '../../components/floating-wechat-service.vue'
 import PrimaryPageIntro from '../../components/primary-page-intro.vue'
 import ServiceCard from '../../components/service-card.vue'
 import type { ServiceSummary, SiteStage, WarrantyStatus } from '../../types/domain'
+import { consumePendingServiceEntryMode, type ServiceEntryMode } from '../../utils/service-entry-mode'
 import { constructionDetailUrl } from '../../utils/site-navigation'
 import { createRequestGate } from '../../utils/request-gate'
 import { hasMoreListPages, mergeListPage, PRIMARY_LIST_PAGE_SIZE } from '../../utils/list-pagination'
 const STORE_ID='store_windoors_demo'
 const PAGE_SIZE=PRIMARY_LIST_PAGE_SIZE
 type ServiceStatusFilter = { label:string; stage?:SiteStage; warrantyStatus?:WarrantyStatus }
-const stageOptions:Array<ServiceStatusFilter>=[{label:'全部状态'},{label:'测量中',stage:'measuring'},{label:'设计中',stage:'designing'},{label:'安装中',stage:'installing'},{label:'已完工',stage:'completed'},{label:'质保中',warrantyStatus:'active'},{label:'已出保',warrantyStatus:'expired'}]
+const defaultStageOptions:Array<ServiceStatusFilter>=[{label:'全部状态'},{label:'测量中',stage:'measuring'},{label:'设计中',stage:'designing'},{label:'安装中',stage:'installing'},{label:'已完工',stage:'completed'},{label:'质保中',warrantyStatus:'active'},{label:'已出保',warrantyStatus:'expired'}]
+const constructionStageOptions:Array<ServiceStatusFilter>=[{label:'全部施工'},{label:'测量中',stage:'measuring'},{label:'设计中',stage:'designing'},{label:'安装中',stage:'installing'},{label:'已完工',stage:'completed'}]
+const warrantyStageOptions:Array<ServiceStatusFilter>=[{label:'全部质保'},{label:'质保中',warrantyStatus:'active'},{label:'已出保',warrantyStatus:'expired'}]
+const entryMode=ref<ServiceEntryMode>('all')
+const stageOptions=computed(()=>entryMode.value==='construction'?constructionStageOptions:entryMode.value==='warranty'?warrantyStageOptions:defaultStageOptions)
 const districts=ref<string[]>([]),districtIndex=ref(0),stageIndex=ref(0)
 const keyword=ref(''),appliedKeyword=ref('')
 const items=ref<ServiceSummary[]>([]),page=ref(1),hasMore=ref(true),loadingMore=ref(false),status=ref<'loading'|'ready'|'empty'|'error'|'offline'>('loading'),message=ref('')
 const gate=createRequestGate()
+let filtersLoaded=false
+let hasShown=false
 async function load(reset=false){
   const request=reset?gate.beginReset():gate.beginMore()
   if(request==null)return
@@ -26,11 +34,12 @@ async function load(reset=false){
   else loadingMore.value=true
   message.value=''
   try{
-    const current=stageOptions[stageIndex.value]
+    const current=stageOptions.value[stageIndex.value]
     const result=await listServices({
       storeId:STORE_ID,
       page:requestPage,
       pageSize:PAGE_SIZE,
+      type:entryMode.value==='all'?undefined:entryMode.value,
       district:districtIndex.value?districts.value[districtIndex.value-1]:undefined,
       stage:current.stage,
       warranty_status:current.warrantyStatus,
@@ -58,7 +67,17 @@ function changeStage(event:{detail:{value:string}}){stageIndex.value=Number(even
 function submitSearch(){appliedKeyword.value=keyword.value.trim();load(true)}
 function clearSearch(){keyword.value='';appliedKeyword.value='';load(true)}
 function open(item:ServiceSummary){uni.navigateTo({url:item.service_type==='warranty'?`/pages-sub/services/detail?id=${encodeURIComponent(item._id)}`:constructionDetailUrl(item._id)})}
-onMounted(async()=>{try{districts.value=(await getServiceFilters(STORE_ID)).districts}finally{load(true)}})
+function applyEntryMode(mode:ServiceEntryMode){entryMode.value=mode;stageIndex.value=0;districtIndex.value=0;keyword.value='';appliedKeyword.value=''}
+async function ensureFilters(){if(filtersLoaded)return;districts.value=(await getServiceFilters(STORE_ID)).districts;filtersLoaded=true}
+async function loadEntryMode(){
+  const nextMode=consumePendingServiceEntryMode()
+  if(!hasShown||nextMode!=='all'){applyEntryMode(nextMode)}
+  hasShown=true
+  try{await ensureFilters()}finally{load(true)}
+}
+async function resetToDefaultMode(){applyEntryMode('all');try{await ensureFilters()}finally{load(true)}}
+onShow(loadEntryMode)
+onTabItemTap(resetToDefaultMode)
 </script>
 <template>
   <view class="page">

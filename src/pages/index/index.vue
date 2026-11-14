@@ -14,6 +14,7 @@ import { WARRANTY_OVERVIEW_URL } from '../../utils/warranty-overview'
 import type { HomeContent } from '../../types/domain'
 import { markHeroImageFailed, normalizeHeroImages, resolveHeroImage } from '../../utils/hero-carousel'
 import { navigateToLegalPage } from '../../utils/legal-navigation'
+import { setPendingServiceEntryMode } from '../../utils/service-entry-mode'
 import { constructionDetailUrl } from '../../utils/site-navigation'
 
 const STORE_ID = 'store_windoors_demo'
@@ -51,13 +52,8 @@ function openSearch(keyword = '') {
   uni.navigateTo({ url: `/pages-sub/search/index${query}` })
 }
 function openPrivateEntry(type: 'progress' | 'warranty') {
-  uni.showToast({
-    title: type === 'progress'
-      ? '请登录后从“我的”查看项目进度'
-      : '请登录后从“我的”查看质保',
-    icon: 'none',
-  })
-  uni.switchTab({ url: '/pages/profile/index' })
+  setPendingServiceEntryMode(type === 'progress' ? 'construction' : 'warranty')
+  uni.switchTab({ url: '/pages/services/index' })
 }
 function selectService(item:HomeContent['projects'][number]) { uni.navigateTo({url:item.service_type==='warranty'?`/pages-sub/services/detail?id=${encodeURIComponent(item._id)}`:constructionDetailUrl(item._id)}) }
 function selectCase(id: string) { uni.navigateTo({ url: `/pages-sub/sites/detail?id=${encodeURIComponent(id)}` }) }
@@ -98,9 +94,9 @@ onMounted(load)
         <view class="hero-copy"><text class="eyebrow">严选品质好窗·精工落地交付</text><text class="hero-title">{{ home.store.name }}</text><text class="hero-lead">产品、案例、施工记录与十年质保都在这里</text></view>
       </view>
       <HomeSearchPanel class="home-search-panel" @search="openSearch" @private-entry="openPrivateEntry" />
+      <view class="section section--paginated needs"><view class="heading"><view><text class="kicker">WINDOW SOLUTIONS</text><text class="section-title">你家想解决什么问题？</text></view></view><HomeNeedsSwiper @select="openSearch" /></view>
       <view v-if="home.cases.length" class="section section--paginated cases"><HomeCaseSwiper :items="home.cases" :placeholder="placeholder" @select="selectCase" @all="openCases" /></view>
       <view v-if="home.projects.length" class="section section--paginated sites"><HomeProjectSwiper :items="home.projects" :placeholder="placeholder" @select="selectService" @all="openServices" /></view>
-      <view class="section section--paginated needs"><view class="heading"><view><text class="kicker">WINDOW SOLUTIONS</text><text class="section-title">你家想解决什么问题？</text></view></view><HomeNeedsSwiper @select="openSearch" /></view>
       <view class="section staff">
         <view class="heading"><view><text class="kicker">SERVICE TEAM</text><text class="section-title">为你服务的人</text></view></view>
         <HomeStaffStrip :items="home.staff" :placeholder="placeholder" @select="selectStaff" />
