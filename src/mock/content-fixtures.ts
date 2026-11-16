@@ -224,5 +224,24 @@ export const home: HomeContent = {
   projects: [...constructionServices.slice(0, 3), ...warrantyServices],
   staff,
   warranty: warranties[0],
-  channel_videos: [],
+  channel_videos: [
+    {
+      _id: 'demo-channel-street-noise',
+      problem_type: 'street_noise',
+      title: '临街封窗，先看隔音与密封（演示）',
+      summary: '本地演示内容，无法打开真实视频号。',
+      cover_image: caseImages[0],
+      finder_user_name: 'demo-only',
+      feed_id: 'demo-feed-street-noise',
+    },
+    {
+      _id: 'demo-channel-balcony',
+      problem_type: 'balcony_enclosure',
+      title: '阳台封窗如何兼顾安全与采光（演示）',
+      summary: '本地演示内容，无法打开真实视频号。',
+      cover_image: caseImages[1],
+      finder_user_name: 'demo-only',
+      feed_id: 'demo-feed-balcony',
+    },
+  ],
 }
