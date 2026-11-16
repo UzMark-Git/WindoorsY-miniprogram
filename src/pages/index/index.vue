@@ -11,11 +11,16 @@ import HomeProjectSwiper from '../../components/home/home-project-swiper.vue'
 import HomeStaffStrip from '../../components/home/home-staff-strip.vue'
 import HomeServiceFooter from '../../components/home/home-service-footer.vue'
 import { WARRANTY_OVERVIEW_URL } from '../../utils/warranty-overview'
-import type { HomeContent } from '../../types/domain'
+import type { HomeChannelVideo, HomeContent } from '../../types/domain'
 import { markHeroImageFailed, normalizeHeroImages, resolveHeroImage } from '../../utils/hero-carousel'
 import { navigateToLegalPage } from '../../utils/legal-navigation'
 import { setPendingServiceEntryMode } from '../../utils/service-entry-mode'
 import { constructionDetailUrl } from '../../utils/site-navigation'
+import { isLocalDemoMode } from '../../config/runtime'
+import { openChannelsVideo } from '../../utils/channels-video'
+import type { ChannelsRuntime } from '../../utils/channels-video'
+
+declare const wx: Pick<ChannelsRuntime, 'openChannelsActivity'>
 
 const STORE_ID = 'store_windoors_demo'
 const home = ref<HomeContent>()
@@ -50,6 +55,18 @@ function openServices() { uni.switchTab({ url: '/pages/services/index' }) }
 function openSearch(keyword = '') {
   const query = keyword ? `?keyword=${encodeURIComponent(keyword)}` : ''
   uni.navigateTo({ url: `/pages-sub/search/index${query}` })
+}
+function openVideo(video: HomeChannelVideo) {
+  const runtime: ChannelsRuntime = {
+    demo: isLocalDemoMode(),
+    showToast: options => uni.showToast(options),
+  }
+  // #ifdef MP-WEIXIN
+  if (typeof wx !== 'undefined' && typeof wx.openChannelsActivity === 'function') {
+    runtime.openChannelsActivity = wx.openChannelsActivity.bind(wx)
+  }
+  // #endif
+  openChannelsVideo(video, runtime)
 }
 function openPrivateEntry(type: 'progress' | 'warranty') {
   setPendingServiceEntryMode(type === 'progress' ? 'construction' : 'warranty')
@@ -94,7 +111,7 @@ onMounted(load)
         <view class="hero-copy"><text class="eyebrow">严选品质好窗·精工落地交付</text><text class="hero-title">{{ home.store.name }}</text><text class="hero-lead">产品、案例、施工记录与十年质保都在这里</text></view>
       </view>
       <HomeSearchPanel class="home-search-panel" @search="openSearch" @private-entry="openPrivateEntry" />
-      <view class="section section--paginated needs"><view class="heading"><view><text class="kicker">WINDOW SOLUTIONS</text><text class="section-title">你家想解决什么问题？</text></view></view><HomeNeedsSwiper @select="openSearch" /></view>
+      <view class="section section--paginated needs"><view class="heading"><view><text class="kicker">WINDOW SOLUTIONS</text><text class="section-title">你家想解决什么问题？</text></view></view><HomeNeedsSwiper :items="home.channel_videos" :placeholder="placeholder" @search="openSearch" @video="openVideo" /></view>
       <view v-if="home.cases.length" class="section section--paginated cases"><HomeCaseSwiper :items="home.cases" :placeholder="placeholder" @select="selectCase" @all="openCases" /></view>
       <view v-if="home.projects.length" class="section section--paginated sites"><HomeProjectSwiper :items="home.projects" :placeholder="placeholder" @select="selectService" @all="openServices" /></view>
       <view class="section staff">
