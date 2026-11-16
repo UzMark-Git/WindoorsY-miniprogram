@@ -224,4 +224,5 @@ export const home: HomeContent = {
   projects: [...constructionServices.slice(0, 3), ...warrantyServices],
   staff,
   warranty: warranties[0],
+  channel_videos: [],
 }
