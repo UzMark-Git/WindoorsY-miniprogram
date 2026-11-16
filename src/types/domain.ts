@@ -1,3 +1,5 @@
+import type { HomeProblemType } from '../config/home-problems'
+
 export type ContentStatus = 'draft' | 'published' | 'offline'
 
 export type AppointmentSourceType = 'store' | 'site' | 'staff' | 'product'
@@ -67,12 +69,23 @@ export interface SiteUpdate extends ContentRecord {
   staff_ids?: string[]
 }
 
+export interface HomeChannelVideo {
+  _id: string
+  problem_type: HomeProblemType
+  title: string
+  summary: string
+  cover_image: string
+  feed_id: string
+  finder_user_name: string
+}
+
 export interface HomeContent {
   store: StoreSummary
   cases: SiteSummary[]
   projects: ServiceSummary[]
   staff: StaffProfile[]
   warranty?: WarrantySummary
+  channel_videos: HomeChannelVideo[]
 }
 
 export type ProductCategory = 'system_window' | 'bridge_aluminum' | 'sliding_door' | 'sunroom' | 'screen_accessory'
