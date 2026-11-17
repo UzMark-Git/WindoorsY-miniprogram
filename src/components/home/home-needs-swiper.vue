@@ -25,40 +25,78 @@ function markCoverFailed(item: HomeChannelVideo) {
 <template>
   <swiper class="needs-swiper" indicator-dots :autoplay="false" :circular="false">
     <swiper-item v-for="page in needPages" :key="page[0].type">
-      <view class="need-grid">
-        <template v-for="problem in page" :key="problem.type">
-          <button
-            v-if="videoFor(problem.type)"
-            class="need-card need-card--video"
-            :aria-label="`观看${problem.title}视频：${videoFor(problem.type)!.title}`"
-            @click="emit('video', videoFor(problem.type)!)"
-          >
-            <view class="need-cover-wrap">
+      <view class="need-page">
+        <view class="need-featured">
+          <template v-for="(problem, index) in page" :key="problem.type">
+            <button
+              v-if="index === 0 && videoFor(problem.type)"
+              class="need-card need-card--featured need-card--video"
+              :aria-label="`观看${problem.title}视频：${videoFor(problem.type)!.title}`"
+              @click="emit('video', videoFor(problem.type)!)"
+            >
               <image
-                class="need-cover"
+                class="need-featured-cover"
                 :src="coverFor(videoFor(problem.type)!)"
                 mode="aspectFill"
                 :aria-label="`${videoFor(problem.type)!.title}视频封面`"
                 @error="markCoverFailed(videoFor(problem.type)!)"
               />
-              <text class="need-category">{{ problem.title }}</text>
               <view class="need-play" aria-hidden="true" />
-            </view>
-            <view class="need-copy">
-              <text class="need-video-title">{{ videoFor(problem.type)!.title }}</text>
-              <text class="need-subtitle">{{ problem.subtitle }} ›</text>
-            </view>
-          </button>
-          <button
-            v-else
-            class="need-card need-card--fallback"
-            :aria-label="`搜索${problem.keyword}`"
-            @click="emit('search', problem.keyword)"
-          >
-            <text class="need-title">{{ problem.title }}</text>
-            <text class="need-subtitle">{{ problem.subtitle }} ›</text>
-          </button>
-        </template>
+              <view class="need-featured-copy">
+                <text class="need-category">{{ problem.title }}</text>
+                <text class="need-video-title">{{ videoFor(problem.type)!.title }}</text>
+              </view>
+            </button>
+            <button
+              v-else-if="index === 0"
+              class="need-card need-card--featured need-card--fallback"
+              :aria-label="`搜索${problem.keyword}`"
+              @click="emit('search', problem.keyword)"
+            >
+              <view class="need-featured-copy">
+                <text class="need-title">{{ problem.title }}</text>
+                <text class="need-subtitle">{{ problem.subtitle }} ›</text>
+              </view>
+            </button>
+          </template>
+        </view>
+        <view class="need-side-list">
+          <template v-for="(problem, index) in page" :key="problem.type">
+            <button
+              v-if="index > 0 && videoFor(problem.type)"
+              class="need-card need-card--compact need-card--video"
+              :aria-label="`观看${problem.title}视频：${videoFor(problem.type)!.title}`"
+              @click="emit('video', videoFor(problem.type)!)"
+            >
+              <view class="need-compact-media">
+                <image
+                  class="need-compact-cover"
+                  :src="coverFor(videoFor(problem.type)!)"
+                  mode="aspectFill"
+                  :aria-label="`${videoFor(problem.type)!.title}视频封面`"
+                  @error="markCoverFailed(videoFor(problem.type)!)"
+                />
+                <view class="need-play need-play--small" aria-hidden="true" />
+              </view>
+              <view class="need-compact-copy">
+                <text class="need-category">{{ problem.title }}</text>
+                <text class="need-video-title">{{ videoFor(problem.type)!.title }}</text>
+              </view>
+            </button>
+            <button
+              v-else-if="index > 0"
+              class="need-card need-card--compact need-card--fallback"
+              :aria-label="`搜索${problem.keyword}`"
+              @click="emit('search', problem.keyword)"
+            >
+              <view class="need-compact-placeholder" aria-hidden="true">问</view>
+              <view class="need-compact-copy">
+                <text class="need-title">{{ problem.title }}</text>
+                <text class="need-subtitle">{{ problem.subtitle }} ›</text>
+              </view>
+            </button>
+          </template>
+        </view>
       </view>
     </swiper-item>
   </swiper>
@@ -66,20 +104,33 @@ function markCoverFailed(item: HomeChannelVideo) {
 
 <style scoped>
 .needs-swiper {
-  height: 696rpx;
+  height: 572rpx;
 }
 
-.need-grid {
+.need-page {
   display: grid;
-  grid-template-columns: repeat(2,minmax(0,1fr));
+  grid-template-columns: minmax(0,46fr) minmax(0,54fr);
   gap: 16rpx;
+  height: 520rpx;
   padding: 0 6rpx 40rpx;
+}
+
+.need-featured {
+  min-width: 0;
+  height: 520rpx;
+}
+
+.need-side-list {
+  display: grid;
+  grid-template-rows: repeat(3,minmax(0,1fr));
+  gap: 12rpx;
+  min-width: 0;
+  height: 520rpx;
 }
 
 .need-card {
   min-width: 88rpx;
   min-height: 88rpx;
-  height: 320rpx;
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -96,41 +147,90 @@ function markCoverFailed(item: HomeChannelVideo) {
   border: 0;
 }
 
-.need-card:nth-child(2),
-.need-card:nth-child(3) {
+.need-side-list .need-card:nth-child(2) {
   background: #fbf0df;
 }
 
-.need-card--fallback {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 20rpx;
+.need-card--featured {
+  position: relative;
+  width: 100%;
+  height: 520rpx;
 }
 
-.need-cover-wrap {
+.need-card--compact {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+.need-featured-cover {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: #dbe5df;
+}
+
+.need-featured-copy {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 80rpx 20rpx 20rpx;
+  background: linear-gradient(180deg, rgba(23, 61, 52, 0), rgba(23, 61, 52, .92));
+}
+
+.need-card--featured.need-card--fallback {
+  display: flex;
+  align-items: center;
+}
+
+.need-card--fallback .need-featured-copy {
+  position: static;
+  min-width: 0;
+  padding: 20rpx;
+  background: transparent;
+}
+
+.need-compact-media {
   position: relative;
-  height: 168rpx;
+  flex: 0 0 116rpx;
+  width: 116rpx;
+  height: 100%;
   overflow: hidden;
   background: #dbe5df;
 }
 
-.need-cover {
+.need-compact-cover {
   display: block;
   width: 100%;
-  height: 168rpx;
+  height: 100%;
+}
+
+.need-compact-placeholder {
+  display: flex;
+  flex: 0 0 116rpx;
+  align-items: center;
+  justify-content: center;
+  width: 116rpx;
+  height: 100%;
+  background: #dbe5df;
+  color: var(--home-green);
+  font-size: 36rpx;
+}
+
+.need-compact-copy {
+  flex: 1;
+  align-self: center;
+  min-width: 0;
+  padding: 14rpx 12rpx;
 }
 
 .need-category {
-  position: absolute;
-  left: 12rpx;
-  top: 12rpx;
-  max-width: 65%;
-  padding: 4rpx 12rpx;
+  display: block;
+  margin-bottom: 8rpx;
   overflow: hidden;
-  border-radius: 16rpx;
-  background: var(--home-green);
-  color: #ffffff;
+  color: var(--home-green);
   font-size: 20rpx;
   line-height: 28rpx;
   white-space: nowrap;
@@ -160,8 +260,9 @@ function markCoverFailed(item: HomeChannelVideo) {
   border-left: 16rpx solid #ffffff;
 }
 
-.need-copy {
-  padding: 16rpx 20rpx;
+.need-play--small {
+  width: 40rpx;
+  height: 40rpx;
 }
 
 .need-title,
@@ -190,6 +291,11 @@ function markCoverFailed(item: HomeChannelVideo) {
   font-weight: 650;
   line-height: 34rpx;
   word-break: break-all;
+}
+
+.need-featured-copy .need-category,
+.need-featured-copy .need-video-title {
+  color: #ffffff;
 }
 
 .need-subtitle {
