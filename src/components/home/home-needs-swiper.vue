@@ -147,6 +147,7 @@ function markCoverFailed(item: HomeChannelVideo) {
   border: 0;
 }
 
+.need-side-list .need-card:nth-child(1),
 .need-side-list .need-card:nth-child(2) {
   background: #fbf0df;
 }
@@ -227,12 +228,18 @@ function markCoverFailed(item: HomeChannelVideo) {
 }
 
 .need-category {
-  display: block;
+  display: inline-block;
+  max-width: 100%;
+  box-sizing: border-box;
   margin-bottom: 8rpx;
+  padding: 4rpx 12rpx;
   overflow: hidden;
-  color: var(--home-green);
+  border-radius: 16rpx;
+  background: var(--home-green);
+  color: #ffffff;
   font-size: 20rpx;
   line-height: 28rpx;
+  vertical-align: top;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
