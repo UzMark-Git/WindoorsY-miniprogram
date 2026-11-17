@@ -124,7 +124,7 @@ function markCoverFailed(item: HomeChannelVideo) {
 .need-category {
   position: absolute;
   left: 12rpx;
-  bottom: 12rpx;
+  top: 12rpx;
   max-width: 65%;
   padding: 4rpx 12rpx;
   overflow: hidden;
@@ -139,8 +139,9 @@ function markCoverFailed(item: HomeChannelVideo) {
 
 .need-play {
   position: absolute;
-  right: 12rpx;
-  bottom: 12rpx;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
   display: flex;
   align-items: center;
   justify-content: center;
