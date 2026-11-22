@@ -147,7 +147,7 @@
   }
   details.rules[open] summary .arw{transform:rotate(90deg)}
   .tbl-wrap{overflow-x:auto;border-top:1px solid var(--line)}
-  table{width:100%;border-collapse:collapse;font-size:12.5px;min-width:520px}
+  table{width:100%;border-collapse:collapse;font-size:12.5px;min-width:600px}
   th,td{padding:8px 10px;text-align:center;border-bottom:1px solid var(--line);white-space:nowrap}
   th{background:#f7f9fc;color:var(--ink2);font-weight:700;font-size:11.5px}
   td:first-child,th:first-child{text-align:left;padding-left:14px}
@@ -219,14 +219,16 @@
     <div class="card-h"><i class="dot"></i><h2>② 计算明细</h2></div>
     <div class="grid">
       <div class="cell"><div class="k">玻璃面积</div><div class="v" id="oArea">—<small>㎡</small></div></div>
+      <div class="cell"><div class="k">玻璃自重</div><div class="v" id="oWeight">—<small>kg</small></div></div>
       <div class="cell"><div class="k">形状判定</div><div class="v" id="oShape">—</div></div>
       <div class="cell"><div class="k">长短边比</div><div class="v" id="oRatio">—</div></div>
       <div class="cell"><div class="k">最大边长</div><div class="v" id="oMax">—<small>mm</small></div></div>
       <div class="cell"><div class="k">判定方式</div><div class="v mute" id="oJudge" style="font-size:13px">—</div></div>
       <div class="cell"><div class="k">本档区间</div><div class="v mute" id="oRange" style="font-size:13px">—</div></div>
-      <div class="cell wide"><div class="k">判定说明</div><div class="v mute" id="oDesc" style="font-size:13px;font-weight:600">—</div></div>
       <div class="cell"><div class="k">加工极限</div><div class="v" id="oLimit">—</div></div>
       <div class="cell"><div class="k">钢化可行性</div><div class="v" id="oTemper">—</div></div>
+      <div class="cell"><div class="k">自重构成</div><div class="v mute" id="oWeightD" style="font-size:13px;font-weight:600">—</div></div>
+      <div class="cell wide"><div class="k">判定说明</div><div class="v mute" id="oDesc" style="font-size:13px;font-weight:600">—</div></div>
     </div>
     <div class="alerts" id="alerts"></div>
     <div class="note" id="note" style="display:none"></div>
@@ -250,14 +252,15 @@
     <div class="tbl-wrap">
       <table>
         <thead>
-          <tr><th>档</th><th>推荐配置</th><th>正方形极限边长</th><th>高≤2300 面积上限</th><th>高&gt;2300 面积上限</th></tr>
+          <tr><th>档</th><th>推荐配置</th><th>玻璃总厚</th><th>正方形极限边长</th><th>高≤2300 面积上限</th><th>高&gt;2300 面积上限</th></tr>
         </thead>
         <tbody id="tbody"></tbody>
       </table>
     </div>
     <div class="tbl-foot">
       规则：长短边比 = 短边 ÷ 长边，≥ 0.9 视为正方形，按「正方形极限边长」取第一个覆盖得住的档；否则按面积取档，且高度 ≤ 2300 / &gt; 2300 使用两条曲线（高位板更严）。区间左开右闭，端点值归下一档；第 9 档为兜底档，超出需转技术专项评审。
-      厂内切割 / 磨边 / 钢化 / 4SG 中空最大 3300×7000mm，宽高不得同时大于 3300mm。
+      厂内切割 / 磨边 / 钢化 / 4SG 中空最大 3300×7000mm，宽高不得同时大于 3300mm。<br>
+      自重按玻璃密度 2.5 g/cm³（每 ㎡ 每 mm 厚 = 2.5 kg）估算；夹胶中空仅计玻璃片，未计 PVB 夹胶膜与中空空气层。
     </div>
   </details>
 
@@ -276,16 +279,20 @@
 
   /* ---------- 分档数据（与《玻璃增配规范表》一致） ---------- */
   var CFG = [
-    {name:"5mm",                   side:1400, al:2.5, ah:2,    type:"单片钢化"},
-    {name:"6mm",                   side:1650, al:3.5, ah:3,    type:"单片钢化"},
-    {name:"8mm",                   side:1850, al:5,   ah:4,    type:"单片钢化"},
-    {name:"10mm",                  side:2200, al:6,   ah:5,    type:"单片钢化"},
-    {name:"12mm",                  side:2400, al:10,  ah:7,    type:"单片钢化"},
-    {name:"8+2.28+8+中空+12",       side:2750, al:12,  ah:9,    type:"夹胶中空"},
-    {name:"10+2.28+10+中空+12",     side:3100, al:13,  ah:11,   type:"夹胶中空"},
-    {name:"10+2.28+10+中空+15",     side:3250, al:15,  ah:14,   type:"夹胶中空"},
-    {name:"12+2.28+12+中空+15",     side:Infinity, al:Infinity, ah:Infinity, type:"夹胶中空·兜底档", last:true}
+    {name:"5mm",                   side:1400, al:2.5, ah:2,    type:"单片钢化",    gt:5,  gparts:"5"},
+    {name:"6mm",                   side:1650, al:3.5, ah:3,    type:"单片钢化",    gt:6,  gparts:"6"},
+    {name:"8mm",                   side:1850, al:5,   ah:4,    type:"单片钢化",    gt:8,  gparts:"8"},
+    {name:"10mm",                  side:2200, al:6,   ah:5,    type:"单片钢化",    gt:10, gparts:"10"},
+    {name:"12mm",                  side:2400, al:10,  ah:7,    type:"单片钢化",    gt:12, gparts:"12"},
+    {name:"8+2.28+8+中空+12",       side:2750, al:12,  ah:9,    type:"夹胶中空",    gt:16, gparts:"8+8"},
+    {name:"10+2.28+10+中空+12",     side:3100, al:13,  ah:11,   type:"夹胶中空",    gt:20, gparts:"10+10"},
+    {name:"10+2.28+10+中空+15",     side:3250, al:15,  ah:14,   type:"夹胶中空",    gt:20, gparts:"10+10"},
+    {name:"12+2.28+12+中空+15",     side:Infinity, al:Infinity, ah:Infinity, type:"夹胶中空·兜底档", last:true, gt:24, gparts:"12+12"}
   ];
+
+  /* 玻璃自重：玻璃密度约 2.5 g/cm³，即每 ㎡ 每 1mm 厚 = 2.5 kg。
+     仅计玻璃片厚度；PVB 夹胶膜(2.28mm)与中空空气层不计入。 */
+  var GLASS_KG_PER_MM_M2 = 2.5;
 
   var PRESETS = [[800,1500],[1200,1500],[1500,1500],[1200,2400],[2000,2500],[2800,2600]];
 
@@ -351,9 +358,18 @@
     var limitOK = (maxS <= 7000 && minS <= 3300);
     var temperOK = !(w > 3300 && h > 3300);
 
+    /* 玻璃自重 */
+    var weight = rnd(area * cfg.gt * GLASS_KG_PER_MM_M2, 2);
+    var weightDesc = (cfg.gparts.indexOf("+") >= 0)
+      ? "玻璃 " + cfg.gparts + " mm（合计 " + cfg.gt + " mm）× 面积 " + area.toFixed(3) +
+        " ㎡ × 2.5 kg/(㎡·mm) = " + weight.toFixed(1) + " kg；PVB 膜与中空层未计。"
+      : "玻璃 " + cfg.gt + " mm × 面积 " + area.toFixed(3) +
+        " ㎡ × 2.5 kg/(㎡·mm) = " + weight.toFixed(1) + " kg。";
+
     return {
       w:w, h:h, area:area, ratio:ratio, isSquare:isSquare, highPlate:highPlate,
       maxS:maxS, minS:minS, idx:idx, cfg:cfg, lo:lo, hi:hi,
+      weight:weight, weightDesc:weightDesc,
       rangeTxt:rangeTxt, head:head, limitOK:limitOK, temperOK:temperOK,
       judgeTxt: isSquare ? "正方形极限尺寸" : (highPlate ? "长方形·面积区间(高>2300)" : "长方形·面积区间(高≤2300)"),
       judgeShort: isSquare ? "正方形极限档位" : (highPlate ? "面积档位(高＞2300)" : "面积档位(高≤2300)"),
@@ -379,6 +395,8 @@
       el("heroV").innerHTML = '<span class="empty">请输入宽度与高度</span>';
       el("heroType").textContent = "等待输入";
       setV("oArea", "—<small>㎡</small>", "mute");
+      setV("oWeight", "—<small>kg</small>", "mute");
+      setV("oWeightD", "—", "mute");
       setV("oShape", "—", "mute");
       setV("oRatio", "—", "mute");
       setV("oMax", "—<small>mm</small>", "mute");
@@ -401,6 +419,8 @@
 
     /* 明细 */
     setV("oArea", r.area.toFixed(3) + "<small>㎡</small>");
+    setV("oWeight", r.weight.toFixed(1) + "<small>kg</small>");
+    setV("oWeightD", r.weightDesc, "mute");
     setV("oShape", r.shapeTxt + (r.isSquare ? "" : (r.highPlate ? "<small>高板</small>" : "<small>矮板</small>")));
     setV("oRatio", r.ratio.toFixed(2));
     setV("oMax", r.maxS + "<small>mm</small>");
@@ -427,7 +447,8 @@
 
     /* 结论 */
     var txt = "应选玻璃配置 " + r.cfg.name + "（" + r.cfg.type + "）｜" +
-      r.w + "×" + r.h + "mm，面积 " + r.area.toFixed(3) + " ㎡，" + r.shapeTxt +
+      r.w + "×" + r.h + "mm，面积 " + r.area.toFixed(3) + " ㎡，玻璃自重约 " +
+      r.weight.toFixed(1) + " kg，" + r.shapeTxt +
       "，按" + r.judgeShort + "取档 " + r.rangeTxt;
     var c = el("concl");
     c.textContent = txt;
@@ -447,6 +468,7 @@
       html += "<tr>" +
         "<td>" + (i + 1) + "</td>" +
         "<td>" + c.name + "</td>" +
+        "<td>" + c.gt + " mm</td>" +
         "<td>" + (c.side === Infinity ? "—" : "≤ " + c.side) + "</td>" +
         "<td>" + (c.al === Infinity ? "—" : "≤ " + c.al) + "</td>" +
         "<td>" + (c.ah === Infinity ? "—" : "≤ " + c.ah) + "</td>" +
