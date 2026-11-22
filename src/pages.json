@@ -29,6 +29,7 @@
   },
   "subPackages": [
     { "root": "pages-sub", "pages": [
+      { "path": "videos/index", "style": { "navigationBarTitleText": "全部视频" } },
       { "path": "sites/detail", "style": { "navigationBarTitleText": "案例详情" } },
       { "path": "construction/detail", "style": { "navigationBarTitleText": "施工详情" } },
       { "path": "sites/update-create", "style": { "navigationBarTitleText": "记录施工动态" } },

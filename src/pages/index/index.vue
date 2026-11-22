@@ -56,6 +56,9 @@ function openSearch(keyword = '') {
   const query = keyword ? `?keyword=${encodeURIComponent(keyword)}` : ''
   uni.navigateTo({ url: `/pages-sub/search/index${query}` })
 }
+function openAllVideos() {
+  uni.navigateTo({ url: `/pages-sub/videos/index?storeId=${encodeURIComponent(STORE_ID)}` })
+}
 function openVideo(video: HomeChannelVideo) {
   const runtime: ChannelsRuntime = {
     demo: isLocalDemoMode(),
@@ -110,8 +113,14 @@ onMounted(load)
         <view class="veil" />
         <view class="hero-copy"><text class="eyebrow">严选品质好窗·精工落地交付</text><text class="hero-title">{{ home.store.name }}</text><text class="hero-lead">产品、案例、施工记录与十年质保都在这里</text></view>
       </view>
-      <HomeSearchPanel class="home-search-panel" @search="openSearch" @private-entry="openPrivateEntry" />
-      <view class="section section--paginated needs"><view class="heading"><view><text class="kicker">WINDOW SOLUTIONS</text><text class="section-title">你家想解决什么问题？</text></view></view><HomeNeedsSwiper :items="home.channel_videos" :placeholder="placeholder" @search="openSearch" @video="openVideo" /></view>
+      <HomeSearchPanel class="home-search-panel" @search="openSearch" @private-entry="openPrivateEntry" @videos="openAllVideos" />
+      <view class="section section--paginated needs">
+        <view class="heading">
+          <view><text class="kicker">WINDOW SOLUTIONS</text><text class="section-title">你家想解决什么问题？</text></view>
+          <button class="all-videos-link" @click="openAllVideos">查看全部视频</button>
+        </view>
+        <HomeNeedsSwiper :items="home.channel_videos" :placeholder="placeholder" @search="openSearch" @video="openVideo" />
+      </view>
       <view v-if="home.cases.length" class="section section--paginated cases"><HomeCaseSwiper :items="home.cases" :placeholder="placeholder" @select="selectCase" @all="openCases" /></view>
       <view v-if="home.projects.length" class="section section--paginated sites"><HomeProjectSwiper :items="home.projects" :placeholder="placeholder" @select="selectService" @all="openServices" /></view>
       <view class="section staff">
@@ -131,7 +140,9 @@ onMounted(load)
 
 <style scoped>
 .page { --home-green: #173d34; --home-gold: #ae772d; --home-surface: #ffffff; --home-muted: #66766f; --home-radius: 28rpx; min-height: 100vh; padding-bottom: 23rpx; background: #f4f6f4; }
-.hero { position: relative; height: 610rpx; overflow: hidden; }
+.hero { position: relative; height: 330rpx; overflow: hidden; }
+.all-videos-link { flex-shrink: 0; min-height: 88rpx; margin: 0; padding: 0 0 0 12rpx; display: flex; align-items: flex-end; background: transparent; color: var(--home-green); font-size: 24rpx; line-height: 1.5; }
+.all-videos-link::after { border: 0; }
 .hero-swiper { width: 100%; height: 100%; }
 .hero-image { width: 100%; height: 100%; }
 .veil { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; background: linear-gradient(180deg,rgba(10,30,25,.08),rgba(10,30,25,.78)); }

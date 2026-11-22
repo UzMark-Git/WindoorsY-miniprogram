@@ -1,6 +1,9 @@
 import type { CaseCategory, HomeContent, ProductCategory, ProductDetail, ProductListResult, SearchContentType, SearchDiscovery, SearchGroup, SearchResult, SiteDetail, SiteFilters, SiteListResult, SiteStage, StaffDetail, WarrantyDetail, WarrantyListResult, ServiceListResult, WarrantyStatus } from '../types/domain'
 import { isLocalDemoMode } from '../config/runtime'
 import { mockContentRepository } from '../mock/content-repository'
+import type { HomeChannelVideo } from '../types/domain'
+
+type ChannelVideoPage = { items: HomeChannelVideo[]; hasMore: boolean }
 
 export type SiteQuery = {
   page?: number
@@ -45,7 +48,9 @@ export interface ContentRepository {
 }
 
 declare const uniCloud: {
-  importObject(name: string, options?: ContentRequestOptions): ContentRepository
+  importObject(name: string, options?: ContentRequestOptions): ContentRepository & {
+    listChannelVideos(query: { storeId: string; page: number; pageSize: number }): Promise<ChannelVideoPage>
+  }
 }
 
 export function normalizeSiteQuery(input: SiteQuery): NormalizedSiteQuery {
@@ -118,6 +123,15 @@ const content = (options?: ContentRequestOptions) => uniCloud.importObject('cont
 const provider = (options?: ContentRequestOptions): ContentRepository => isLocalDemoMode() ? mockContentRepository : content(options)
 
 export const getHome = (storeId: string, options?: ContentRequestOptions) => provider(options).getHome(storeId)
+export async function listChannelVideos(storeId: string, page: number): Promise<ChannelVideoPage> {
+  const pageSize = 10
+  if (isLocalDemoMode()) {
+    const { channel_videos: videos } = await mockContentRepository.getHome(storeId)
+    const end = page * pageSize
+    return { items: videos.slice(end - pageSize, end), hasMore: videos.length > end }
+  }
+  return content({ customUI: true }).listChannelVideos({ storeId, page, pageSize })
+}
 export const listSites = (query: SiteQuery = {}) => provider().listSites(normalizeSiteQuery(query))
 export const getSiteFilters = (storeId?: string) => provider().getSiteFilters(storeId?.trim() || undefined)
 export const getSiteDetail = (siteId: string) => provider().getSiteDetail(siteId)

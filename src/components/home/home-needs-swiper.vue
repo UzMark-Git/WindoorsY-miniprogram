@@ -24,8 +24,8 @@ function markCoverFailed(item: HomeChannelVideo) {
 
 <template>
   <swiper class="needs-swiper" indicator-dots :autoplay="false" :circular="false">
-    <swiper-item v-for="page in needPages" :key="page[0].type">
-      <view class="need-page">
+    <swiper-item v-for="(page, pageIndex) in needPages" :key="page[0].type">
+      <view class="need-page" :class="{ 'need-page--inverted': pageIndex === 1 }">
         <view class="need-featured">
           <template v-for="(problem, index) in page" :key="problem.type">
             <button
@@ -79,7 +79,6 @@ function markCoverFailed(item: HomeChannelVideo) {
                 <view class="need-play need-play--small" aria-hidden="true" />
               </view>
               <view class="need-compact-copy">
-                <text class="need-category">{{ problem.title }}</text>
                 <text class="need-video-title">{{ videoFor(problem.type)!.title }}</text>
               </view>
             </button>
@@ -104,20 +103,22 @@ function markCoverFailed(item: HomeChannelVideo) {
 
 <style scoped>
 .needs-swiper {
-  height: 572rpx;
+  height: 452rpx;
 }
 
 .need-page {
   display: grid;
   grid-template-columns: minmax(0,46fr) minmax(0,54fr);
+  grid-template-rows: minmax(0,1fr);
   gap: 16rpx;
-  height: 520rpx;
+  height: 400rpx;
+  box-sizing: content-box;
   padding: 0 6rpx 40rpx;
 }
 
 .need-featured {
   min-width: 0;
-  height: 520rpx;
+  height: 400rpx;
 }
 
 .need-side-list {
@@ -125,7 +126,7 @@ function markCoverFailed(item: HomeChannelVideo) {
   grid-template-rows: repeat(3,minmax(0,1fr));
   gap: 12rpx;
   min-width: 0;
-  height: 520rpx;
+  height: 100%;
 }
 
 .need-card {
@@ -148,14 +149,23 @@ function markCoverFailed(item: HomeChannelVideo) {
 }
 
 .need-side-list .need-card:nth-child(1),
-.need-side-list .need-card:nth-child(2) {
+.need-side-list .need-card:nth-child(3) {
   background: #fbf0df;
+}
+
+.need-page--inverted .need-card {
+  background: #fbf0df;
+}
+
+.need-page--inverted .need-side-list .need-card:nth-child(1),
+.need-page--inverted .need-side-list .need-card:nth-child(3) {
+  background: #e7f1ed;
 }
 
 .need-card--featured {
   position: relative;
   width: 100%;
-  height: 520rpx;
+  height: 400rpx;
 }
 
 .need-card--compact {

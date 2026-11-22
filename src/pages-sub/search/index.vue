@@ -10,9 +10,9 @@ import { searchDiscoveryCacheKey } from '../../utils/search-discovery-cache'
 
 const STORE_ID='store_windoors_demo',placeholder='/static/demo/placeholder.png'
 const SEARCH_DISCOVERY_KEY=searchDiscoveryCacheKey(STORE_ID),SEARCH_DISCOVERY_TTL=30*60*1000
-const types:SearchContentType[]=['products','sites','construction','warranties']
+const types:SearchContentType[]=['warranties','construction','sites','products']
 const labels:Record<SearchContentType,string>={products:'产品',sites:'案例',construction:'施工',warranties:'质保'}
-const discoveryTypes:Array<{type:SearchContentType;label:string}>=[{type:'products',label:'产品'},{type:'sites',label:'案例'},{type:'construction',label:'施工'},{type:'warranties',label:'质保'}]
+const discoveryTypes=types.map(type=>({type,label:labels[type]}))
 const keyword=ref(''),searchedKeyword=ref(''),focus=ref(false),loading=ref(false),error=ref('')
 const discovery=reactive<SearchDiscovery>({keywords:[],groups:{products:[],sites:[],construction:[],warranties:[]},contact_phone:''}),activeDiscoveryIndex=ref(0)
 const loadingMore=reactive<Record<SearchContentType,boolean>>({products:false,sites:false,construction:false,warranties:false})
@@ -56,7 +56,7 @@ onReady(()=>{setTimeout(()=>focus.value=true,220)})
         <view class="discovery-tabs"><button v-for="item in discoveryTypes" :key="item.type" :class="{active:activeDiscoveryType===item.type}" @click="selectDiscoveryType(item.type)">{{item.label}}</button></view>
         <swiper class="discovery-swiper" :current="activeDiscoveryIndex" :style="{height:discoverySwiperHeight}" @change="changeDiscoverySwiper"><swiper-item v-for="group in discoveryTypes" :key="group.type"><scroll-view scroll-x :show-scrollbar="false" class="discovery-scroll"><view v-if="discovery.groups[group.type].length" class="discovery-row"><button v-for="item in discovery.groups[group.type].slice(0,5)" :key="`${item.type}-${item.id}`" class="discovery-card" @click="openDiscoveryItem(item)"><image :src="itemImage(item)" mode="aspectFill" @error="failImage(item)"/><view class="discovery-copy"><text class="title">{{item.title}}</text><text class="meta">{{itemMeta(item)}}</text></view></button></view><view v-else class="state compact"><text>暂无推荐内容</text><text class="hint">输入名称、地区或阶段试试</text></view></scroll-view></swiper-item></swiper>
       </view>
-      <view class="discovery-note"><text>搜索当前门店的公开内容</text><text>可搜索产品、案例、施工和质保内容</text></view>
+      <view class="discovery-note"><text>搜索当前门店的公开内容</text><text>可搜索质保、施工、案例和产品内容</text></view>
     </view>
     <view v-else class="groups"><view v-for="type in visibleTypes" :key="type" class="group"><view class="heading"><text>{{labels[type]}}</text><text>{{groups[type].items.length}} 条结果</text></view><button v-for="item in groups[type].items" :key="`${type}-${item.id}`" class="result" :aria-label="`查看${labels[type]}${item.title}`" @click="open(item)"><image :src="itemImage(item)" mode="aspectFill" @error="failImage(item)"/><view><text class="title">{{item.title}}</text><text class="summary">{{item.summary}}</text><text class="meta">{{itemMeta(item)}}</text></view><text class="arrow">›</text></button><button v-if="groups[type].hasMore" class="more" :disabled="loadingMore[type]" @click="more(type)">{{loadingMore[type]?'加载中…':'加载更多'}}</button></view></view>
     <FloatingWechatService placement="plain" />

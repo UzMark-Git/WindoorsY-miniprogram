@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const emit = defineEmits<{
   search: [keyword?: string]
+  videos: []
   privateEntry: [type: 'progress' | 'warranty']
 }>()
 </script>
@@ -13,7 +14,7 @@ const emit = defineEmits<{
     </button>
     <view class="shortcuts">
       <button class="shortcut-button" @click="emit('search')"><text class="shortcut-icon"><text class="shortcut-glyph">区</text></text><text class="shortcut-label">查小区</text></button>
-      <button class="shortcut-button" @click="emit('search', '封窗知识')"><text class="shortcut-icon"><text class="shortcut-glyph">知</text></text><text class="shortcut-label">封窗知识</text></button>
+      <button class="shortcut-button" @click="emit('videos')"><text class="shortcut-icon"><text class="shortcut-glyph">知</text></text><text class="shortcut-label">封窗知识</text></button>
       <button class="shortcut-button" @click="emit('privateEntry', 'progress')"><text class="shortcut-icon"><text class="shortcut-glyph">工</text></text><text class="shortcut-label">我的进度</text></button>
       <button class="shortcut-button" @click="emit('privateEntry', 'warranty')"><text class="shortcut-icon"><text class="shortcut-glyph">保</text></text><text class="shortcut-label">我的质保</text></button>
     </view>
